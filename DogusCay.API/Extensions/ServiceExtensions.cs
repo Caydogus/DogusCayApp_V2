@@ -14,8 +14,8 @@ namespace DogusCay.API.Extensions
         {
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IGenericService<>), typeof(GenericManager<>));
-          
 
+            services.AddScoped<ICategoryService, CategoryManager>();
             services.Configure<JwtTokenOptions>(configuration.GetSection("TokenOptions"));
 
             services.AddScoped<IJwtService, JwtService>();

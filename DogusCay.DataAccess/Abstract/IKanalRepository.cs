@@ -7,9 +7,7 @@ using DogusCay.Entity.Entities;
 
 namespace DogusCay.DataAccess.Abstract
 {
-    public interface ICategoryRepository : IRepository<Category>
+    public interface IKanalRepository : IRepository<Kanal>
     {
-        void ShowOnHome(int id);
-        void DontShowOnHome(int id);
     }
 }

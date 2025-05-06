@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DogusCay.Entity.Entities
 {
     public class Category
     {
-        public int CategoryId { get; set; }
+        public int CategoryId { get; set; }  // Kategorinin benzersiz kimliği
 
         [Required]
         [MaxLength(100)]
-        public string CategoryName { get; set; }
+        public string CategoryName { get; set; }  // Kategorinin adı
 
-        // Üst kategori ID'si (nullable)
+        // Ana kategori için ParentCategoryId null olur, alt kategoriler için üst kategori ID'si burada tutulur
         public int? ParentCategoryId { get; set; }
 
-        // Navigasyon: Üst kategori
-        public Category? ParentCategory { get; set; }
+        // Navigasyon özelliği: Eğer kategori bir alt kategori ise, üst kategoriye erişim sağlar
+        public Category ParentCategory { get; set; }
 
-        // Navigasyon: Alt kategoriler
-        public ICollection<Category> SubCategories { get; set; }
+        // Alt kategoriler (Çocuk kategoriler): Bir kategori birden fazla alt kategoriye sahip olabilir
+        public ICollection<Category> SubCategories { get; set; } = new List<Category>();
 
-        // Navigasyon: Bu kategoriye ait ürünler
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Product> Products { get; set; } = new List<Product>();
+
+
+        // Kategorinin gösterilip gösterilmeyeceği bilgisini tutar (isteğe bağlı, admin paneli için)
+        public bool IsShown { get; set; } = true;
     }
 }

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DogusCay.Entity.Entities;
 
-namespace DogusCay.Entity.Entities
+namespace DogusCay.DTO.DTOs.SaleDtos
 {
-    public class Sale
+    public class UpdateSaleDto
     {
         public int SaleId { get; set; }
 
@@ -54,7 +55,5 @@ namespace DogusCay.Entity.Entities
         public string? Note { get; set; }
         public int SaleTypeId { get; set; }
         public SaleType SaleType { get; set; }
-
     }
-
 }

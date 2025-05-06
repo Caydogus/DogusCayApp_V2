@@ -4,22 +4,25 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DogusCay.DTO.DTOs.CategoryDtos;
+using DogusCay.Entity.Entities;
 
-namespace DogusCay.Entity.Entities
+namespace DogusCay.DTO.DTOs.ProductDtos
 {
-    public class Product
+    public class ResultProductDto
     {
         public int ProductId { get; set; }
 
         [Required]
         [MaxLength(150)]
         public string ProductName { get; set; }
+        [Required]
+        [MaxLength(50)]
         public string ErpCode { get; set; }
 
-     
         // Kategori bilgisi (alt kategori olabilir)
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public ResultCategoryDto Category { get; set; }
 
         // Birim tipi: Koli mi, Kilo mu?
         public int UnitTypeId { get; set; }
@@ -32,9 +35,7 @@ namespace DogusCay.Entity.Entities
         public bool IsShown { get; set; } = true;
 
         // Satışlar ile ilişki
-        public ICollection<Sale> Sales { get; set; } 
-
+       
 
     }
-
 }

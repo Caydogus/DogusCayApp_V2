@@ -7,9 +7,7 @@ using DogusCay.Entity.Entities;
 
 namespace DogusCay.DataAccess.Abstract
 {
-    public interface ICategoryRepository : IRepository<Category>
+    public interface IPointRepository : IRepository<PointGroup>
     {
-        void ShowOnHome(int id);
-        void DontShowOnHome(int id);
     }
 }

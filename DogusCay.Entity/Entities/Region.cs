@@ -20,7 +20,7 @@ namespace DogusCay.Entity.Entities
         public ICollection<AppUser> Users { get; set; } 
 
         // Navigasyon: Bölgedeki satış noktaları
-        public ICollection<SalesPoint> SalesPoints { get; set; } 
+        public ICollection<PointGroup> PointGroups { get; set; } 
     }
 
 }

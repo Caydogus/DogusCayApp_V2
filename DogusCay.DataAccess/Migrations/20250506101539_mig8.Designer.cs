@@ -4,6 +4,7 @@ using DogusCay.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DogusCay.DataAccess.Migrations
 {
     [DbContext(typeof(DogusCayContext))]
-    partial class DogusCayContextModelSnapshot : ModelSnapshot
+    [Migration("20250506101539_mig8")]
+    partial class mig8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,10 +215,7 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("KanalId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PointGroupId")
+                    b.Property<int>("PointGroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("PointName")
@@ -229,8 +229,6 @@ namespace DogusCay.DataAccess.Migrations
                     b.HasKey("PointId");
 
                     b.HasIndex("AppUserId");
-
-                    b.HasIndex("KanalId");
 
                     b.HasIndex("PointGroupId");
 
@@ -549,20 +547,13 @@ namespace DogusCay.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DogusCay.Entity.Entities.Kanal", "Kanal")
-                        .WithMany("Points")
-                        .HasForeignKey("KanalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DogusCay.Entity.Entities.PointGroup", "PointGroup")
                         .WithMany("Points")
                         .HasForeignKey("PointGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
-
-                    b.Navigation("Kanal");
 
                     b.Navigation("PointGroup");
                 });
@@ -712,8 +703,6 @@ namespace DogusCay.DataAccess.Migrations
             modelBuilder.Entity("DogusCay.Entity.Entities.Kanal", b =>
                 {
                     b.Navigation("PointGroups");
-
-                    b.Navigation("Points");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.PaymentType", b =>

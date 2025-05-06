@@ -4,6 +4,7 @@ using DogusCay.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DogusCay.DataAccess.Migrations
 {
     [DbContext(typeof(DogusCayContext))]
-    partial class DogusCayContextModelSnapshot : ModelSnapshot
+    [Migration("20250506084723_mig7")]
+    partial class mig7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,10 +215,7 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("KanalId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PointGroupId")
+                    b.Property<int>("PointGroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("PointName")
@@ -229,8 +229,6 @@ namespace DogusCay.DataAccess.Migrations
                     b.HasKey("PointId");
 
                     b.HasIndex("AppUserId");
-
-                    b.HasIndex("KanalId");
 
                     b.HasIndex("PointGroupId");
 
@@ -360,6 +358,9 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("SaleTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SalesPointId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalNetPrice")
@@ -549,20 +550,13 @@ namespace DogusCay.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DogusCay.Entity.Entities.Kanal", "Kanal")
-                        .WithMany("Points")
-                        .HasForeignKey("KanalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DogusCay.Entity.Entities.PointGroup", "PointGroup")
                         .WithMany("Points")
                         .HasForeignKey("PointGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
-
-                    b.Navigation("Kanal");
 
                     b.Navigation("PointGroup");
                 });
@@ -610,7 +604,7 @@ namespace DogusCay.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("DogusCay.Entity.Entities.Point", "Point")
-                        .WithMany("Sales")
+                        .WithMany()
                         .HasForeignKey("PointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -628,7 +622,7 @@ namespace DogusCay.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("DogusCay.Entity.Entities.AppUser", "User")
-                        .WithMany("Sales")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -698,8 +692,6 @@ namespace DogusCay.DataAccess.Migrations
             modelBuilder.Entity("DogusCay.Entity.Entities.AppUser", b =>
                 {
                     b.Navigation("Points");
-
-                    b.Navigation("Sales");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Category", b =>
@@ -712,16 +704,9 @@ namespace DogusCay.DataAccess.Migrations
             modelBuilder.Entity("DogusCay.Entity.Entities.Kanal", b =>
                 {
                     b.Navigation("PointGroups");
-
-                    b.Navigation("Points");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.PaymentType", b =>
-                {
-                    b.Navigation("Sales");
-                });
-
-            modelBuilder.Entity("DogusCay.Entity.Entities.Point", b =>
                 {
                     b.Navigation("Sales");
                 });
