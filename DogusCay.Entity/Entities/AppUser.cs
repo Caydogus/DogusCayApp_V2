@@ -14,6 +14,10 @@ namespace DogusCay.Entity.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string? ImageUrl { get; set; }
+
+        //bölge müdürü
+        public int? RegionId { get; set; }
+        public Region Region { get; set; }
         public ICollection<Point> Points { get; set; }
         // Bu kullanıcının yaptığı satışlar (Satış Temsilcisi ise)
         public ICollection<Sale> Sales { get; set; }

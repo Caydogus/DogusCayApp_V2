@@ -15,7 +15,7 @@ namespace DogusCay.Entity.Entities
         [MaxLength(50)]
         public string SaleTypeName { get; set; } // Örn: Normal, Kampanya, İade, Numune
 
-        public ICollection<Sale> Sales { get; set; } 
+        public ICollection<Sale> Sales { get; set; }
     }
 
 }

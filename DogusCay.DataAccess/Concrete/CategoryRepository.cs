@@ -24,6 +24,18 @@ namespace DogusCay.DataAccess.Concrete
             _context.SaveChanges();
         }
 
+        //alt kategorilere tıklayınca tum ürünleri getirir:08.05.2025 eklendi
+        public List<Category> GetAllWithProducts()
+        {
+                return _context.Categories
+                                        .Include(c => c.Products)
+                                        .Include(c => c.SubCategories)
+                                        .ThenInclude(sc => sc.Products)
+                                        .Include(c => c.SubCategories)
+                                        .ThenInclude(sc => sc.SubCategories)
+                                        .ThenInclude(ssc => ssc.Products).ToList();
+        }
+
         public void ShowOnHome(int id)
         {
             var value = _context.Categories.Find(id);

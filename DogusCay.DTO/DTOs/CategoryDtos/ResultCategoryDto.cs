@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DogusCay.Entity.Entities;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using DogusCay.DTOs.ProductDtos;
 
 namespace DogusCay.DTO.DTOs.CategoryDtos
 {
@@ -13,12 +11,13 @@ namespace DogusCay.DTO.DTOs.CategoryDtos
         [Required]
         [MaxLength(100)]
         public string CategoryName { get; set; }
+
         public int? ParentCategoryId { get; set; }
+
         public bool IsShown { get; set; }
 
+        public ICollection<ResultProductDto> Products { get; set; } = new List<ResultProductDto>();
 
-        //public ICollection<ResultCategoryDto> SubCategories { get; set; }
-
-        //public ICollection<ProductDto> Products { get; set; }
+        public ICollection<ResultCategoryDto> SubCategories { get; set; } = new List<ResultCategoryDto>();
     }
 }

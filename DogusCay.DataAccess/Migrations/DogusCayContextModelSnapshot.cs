@@ -311,12 +311,17 @@ namespace DogusCay.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RegionId"));
 
+                    b.Property<int?>("ManagerUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("RegionName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("RegionId");
+
+                    b.HasIndex("ManagerUserId");
 
                     b.ToTable("Regions");
                 });
@@ -359,7 +364,7 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<DateTime>("SaleDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SaleTypeId")
+                    b.Property<int?>("SaleTypeId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalNetPrice")
@@ -527,9 +532,11 @@ namespace DogusCay.DataAccess.Migrations
 
             modelBuilder.Entity("DogusCay.Entity.Entities.AppUser", b =>
                 {
-                    b.HasOne("DogusCay.Entity.Entities.Region", null)
+                    b.HasOne("DogusCay.Entity.Entities.Region", "Region")
                         .WithMany("Users")
                         .HasForeignKey("RegionId");
+
+                    b.Navigation("Region");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Category", b =>
@@ -601,6 +608,16 @@ namespace DogusCay.DataAccess.Migrations
                     b.Navigation("UnitType");
                 });
 
+            modelBuilder.Entity("DogusCay.Entity.Entities.Region", b =>
+                {
+                    b.HasOne("DogusCay.Entity.Entities.AppUser", "ManagerUser")
+                        .WithMany()
+                        .HasForeignKey("ManagerUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ManagerUser");
+                });
+
             modelBuilder.Entity("DogusCay.Entity.Entities.Sale", b =>
                 {
                     b.HasOne("DogusCay.Entity.Entities.PaymentType", "PaymentType")
@@ -621,11 +638,9 @@ namespace DogusCay.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DogusCay.Entity.Entities.SaleType", "SaleType")
+                    b.HasOne("DogusCay.Entity.Entities.SaleType", null)
                         .WithMany("Sales")
-                        .HasForeignKey("SaleTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SaleTypeId");
 
                     b.HasOne("DogusCay.Entity.Entities.AppUser", "User")
                         .WithMany("Sales")
@@ -638,8 +653,6 @@ namespace DogusCay.DataAccess.Migrations
                     b.Navigation("Point");
 
                     b.Navigation("Product");
-
-                    b.Navigation("SaleType");
 
                     b.Navigation("User");
                 });

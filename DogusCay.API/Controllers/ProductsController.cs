@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
 using DogusCay.DTO.DTOs.ProductDtos;
+using DogusCay.DTOs.ProductDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;

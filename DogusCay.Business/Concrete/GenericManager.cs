@@ -1,59 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using DogusCay.Business.Abstract;
+﻿using DogusCay.Business.Abstract;
 using DogusCay.DataAccess.Abstract;
+using System.Linq.Expressions;
 
-namespace DogusCay.Business.Concrete
+public class GenericManager<T> : IGenericService<T> where T : class
 {
-    public class GenericManager<T>(IRepository<T> _repository) : IGenericService<T> where T : class
+    private readonly IRepository<T> _repository;
+
+    public GenericManager(IRepository<T> repository)
     {
-        public int TCount()
-        {
-            return _repository.Count();
-        }
+        _repository = repository;
+    }
 
-        public void TCreate(T entity)
-        {
-            _repository.Create(entity);
-        }
+    public virtual List<T> TGetList()
+    {
+        return _repository.GetList();
+    }
 
-        public void TDelete(int id)
-        {
-            _repository.Delete(id);
-        }
+    public virtual T TGetByFilter(Expression<Func<T, bool>> predicate)
+    {
+        return _repository.GetByFilter(predicate);
+    }
 
-        public int TFilteredCount(Expression<Func<T, bool>> predicate)
-        {
-            return _repository.FilteredCount(predicate);
-        }
+    public virtual T TGetById(int id)
+    {
+        return _repository.GetById(id);
+    }
 
-        public T TGetByFilter(Expression<Func<T, bool>> predicate)
-        {
-            return _repository.GetByFilter(predicate);
-        }
+    public virtual void TCreate(T entity)
+    {
+        _repository.Create(entity);
+    }
 
-        public T TGetById(int id)
-        {
-            return _repository.GetById(id);
-        }
+    public virtual void TUpdate(T entity)
+    {
+        _repository.Update(entity);
+    }
 
-        public List<T> TGetFilteredList(Expression<Func<T, bool>> predicate)
-        {
-            return _repository.GetFilteredList(predicate);
-        }
+    public virtual void TDelete(int id)
+    {
+        _repository.Delete(id);
+    }
 
-        public List<T> TGetList()
-        {
-            return _repository.GetList();
-        }
+    public virtual int TCount()
+    {
+        return _repository.Count();
+    }
 
-        public void TUpdate(T entity)
-        {
-            _repository.Update(entity);
-        }
+    public virtual int TFilteredCount(Expression<Func<T, bool>> predicate)
+    {
+        return _repository.FilteredCount(predicate);
+    }
+
+    public virtual List<T> TGetFilteredList(Expression<Func<T, bool>> predicate)
+    {
+        return _repository.GetFilteredList(predicate);
     }
 }

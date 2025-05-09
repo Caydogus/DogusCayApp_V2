@@ -28,5 +28,12 @@ namespace DogusCay.Business.Concrete
         {
             _categoryRepository.ShowOnHome(id);
         }
+
+        // BURASI ürünleri ve tüm alt kategorileri birlikte çeker 
+        //alt kategorilere tıklayınca tum ürünleri getirir:08.05.2025 eklendi
+        public override List<Category> TGetList()
+        {
+            return _categoryRepository.GetAllWithProducts();
+        }
     }
 }

@@ -17,7 +17,7 @@ builder.Services.AddHttpClient("EduClient", cfg =>
 {
     var tokenService = builder.Services.BuildServiceProvider().GetRequiredService<ITokenService>();
     var token = tokenService.GetUserToken;
-    cfg.BaseAddress = new Uri("https://localhost:7076/api/"); 
+    cfg.BaseAddress = new Uri("https://localhost:7076/api/");
     if (token != null)
     {
         cfg.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetUserToken);
@@ -39,6 +39,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCo
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly()).AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 builder.Services.AddControllersWithViews();
 
+//consume iþlemi yapmak için ekle.
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -56,8 +58,20 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Normal (area olmayan) controller'lar
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
+app.UseEndpoints(endpoints =>
+{ 
+    endpoints.MapControllerRoute(
+        name: "areas",
+        pattern: "{area=exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+});
+
+
 
 app.Run();

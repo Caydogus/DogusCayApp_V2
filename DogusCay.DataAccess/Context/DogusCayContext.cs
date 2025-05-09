@@ -64,11 +64,16 @@ namespace DogusCay.DataAccess.Context
                 .WithMany(pt => pt.Sales)
                 .HasForeignKey(s => s.PaymentTypeId);
 
-            modelBuilder.Entity<Sale>()
-                .HasOne(s => s.SaleType)
-                .WithMany(st => st.Sales)
-                .HasForeignKey(s => s.SaleTypeId);
-
+            modelBuilder.Entity<Region>()
+                .HasOne(r => r.ManagerUser)
+                .WithMany()
+                .HasForeignKey(r => r.ManagerUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Region>()
+                .HasOne(r => r.ManagerUser)
+                .WithMany()
+                .HasForeignKey(r => r.ManagerUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }

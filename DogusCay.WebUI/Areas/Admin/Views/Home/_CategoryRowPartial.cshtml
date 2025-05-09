@@ -1,0 +1,52 @@
+﻿@model ResultCategoryDto
+
+@{
+    int level = ViewData["Level"] != null ? (int)ViewData["Level"] : 0;
+    int padding = level * 20;
+
+    string subClass = $"sub-{Model.ParentCategoryId?.ToString() ?? "root"}";
+    string toggleTarget = $"sub-{Model.CategoryId}";
+    bool hasChildren = (Model.SubCategories?.Any() == true) || (Model.Products?.Any() == true);
+}
+
+<tr class="@subClass" style="@(Model.ParentCategoryId != null ? "display:none;" : "")" onclick="toggleRow('@toggleTarget')" style="cursor:pointer;">
+    <td style="display:none;">@Model.CategoryId</td>
+    <td style="padding-left:@(padding)px;">
+        <span id="icon-@Model.CategoryId" class="toggle-icon">
+            @(hasChildren ? "➕" : "📁")
+        </span>
+        <strong>@Model.CategoryName</strong>
+    </td>
+    <td>
+        <span class="badge @(Model.IsShown ? "bg-success" : "bg-secondary")">
+            @(Model.IsShown ? "Gösteriliyor" : "Gösterilmiyor")
+        </span>
+    </td>
+    <td colspan="2">
+        <button onclick="event.stopPropagation(); deleteCategory(@Model.CategoryId);" class="btn btn-sm btn-outline-danger">Sil</button>
+        <a asp-action="UpdateCategory" asp-controller="Home" asp-area="Admin" asp-route-id="@Model.CategoryId" onclick="event.stopPropagation();" class="btn btn-sm btn-outline-info">Güncelle</a>
+    </td>
+</tr>
+
+@if (Model.SubCategories != null && Model.SubCategories.Any())
+{
+    @foreach (var sub in Model.SubCategories)
+    {
+        @Html.Partial("_CategoryRowPartial", sub, new ViewDataDictionary(ViewData) { ["Level"] = level + 1 })
+    }
+
+}
+
+@if (Model.Products != null && Model.Products.Any())
+{
+    foreach (var product in Model.Products)
+    {
+        <tr class="sub-@Model.CategoryId" style="display:none; background-color:#f9f9f9;">
+            <td style="display:none;"></td>
+            <td style="padding-left:@(padding + 20)px;">
+                🛒 <i>@product.ProductName</i>
+            </td>
+            <td colspan="3"><span class="text-muted">Ürün</span></td>
+        </tr>
+    }
+}

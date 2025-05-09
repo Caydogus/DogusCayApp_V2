@@ -1,0 +1,53 @@
+﻿@model List<ResultCategoryDto>
+
+@{
+    ViewData["Title"] = "AnaSayfa";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Kategoriler</h2>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Kategori Adı</th>
+            <th>Gösterim</th>
+            <th>İşlemler</th>
+            <th>Ana Sayfa</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Where(x => x.ParentCategoryId == null))
+        {
+            @Html.Partial("_CategoryRowPartial", item, new ViewDataDictionary(ViewData) { ["Level"] = 0 })
+        }
+    </tbody>
+</table>
+<div class="d-flex gap-2">
+    <a asp-action="CreateCategory" asp-controller="Home" asp-area="Admin" class="btn btn-outline-primary">
+        ➕ Yeni Kategori Ekle
+    </a>
+
+    <a asp-action="CreateProduct" asp-controller="Product" asp-area="Admin" class="btn btn-outline-success">
+        ➕ Yeni Ürün Ekle
+    </a>
+</div>
+@* <a asp-action="CreateCategory" asp-controller="Home" asp-area="Admin" class="btn btn-outline-primary">Yeni Kategori Ekle</a>
+ *@
+@section Scripts {
+    <script>
+        function toggleRow(id) {
+            const rows = document.querySelectorAll("." + id);
+            const icon = document.getElementById("icon-" + id.replace("sub-", ""));
+            const isOpening = rows.length > 0 && (rows[0].style.display === "none" || rows[0].style.display === "");
+
+            rows.forEach(row => {
+                row.style.display = isOpening ? "table-row" : "none";
+            });
+
+            if (icon) {
+                icon.textContent = isOpening ? "➖" : "➕";
+            }
+        }
+    </script>
+}

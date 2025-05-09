@@ -9,6 +9,7 @@ namespace DogusCay.DataAccess.Abstract
 {
     public interface ICategoryRepository : IRepository<Category>
     {
+        List<Category> GetAllWithProducts(); //alt kategorilere tıklayınca tum ürünleri getirir:08.05.2025 eklendi
         void ShowOnHome(int id);
         void DontShowOnHome(int id);
     }

@@ -10,6 +10,7 @@ namespace DogusCay.Business.Abstract
 {
     public interface ICategoryService : IGenericService<Category>
     {
+     
         void TShowOnHome(int id);
         void TDontShowOnHome(int id);
     }

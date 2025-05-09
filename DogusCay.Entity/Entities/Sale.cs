@@ -52,8 +52,7 @@ namespace DogusCay.Entity.Entities
 
         // Açıklama, not gibi alanlar
         public string? Note { get; set; }
-        public int SaleTypeId { get; set; }
-        public SaleType SaleType { get; set; }
+      
 
     }
 
