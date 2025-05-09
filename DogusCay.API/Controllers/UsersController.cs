@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
 using DogusCay.DTO.DTOs.LoginRegisterDtos;
+using DogusCay.DTO.DTOs.UserDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -54,21 +55,62 @@ namespace DogusCay.API.Controllers
             return BadRequest();
         }
 
+        //[HttpGet("BolgeMuduruList")]
+        //public async Task<IActionResult> BolgeMuduruList()
+        //{
+        //    var teachers = await _userManager.GetUsersInRoleAsync("BolgeMuduru");
+        //    return Ok(teachers);
+        //}
+      
         [HttpGet("BolgeMuduruList")]
         public async Task<IActionResult> BolgeMuduruList()
         {
-            var teachers = await _userManager.GetUsersInRoleAsync("BolgeMuduru");
-            return Ok(teachers);
+            var users = await _userManager.GetUsersInRoleAsync("BolgeMuduru");
+
+            var result = new List<ResultUserDto>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                result.Add(new ResultUserDto
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ImageUrl = user.ImageUrl,
+                    Roles = roles
+                });
+            }
+
+            return Ok(result);
         }
 
+        //[HttpGet("SatisTemsilcisiList")]
+        //public async Task<IActionResult> SatisTemsilcisiList()
+        //{
+        //    var students = await _userManager.GetUsersInRoleAsync("SatisTemsilcisi");
+        //    return Ok(students);
+        //}
         [HttpGet("SatisTemsilcisiList")]
         public async Task<IActionResult> SatisTemsilcisiList()
         {
-            var students = await _userManager.GetUsersInRoleAsync("SatisTemsilcisi");
-            return Ok(students);
-        }
+            var users = await _userManager.GetUsersInRoleAsync("SatisTemsilcisi");
 
-      
+            var result = new List<ResultUserDto>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                result.Add(new ResultUserDto
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ImageUrl = user.ImageUrl,
+                    Roles = roles
+                });
+            }
+
+            return Ok(result);
+        }
 
     }
 }

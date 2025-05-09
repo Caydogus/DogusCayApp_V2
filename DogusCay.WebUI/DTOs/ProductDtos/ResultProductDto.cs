@@ -17,7 +17,7 @@ namespace DogusCay.WebUI.DTOs.ProductDtos
         // Kategori bilgisi
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }  // DTO'da sadeleştirilmiş şekilde
-
+        public string ParentCategoryName { get; set; }
         // Birim tipi
         public int UnitTypeId { get; set; }
         public string UnitTypeName { get; set; }  // DTO'da sadeleştirilmiş şekilde
@@ -25,5 +25,6 @@ namespace DogusCay.WebUI.DTOs.ProductDtos
         public decimal? ApproximateWeightKg { get; set; }
 
         public bool IsShown { get; set; } = true;
+        public int Price { get; set; }
     }
 }

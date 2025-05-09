@@ -1,0 +1,74 @@
+﻿@model UpdateProductDto
+@{
+	ViewData["Title"] = "";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3>Ürün Güncelle</h3>
+
+<form asp-action="UpdateProduct" method="post">
+	<input type="hidden" asp-for="ProductId" />
+
+	<table class="table table-bordered">
+		<thead class="thead-dark">
+			<tr>
+				<th>Ürün Adı</th>
+				<th>Ana Kategori</th>
+				<th>Alt Kategori</th>
+				<th>ERP Kodu</th>
+				<th>Birim Tipi</th>
+				<th>Ağırlık (kg)</th>
+				<th>Durum</th>
+				<th>İşlem</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<input asp-for="ProductName" class="form-control" />
+				</td>
+				<td>
+					<select asp-for="CategoryId" asp-items="ViewBag.SubCategories" class="form-control">
+						<option value="">Seçiniz</option>
+					</select>
+				</td>
+				<td>
+					<select id="mainCategory" class="form-control" asp-items="ViewBag.MainCategories">
+						<option value="">Seçiniz</option>
+					</select>
+				</td>
+				<td>
+					<input asp-for="ErpCode" class="form-control" />
+				</td>
+				<td>
+					<input asp-for="UnitTypeId" class="form-control" />
+				</td>
+				<td>
+					<input asp-for="ApproximateWeightKg" class="form-control" />
+				</td>
+				<td class="text-center">
+					<input type="checkbox" asp-for="IsShown" class="form-check-input" />
+				</td>
+				<td>
+					<button type="submit" class="btn btn-success btn-sm">Kaydet</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+
+@section Scripts {
+	<script>
+		$('#mainCategory').change(function () {
+			var selectedMainId = $(this).val();
+			$('#subCategory').html('<option>Yükleniyor...</option>');
+
+			$.get('/Admin/Product/GetSubCategories/' + selectedMainId, function (data) {
+				$('#subCategory').html('<option value="">Seçiniz</option>');
+				$.each(data, function (i, item) {
+					$('#subCategory').append('<option value="' + item.value + '">' + item.text + '</option>');
+				});
+			});
+		});
+	</script>
+}

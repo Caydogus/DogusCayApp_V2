@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DogusCay.Entity.Entities;
 
-namespace DogusCay.DTO.DTOs.ChannelDtos
+namespace DogusCay.WebUI.DTOs.KanalDtos
 {
     public class UpdateKanalDto
     {

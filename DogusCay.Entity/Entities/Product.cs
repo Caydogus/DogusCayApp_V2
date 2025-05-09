@@ -30,6 +30,8 @@ namespace DogusCay.Entity.Entities
 
         // Aktif/pasif ürün durumu
         public bool IsShown { get; set; } = true;
+        public int Price { get; set; }
+
 
         // Satışlar ile ilişki
         public ICollection<Sale> Sales { get; set; } 

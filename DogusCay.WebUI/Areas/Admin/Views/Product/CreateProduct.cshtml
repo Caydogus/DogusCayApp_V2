@@ -1,0 +1,84 @@
+﻿@model UpdateProductDto
+@{
+    ViewData["Title"] = "CreateProduct";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<form asp-action="UpdateProduct" method="post">
+    <input type="hidden" asp-for="ProductId" />
+
+    <div class="form-group">
+        <label>Ürün Adı</label>
+        <input asp-for="ProductName" class="form-control" />
+        <span asp-validation-for="ProductName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>ERP Kodu</label>
+        <input asp-for="ErpCode" class="form-control" />
+        <span asp-validation-for="ErpCode" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Ana Kategori</label>
+        <select id="mainCategory" class="form-control">
+            <option value="">Seçiniz</option>
+            @* Bunu ViewBag.MainCategories ile dolduracağız *@
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Alt Kategori</label>
+        <select id="subCategory" name="CategoryId" class="form-control">
+            <option value="">Seçiniz</option>
+            @* Seçilen kategori burada *@
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Birim Tipi</label>
+        <input asp-for="UnitTypeId" class="form-control" />
+        <span asp-validation-for="UnitTypeId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Ağırlık (kg)</label>
+        <input asp-for="ApproximateWeightKg" class="form-control" />
+    </div>
+
+    <div class="form-group form-check">
+        <input type="checkbox" asp-for="IsShown" class="form-check-input" />
+        <label class="form-check-label" asp-for="IsShown">Gösterilsin mi?</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Ana kategorileri doldur
+            $.get("/Admin/Product/GetSubCategories/0", function (data) {
+                $('#mainCategory').html('<option value="">Seçiniz</option>');
+                $.each(data, function (i, item) {
+                    $('#mainCategory').append('<option value="' + item.value + '">' + item.text + '</option>');
+                });
+            });
+
+            // Ana kategori değişince alt kategori güncelle
+            $('#mainCategory').change(function () {
+                var selectedMainId = $(this).val();
+                $.get("/Admin/Product/GetSubCategories/" + selectedMainId, function (data) {
+                    $('#subCategory').html('<option value="">Seçiniz</option>');
+                    $.each(data, function (i, item) {
+                        $('#subCategory').append('<option value="' + item.value + '">' + item.text + '</option>');
+                    });
+                });
+            });
+        });
+    </script>
+}
+
+

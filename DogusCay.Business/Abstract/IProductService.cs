@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using DogusCay.DTOs.ProductDtos;
 using DogusCay.Entity.Entities;
 
 namespace DogusCay.Business.Abstract
@@ -16,5 +17,8 @@ namespace DogusCay.Business.Abstract
         List<Product> TGetAllProductsWithCategories();
 
         List<Product> TGetAllProductsWithCategories(Expression<Func<Product, bool>> filter = null);
+
+        List<ResultProductDto> TGetAllProductsWithCategoryDetails(); //kategorileri ve tum alt kategorileride getirsin:09.05.2025
+
     }
 }

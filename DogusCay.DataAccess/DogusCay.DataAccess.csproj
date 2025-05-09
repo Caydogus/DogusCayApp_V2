@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DogusCay.DTO\DogusCay.DTO.csproj" />
     <ProjectReference Include="..\DogusCay.Entity\DogusCay.Entity.csproj" />
   </ItemGroup>
 

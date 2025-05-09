@@ -33,7 +33,8 @@ namespace DogusCay.WebUI.DTOs.ProductDtos
         public bool IsShown { get; set; } = true;
 
         // Satışlar ile ilişki
-      
+        public int Price { get; set; }
+
 
     }
 }

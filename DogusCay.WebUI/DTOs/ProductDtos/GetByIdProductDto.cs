@@ -35,6 +35,8 @@ namespace DogusCay.WebUI.DTOs.ProductDtos
 
         // Satışlar ile ilişki
         public ICollection<Sale> Sales { get; set; }
+        public int Price { get; set; }
+
 
     }
 }

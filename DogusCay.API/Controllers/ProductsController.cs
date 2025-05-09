@@ -92,5 +92,15 @@ namespace DogusCay.API.Controllers
             var values = _productService.TGetAllProductsWithCategories(x => x.CategoryId == id);
             return Ok(values);
         }
+
+
+        // 09.05.2025 - Ürünle birlikte ana ve alt kategori bilgileri de içeren DTO listesi döndürülüyor
+        [AllowAnonymous]
+        [HttpGet("GetProductsWithCategoryDetails")]
+        public IActionResult GetProductsWithCategoryDetails()
+        {
+            var values = _productService.TGetAllProductsWithCategoryDetails();
+            return Ok(values);
+        }
     }
 }

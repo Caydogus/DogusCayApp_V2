@@ -15,24 +15,25 @@ namespace DogusCay.WebUI.DTOs.ProductDtos
         [Required]
         [MaxLength(150)]
         public string ProductName { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string ErpCode { get; set; }
 
-        // Kategori bilgisi (alt kategori olabilir)
+        // Kategori bilgisi
         public int CategoryId { get; set; }
-
-        // Birim tipi: Koli mi, Kilo mu?
+        public string CategoryName { get; set; }  // DTO'da sadeleştirilmiş şekilde
+        public string ParentCategoryName { get; set; }
+        // Birim tipi
         public int UnitTypeId { get; set; }
+        public string UnitTypeName { get; set; }  // DTO'da sadeleştirilmiş şekilde
 
-        // Her bir ürün için yaklaşık kilo karşılığı (koli ise tonaj hesabı için)
         public decimal? ApproximateWeightKg { get; set; }
 
-        // Aktif/pasif ürün durumu
         public bool IsShown { get; set; } = true;
+        public int Price { get; set; }
 
-        // Satışlar ile ilişki
-        
+
 
     }
 }

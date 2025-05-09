@@ -1,0 +1,42 @@
+﻿@model List<ResultProductDto>
+
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Ürün Adı</th>
+            <th>Ana Kategori</th>
+            <th>Alt Kategori</th>
+            <th>ERP Kodu</th>
+            <th>Birim Tipi</th>
+            <th>Ağırlık (kg)</th>
+            <th>Durum</th>
+            <th>Fiyat</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProductName</td>
+                <td>@item.ParentCategoryName</td>
+                <td>@item.CategoryName</td>
+                <td>@item.ErpCode</td>
+                <td>@item.UnitTypeName</td>
+                <td>@(item.ApproximateWeightKg?.ToString("N2") ?? "0,00")</td>
+                <td>@(item.IsShown ? "Aktif" : "Pasif")</td>
+                <td>@item.Price</td>
+      
+@*                 <td>
+                    <a asp-action="UpdateProduct" asp-route-id="@item.ProductId" class="btn btn-sm btn-warning">Güncelle</a>
+                    <a asp-action="DeleteProduct" asp-route-id="@item.ProductId" class="btn btn-sm btn-danger">Sil</a>
+                </td>
+ *@            </tr>
+        }
+    </tbody>
+</table>
+
