@@ -1,0 +1,39 @@
+﻿@model CreatePointGroupDto
+
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>Nokta Grubu Ekleme Sayfası</h4>
+                <br />
+                <div class="bs-example" data-example-id="bordered-table">
+
+                    <form method="post">
+                        <!-- Nokta Grup Adı -->
+                        <label>Nokta Grup Adı</label>
+                        <input type="text" class="form-control" asp-for="GroupName" />
+                        <span asp-validation-for="GroupName" class="text-danger"></span>
+                        <br />
+
+                        <!-- Kanal Seçimi -->
+                        <label>Kanal Seç</label>
+                        <select class="form-control" asp-for="KanalId" asp-items="ViewBag.Kanals">
+                            <option value="">-- Kanal Seçiniz --</option>
+                        </select>
+                        <span asp-validation-for="KanalId" class="text-danger"></span>
+                        <br />
+
+                        <!-- Buton -->
+                        <button class="btn btn-primary">Nokta Grubu Ekle</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

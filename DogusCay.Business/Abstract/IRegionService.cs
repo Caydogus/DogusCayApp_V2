@@ -9,5 +9,8 @@ namespace DogusCay.Business.Abstract
 {
     public interface IRegionService:IGenericService<Region>
     {
+        //bu metot bolgeleri getirirken bölge mudurlerinide getirir
+        List<Region> TGetRegionsWithManagers();
+
     }
 }

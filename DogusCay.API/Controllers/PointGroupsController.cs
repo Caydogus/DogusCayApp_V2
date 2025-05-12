@@ -58,7 +58,13 @@ namespace DogusCay.API.Controllers
             var courseCount = _pointGroupService.TCount();
             return Ok(courseCount);
         }
-
-
+        //nokta grublarını kanalı ile berraber çeker
+        [AllowAnonymous]
+        [HttpGet("with-kanal")]
+        public IActionResult GetPointGroupsWithKanal()
+        {
+            var values = _pointGroupService.TGetPointGroupsWithKanal();
+            return Ok(values);
+        }
     }
 }

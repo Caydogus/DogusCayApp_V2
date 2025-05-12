@@ -18,7 +18,8 @@ namespace DogusCay.WebUI.DTOs.RegionDtos
 
         // Bu bölgenin müdürü (tek kullanıcı)
         public int? ManagerUserId { get; set; }
-
+        public string? ManagerFirstName { get; set; }
+        public string? ManagerLastName { get; set; }
 
     }
 }

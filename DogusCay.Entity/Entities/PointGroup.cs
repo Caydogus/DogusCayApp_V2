@@ -11,7 +11,7 @@ namespace DogusCay.Entity.Entities
         public string GroupName { get; set; } // YEREL ZİNCİR, TOPTAN, ULUSAL ZİNCİR...
 
         public int KanalId { get; set; }           // Foreign key
-        public Kanal Kanal { get; set; }
+        public Kanal? Kanal { get; set; }
 
         public ICollection<Point> Points { get; set; }
     }

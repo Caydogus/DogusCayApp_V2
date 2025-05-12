@@ -1,18 +1,33 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
+using DogusCay.DataAccess.Context;
 using DogusCay.DTO.DTOs.ChannelDtos;
 using DogusCay.DTO.DTOs.RegionDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DogusCay.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-        public class RegionsController(IRegionService _regionService, IMapper _mapper) : ControllerBase
+    public class RegionsController : ControllerBase
     {
+        private readonly IRegionService _regionService;
+        private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly DogusCayContext _context; // veya senin DbContext adın neyse
+
+        public RegionsController(IRegionService regionService,IMapper mapper,UserManager<AppUser> userManager,DogusCayContext context)
+        {
+            _regionService = regionService;
+            _mapper = mapper;
+            _userManager = userManager;
+            _context = context;
+        }
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Get()
@@ -53,13 +68,41 @@ namespace DogusCay.API.Controllers
             return Ok("Bölge Güncellendi");
         }
 
-        //[AllowAnonymous]
-        //[HttpGet("GetRegionCount")]
-        //public IActionResult GetRegionCount()
-        //{
-        //    var courseCount = _regionService.TCount();
-        //    return Ok(courseCount);
-        //}
+        //bolgeleri bolge mudurleriyle beraber çek
+        [AllowAnonymous]
+        [HttpGet("WithManager")]
+        public async Task<IActionResult> GetRegionsWithManager()
+        {
+            var regions = await _context.Regions.Include(r => r.ManagerUser).ToListAsync();
+
+            var result = new List<ResultRegionDto>();
+
+            foreach (var region in regions)
+            {
+                var dto = new ResultRegionDto
+                {
+                    RegionId = region.RegionId,
+                    RegionName = region.RegionName,
+                    ManagerUserId = region.ManagerUserId
+                };
+
+                if (region.ManagerUser != null)
+                {
+                    var roles = await _userManager.GetRolesAsync(region.ManagerUser);
+                    if (roles.Contains("BolgeMuduru"))
+                    {
+                        dto.ManagerFirstName = region.ManagerUser.FirstName;
+                        dto.ManagerLastName = region.ManagerUser.LastName;
+                    }
+                }
+
+                result.Add(dto);
+            }
+
+            return Ok(result);
+        }
+
+
     }
 
 }

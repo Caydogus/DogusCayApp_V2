@@ -1,4 +1,4 @@
-﻿@model List<ResultUserDto>
+﻿@* @model List<ResultUserDto>
 @{
     ViewData["Title"] = "";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -38,3 +38,58 @@
     </tbody>
 </table>
 
+ *@
+ @model List<ResultUserDto>
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<h3 class="mb-4">👤 Kullanıcı Listesi</h3>
+
+<table class="table table-bordered table-hover table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Resim</th>
+            <th>Roller</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            count++;
+            <tr>
+                <td>@count</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(user.ImageUrl))
+                    {
+                        <img src="@user.ImageUrl" alt="profil" width="50" class="rounded-circle" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">Yok</span>
+                    }
+                </td>
+                <td>
+                    @if (user.Roles != null && user.Roles.Any())
+                    {
+                        @foreach (var role in user.Roles)
+                        {
+                            <span class="badge bg-primary me-1">@role</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-danger">Rol atanmamış</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

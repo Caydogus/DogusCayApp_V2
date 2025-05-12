@@ -12,5 +12,6 @@ namespace DogusCay.DTO.DTOs.UserDtos
         public string LastName { get; set; }
         public string? ImageUrl { get; set; }
         public IList<string> Roles { get; set; }
+        public string? RegionName { get; set; } // Yeni alan
     }
 }

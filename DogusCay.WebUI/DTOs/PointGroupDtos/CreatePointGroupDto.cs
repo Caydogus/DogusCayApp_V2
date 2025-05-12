@@ -5,15 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DogusCay.Entity.Entities;
-
-namespace DogusCay.DTO.DTOs.PointGrupDtos
+namespace DogusCay.WebUI.DTOs.PointGrupDtos
 {
-    public class ResultPointGroupDto
+    public class CreatePointGroupDto
     {
-        public int PointGroupId { get; set; }
+        [Required(ErrorMessage = "Nokta grup adı zorunludur.")]
         public string GroupName { get; set; }
 
+        [Required(ErrorMessage = "Lütfen bir kanal seçiniz.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Geçerli bir kanal seçiniz.")]
         public int KanalId { get; set; }
-        public Kanal Kanal { get; set; } // ✅ Burada Kanal nesnesi var
+
     }
 }

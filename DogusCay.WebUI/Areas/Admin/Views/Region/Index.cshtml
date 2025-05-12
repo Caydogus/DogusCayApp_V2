@@ -1,0 +1,49 @@
+﻿@model List<ResultRegionDto>
+@{
+    ViewData["Title"] = "Bölgeler ve Müdürleri";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<h3 class="mb-4">📌 Bölgeler ve Atanmış Müdürler</h3>
+
+<table class="table table-bordered table-hover table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Bölge Adı</th>
+            <th scope="col">Müdür Adı</th>
+            <th scope="col">Müdür Soyadı</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            count++;
+            <tr>
+                <td>@count</td>
+                <td>@item.RegionName</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ManagerFirstName))
+                    {
+                        @item.ManagerFirstName
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-bold">Atanmamış</span>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ManagerLastName))
+                    {
+                        @item.ManagerLastName
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-bold">-</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

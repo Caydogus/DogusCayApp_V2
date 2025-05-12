@@ -9,5 +9,7 @@ namespace DogusCay.Business.Abstract
 {
     public interface IPointGroupService:IGenericService<PointGroup>
     {
+        public List<PointGroup> TGetPointGroupsWithKanal();
+
     }
 }

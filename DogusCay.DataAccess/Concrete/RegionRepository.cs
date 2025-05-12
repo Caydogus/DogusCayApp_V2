@@ -7,6 +7,7 @@ using DogusCay.DataAccess.Abstract;
 using DogusCay.DataAccess.Context;
 using DogusCay.DataAccess.Repositories;
 using DogusCay.Entity.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DogusCay.DataAccess.Concrete
 {
@@ -14,6 +15,14 @@ namespace DogusCay.DataAccess.Concrete
     {
         public RegionRepository(DogusCayContext context) : base(context)
         {
+        }
+
+        //bu metot bolgeleri getirirken bölge mudurlerinide getirir
+        public List<Region> GetRegionsWithManagers()
+        {
+            return _context.Regions
+                                  .Include(r => r.ManagerUser)
+                                  .ToList();
         }
     }
 }

@@ -9,5 +9,7 @@ namespace DogusCay.DataAccess.Abstract
 {
     public interface IRegionRepository : IRepository<Region>
     {
+        List<Region> GetRegionsWithManagers();        //bu metot bolgeleri getirirken bölge mudurlerinide getirir
+
     }
 }

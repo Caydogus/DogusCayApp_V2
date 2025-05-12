@@ -1,0 +1,46 @@
+﻿@model List<ResultPointGroupDto>
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<section class="content container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="chart-box">
+                <div class="bs-example" data-example-id="bordered-table">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nokta Grubu Adı</th>
+                                <th>Kanal</th>
+                                @* <th>Güncelle</th> *@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                count++;
+                                <tr>
+                                    <th scope="row">@count</th>
+                                    <th>@item.GroupName</th>
+                                    <td>@item.Kanal?.KanalName</td>
+                            @*         <td><a href="/Admin/PointGroup/DeletePointGroup/@item.PointGroupId" class="btn btn-danger">Sil</a></td>
+                                    <td><a href="/Admin/PointGroup/UpdatePointGroup/@item.PointGroupId" class="btn btn-success">Güncelle</a></td>
+                                *@ </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="/Admin/PointGroup/CreatePointGroup/" class="btn btn-primary">Yeni Nokta Grubu Girişi</a>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</section>
+

@@ -57,7 +57,12 @@ namespace DogusCay.API.Mapping
             CreateMap<PaymentType, UpdatePaymentTypeDto>().ReverseMap();
 
             // REGION ↔ DTO
-            CreateMap<Region, ResultRegionDto>().ReverseMap();
+            CreateMap<Region, ResultRegionDto>()
+                                            .ForMember(dest => dest.ManagerFirstName, opt => opt
+                                            .MapFrom(src => src.ManagerUser.FirstName))
+                                            .ForMember(dest => dest.ManagerLastName, opt => opt
+                                            .MapFrom(src => src.ManagerUser.LastName));
+
             CreateMap<Region, CreateRegionDto>().ReverseMap();
             CreateMap<Region, UpdateRegionDto>().ReverseMap();
         }

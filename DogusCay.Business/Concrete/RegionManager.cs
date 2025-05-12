@@ -11,10 +11,18 @@ namespace DogusCay.Business.Concrete
 {
     public class RegionManager:GenericManager<Region>,IRegionService
     {
-        private readonly IRegionService _regionService;
+        private readonly IRegionRepository _regionRepository;
 
-        public RegionManager(IRepository<Region> _repository) : base(_repository)
+        public RegionManager(IRepository<Region> _repository, IRegionRepository regionRepository) : base(_repository)
         {
+            _regionRepository = regionRepository;
         }
+        //bu metot bolgeleri getirirken bölge mudurlerinide getirir
+
+        public List<Region> TGetRegionsWithManagers()
+        {
+            return _regionRepository.GetRegionsWithManagers();
+        }
+
     }
 }

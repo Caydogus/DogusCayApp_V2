@@ -9,5 +9,8 @@ namespace DogusCay.DataAccess.Abstract
 {
     public interface IPointGroupRepository:IRepository<PointGroup>
     {
+
+        //nokta gruplarını getirirken hangi kanala bağlı oldugunu gormek için. kanal ismini yazmak için
+        public List<PointGroup> GetPointGroupsWithKanal();
     }
 }

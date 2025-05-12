@@ -11,13 +11,9 @@ namespace DogusCay.WebUI.DTOs.PointGrupDtos
     public class ResultPointGroupDto
     {
         public int PointGroupId { get; set; }
+        public string GroupName { get; set; }
 
-        [Required, MaxLength(100)]
-        public string GroupName { get; set; } // YEREL ZİNCİR, TOPTAN, ULUSAL ZİNCİR...
-
-        public int KanalId { get; set; }           // Foreign key
-        public Kanal Kanal { get; set; }
-
-        public ICollection<Point> Points { get; set; }
+        public int KanalId { get; set; }
+        public Kanal Kanal { get; set; } // ✅ Burada Kanal nesnesi var
     }
 }

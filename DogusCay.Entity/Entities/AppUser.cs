@@ -17,7 +17,7 @@ namespace DogusCay.Entity.Entities
 
         //bölge müdürü
         public int? RegionId { get; set; }
-        public Region Region { get; set; }
+        public Region? Region { get; set; }
         public ICollection<Point> Points { get; set; }
         // Bu kullanıcının yaptığı satışlar (Satış Temsilcisi ise)
         public ICollection<Sale> Sales { get; set; }
