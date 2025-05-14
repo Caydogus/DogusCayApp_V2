@@ -12,5 +12,7 @@ namespace DogusCay.DataAccess.Abstract
 
         //nokta gruplarını getirirken hangi kanala bağlı oldugunu gormek için. kanal ismini yazmak için
         public List<PointGroup> GetPointGroupsWithKanal();
+        List<PointGroup> GetByKanalId(int kanalId);// her kanalın altındaki nokta gruplarını getirir
+
     }
 }

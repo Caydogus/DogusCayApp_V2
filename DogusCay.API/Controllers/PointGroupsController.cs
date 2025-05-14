@@ -66,5 +66,14 @@ namespace DogusCay.API.Controllers
             var values = _pointGroupService.TGetPointGroupsWithKanal();
             return Ok(values);
         }
+        //kanala bağlı nokta gruplarını getir
+        [AllowAnonymous]
+        [HttpGet("by-kanal/{kanalId}")]
+        public IActionResult GetByKanal(int kanalId)
+        {
+            var values = _pointGroupService.TGetByKanalId(kanalId);
+            var result = _mapper.Map<List<ResultPointGroupDto>>(values);
+            return Ok(result);
+        }
     }
 }

@@ -4,6 +4,7 @@ using DogusCay.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DogusCay.DataAccess.Migrations
 {
     [DbContext(typeof(DogusCayContext))]
-    partial class DogusCayContextModelSnapshot : ModelSnapshot
+    [Migration("20250513102548_mig15")]
+    partial class mig15
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -426,9 +429,6 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<int>("KanalId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("OnaylayanAdminId")
                         .HasColumnType("int");
 
@@ -451,13 +451,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("KanalId");
-
                     b.HasIndex("OnaylayanAdminId");
-
-                    b.HasIndex("PointGroupId");
-
-                    b.HasIndex("PointId");
 
                     b.ToTable("TalepForms");
                 });
@@ -469,27 +463,6 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TalepFormItemId"));
-
-                    b.Property<decimal>("Iskonto1")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Iskonto2")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Iskonto3")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Iskonto4")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("KoliAgirligiKg")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("KoliFiyati")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("KoliIciAdet")
-                        .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -774,37 +747,13 @@ namespace DogusCay.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DogusCay.Entity.Entities.Kanal", "Kanal")
-                        .WithMany()
-                        .HasForeignKey("KanalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DogusCay.Entity.Entities.AppUser", "OnaylayanAdmin")
                         .WithMany()
                         .HasForeignKey("OnaylayanAdminId");
 
-                    b.HasOne("DogusCay.Entity.Entities.PointGroup", "PointGroup")
-                        .WithMany()
-                        .HasForeignKey("PointGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DogusCay.Entity.Entities.Point", "Point")
-                        .WithMany()
-                        .HasForeignKey("PointId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("AppUser");
 
-                    b.Navigation("Kanal");
-
                     b.Navigation("OnaylayanAdmin");
-
-                    b.Navigation("Point");
-
-                    b.Navigation("PointGroup");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Talep.TalepFormItem", b =>

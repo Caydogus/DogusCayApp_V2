@@ -26,6 +26,7 @@
     <![endif]-->
 </head>
 @RenderSection("Scripts", required: false)
+
 <body>
   
     <div class="preloader">
@@ -179,7 +180,7 @@
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link" href="#" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="hide-menu">MÜŞTERİLER</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link" href="/Admin/Director/Index/" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="hide-menu">BÖLGE MÜDÜRLERİ</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link" href="/Admin/Region/Index/" aria-expanded="false"><i class="mdi mdi-map-marker-radius"></i><span class="hide-menu">BÖLGELER</span></a></li>
-                        <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link" href="#" aria-expanded="false"><i class="mdi mdi-file-document-box"></i><span class="hide-menu">TALEP FORMU</span></a></li>
+                        <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link" href="/Admin/TalepForm/Index/" aria-expanded="false"><i class="mdi mdi-file-document-box"></i><span class="hide-menu">TALEP FORMU</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link" href="charts.html" aria-expanded="false"><i class="mdi mdi-chart-line"></i><span class="hide-menu">CHARTS</span></a></li>
 
                     </ul>
@@ -206,7 +207,10 @@
         </div>
      
     </div>
-  
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJ+Y6IuwZQ1KJeNEqXtbTznp1evlFvZHgDb9w="
+            crossorigin="anonymous"></script>
 
     <script src="~/matrix-admin-master/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->

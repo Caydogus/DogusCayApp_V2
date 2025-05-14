@@ -18,6 +18,12 @@ namespace DogusCay.Business.Concrete
         {
             _pointGroupRepository = pointGroupRepository;
         }
+
+        public List<PointGroup> TGetByKanalId(int kanalId)
+        {
+           return _pointGroupRepository.GetByKanalId(kanalId);
+        }
+
         public List<PointGroup> TGetPointGroupsWithKanal()
         {
            return _pointGroupRepository.GetPointGroupsWithKanal();

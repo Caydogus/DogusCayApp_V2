@@ -17,6 +17,15 @@ namespace DogusCay.DataAccess.Concrete
         public PointGroupRepository(DogusCayContext _context) : base(_context)
         {
         }
+
+        // her kanalın altındaki nokta gruplarını getirir
+        public List<PointGroup> GetByKanalId(int kanalId)
+        {
+            return _context.PointGroups
+                   .Where(x => x.KanalId == kanalId)
+                   .ToList();
+        }
+
         //nokta gruplarını kanalıyla beraber çek.
         public List<PointGroup> GetPointGroupsWithKanal()
         {

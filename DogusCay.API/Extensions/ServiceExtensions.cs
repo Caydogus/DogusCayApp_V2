@@ -44,6 +44,9 @@ namespace DogusCay.API.Extensions
 
             services.AddScoped<IRegionRepository, RegionRepository>();
             services.AddScoped<IRegionService, RegionManager>();
+
+            services.AddScoped<ITalepFormRepository, TalepFormRepository>();
+            services.AddScoped<ITalepFormService, TalepFormManager>();
         }
     }
 }

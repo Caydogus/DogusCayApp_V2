@@ -9,5 +9,6 @@ namespace DogusCay.DataAccess.Abstract
 {
     public interface IPointRepository : IRepository<PointGroup>
     {
+        List<Point> GetByPointGroupId(int pointGroupId);
     }
 }

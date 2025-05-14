@@ -110,6 +110,15 @@ namespace DogusCay.API.Controllers
             var count = _pointService.TFilteredCount(p => p.AppUserId == userId);
             return Ok(count);
         }
+        //seçilen nokta grubuna bağlı noktalar gelecek
+        [AllowAnonymous]
+        [HttpGet("by-pointgroup/{pointGroupId}")]
+        public IActionResult GetByPointGroup(int pointGroupId)
+        {
+            var values = _pointService.TGetByPointGroupId(pointGroupId);
+            var result = _mapper.Map<List<ResultPointDto>>(values);
+            return Ok(result);
+        }
     }
 }
 

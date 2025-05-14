@@ -15,5 +15,12 @@ namespace DogusCay.DataAccess.Concrete
         public PointRepository(DogusCayContext context) : base(context)
         {
         }
+
+        public List<Point> GetByPointGroupId(int pointGroupId)
+        {
+            return _context.Points
+                                 .Where(p => p.PointGroupId == pointGroupId)
+                                 .ToList();
+        }
     }
 }

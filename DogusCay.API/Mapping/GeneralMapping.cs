@@ -6,8 +6,10 @@ using DogusCay.DTO.DTOs.PointDtos;
 using DogusCay.DTO.DTOs.PointGrupDtos;
 using DogusCay.DTO.DTOs.ProductDtos;
 using DogusCay.DTO.DTOs.RegionDtos;
+using DogusCay.DTO.DTOs.TalepFormDtos;
 using DogusCay.DTOs.ProductDtos;
 using DogusCay.Entity.Entities;
+using DogusCay.Entity.Entities.Talep;
 
 namespace DogusCay.API.Mapping
 {
@@ -18,8 +20,8 @@ namespace DogusCay.API.Mapping
             // CATEGORY ↔ DTO
             CreateMap<Category, ResultCategoryDto>()
                 .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(src => src.SubCategories))
-                .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products));
-            CreateMap<Category, ResultCategoryDto>().ReverseMap();
+                .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products))
+                .ReverseMap();
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
             CreateMap<Category, UpdateCategoryDto>().ReverseMap();
             CreateMap<Category, GetByIdCategoryDto>().ReverseMap();
@@ -27,8 +29,8 @@ namespace DogusCay.API.Mapping
             // PRODUCT ↔ DTO
             CreateMap<Product, ResultProductDto>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
-                .ForMember(dest => dest.UnitTypeName, opt => opt.MapFrom(src => src.UnitType.UnitTypeName));
-            CreateMap<Product, ResultProductDto>().ReverseMap();
+                .ForMember(dest => dest.UnitTypeName, opt => opt.MapFrom(src => src.UnitType.UnitTypeName))
+                .ReverseMap();
             CreateMap<Product, CreateProductDto>().ReverseMap();
             CreateMap<Product, UpdateProductDto>().ReverseMap();
             CreateMap<Product, GetByIdProductDto>().ReverseMap();
@@ -58,13 +60,16 @@ namespace DogusCay.API.Mapping
 
             // REGION ↔ DTO
             CreateMap<Region, ResultRegionDto>()
-                                            .ForMember(dest => dest.ManagerFirstName, opt => opt
-                                            .MapFrom(src => src.ManagerUser.FirstName))
-                                            .ForMember(dest => dest.ManagerLastName, opt => opt
-                                            .MapFrom(src => src.ManagerUser.LastName));
-
+                .ForMember(dest => dest.ManagerFirstName, opt => opt.MapFrom(src => src.ManagerUser.FirstName))
+                .ForMember(dest => dest.ManagerLastName, opt => opt.MapFrom(src => src.ManagerUser.LastName));
             CreateMap<Region, CreateRegionDto>().ReverseMap();
             CreateMap<Region, UpdateRegionDto>().ReverseMap();
+
+            // TALEP FORM ↔ DTO
+            CreateMap<TalepForm, CreateTalepFormDto>().ReverseMap();
+            CreateMap<TalepForm, UpdateTalepFormDto>().ReverseMap();
+            CreateMap<TalepFormItem, CreateTalepFormItemDto>().ReverseMap();
+            CreateMap<TalepFormItem, UpdateTalepFormItemDto>().ReverseMap();
         }
     }
 }

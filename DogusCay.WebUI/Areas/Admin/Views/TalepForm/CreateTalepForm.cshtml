@@ -1,0 +1,72 @@
+﻿@model TalepFormViewModel
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<form asp-action="CreateTalepForm" method="post">
+
+    <div class="form-group">
+        <label>Talep Tipi</label>
+        <select asp-for="TalepTip" class="form-control">
+            <option value="">Seçiniz</option>
+            <option value="1">Insert</option>
+            <option value="2">Mal Yükleme</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Kanal</label>
+        <select asp-for="KanalId" asp-items="Model.Kanallar" class="form-control" onchange="this.form.submit()">
+            <option value="">Seçiniz</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Nokta Grubu</label>
+        <select asp-for="PointGroupId" asp-items="Model.PointGruplar" class="form-control" onchange="this.form.submit()">
+            <option value="">Seçiniz</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Nokta</label>
+        <select asp-for="PointId" asp-items="Model.Noktalar" class="form-control">
+            <option value="">Seçiniz</option>
+        </select>
+    </div>
+
+    <hr />
+
+    <h4>Ürün Bilgileri</h4>
+
+    @for (int i = 0; i < Model.Items.Count; i++)
+    {
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label>Ürün ID</label>
+                <input asp-for="Items[@i].ProductId" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label>Adet</label>
+                <input asp-for="Items[@i].Quantity" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label>Birim Fiyat</label>
+                <input asp-for="Items[@i].UnitPrice" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label>Geçerli Tarih (Başlangıç)</label>
+                <input asp-for="Items[@i].ValidFrom" type="date" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label>Geçerli Tarih (Bitiş)</label>
+                <input asp-for="Items[@i].ValidTo" type="date" class="form-control" />
+            </div>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success">Talep Oluştur</button>
+
+</form>

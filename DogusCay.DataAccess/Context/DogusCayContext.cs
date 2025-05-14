@@ -1,4 +1,5 @@
 ﻿using DogusCay.Entity.Entities;
+using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,8 @@ namespace DogusCay.DataAccess.Context
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleType> SaleTypes { get; set; }
         public DbSet<UnitType> UnitTypes { get; set; }
+        public DbSet<TalepForm> TalepForms { get; set; }
+        public DbSet<TalepFormItem> TalepFormItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
