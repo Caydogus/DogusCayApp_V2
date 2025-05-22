@@ -3,6 +3,8 @@ using DogusCay.DataAccess.Context;
 using DogusCay.DataAccess.Repositories;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DogusCay.DataAccess.Concrete
 {
@@ -18,57 +20,74 @@ namespace DogusCay.DataAccess.Concrete
         public List<TalepForm> GetAllWithUser()
         {
             return _context.TalepForms
-                                    .Include(x => x.AppUser)
-                                    .Include(x => x.Items)
-                                        .ThenInclude(i => i.Product)
-                                    .ToList();
+                .Include(tf => tf.AppUser)
+                .Include(tf => tf.Kanal)
+                .Include(tf => tf.Distributor)
+                .Include(tf => tf.PointGroupType)
+                .Include(tf => tf.Point)
+                .OrderByDescending(tf => tf.TalepFormId)
+                .ToList();
         }
 
         public List<TalepForm> GetAllByUserId(int userId)
         {
             return _context.TalepForms
-                                    .Include(x => x.Items)
-                                        .ThenInclude(i => i.Product)
-                                    .Where(x => x.AppUserId == userId)
-                                    .ToList();
+                .Where(tf => tf.AppUserId == userId)
+                .Include(tf => tf.Kanal)
+                .Include(tf => tf.Distributor)
+                .Include(tf => tf.PointGroupType)
+                .Include(tf => tf.Point)
+                .OrderByDescending(tf => tf.TalepFormId)
+                .ToList();
         }
 
         public void UpdateStatus(int formId, TalepDurumu durum, int adminId)
         {
             var form = _context.TalepForms.Find(formId);
-            if (form == null) return;
-
-            form.TalepDurumu = durum;
-            form.OnaylayanAdminId = adminId;
-            _context.SaveChanges();
+            if (form != null)
+            {
+                form.TalepDurumu = durum;
+                form.OnaylayanAdminId = adminId;
+                _context.SaveChanges();
+            }
         }
 
         public TalepFormItem GetItemById(int itemId)
         {
             return _context.TalepFormItems
-                                        .Include(i => i.Product)
-                                        .FirstOrDefault(i => i.TalepFormItemId == itemId);
+                .Include(x => x.Product)
+                .Include(x => x.Category)
+                .Include(x => x.SubCategory)
+                .FirstOrDefault(x => x.TalepFormItemId == itemId);
         }
 
-        public void UpdateItemFields(int TalepFormitemId, int quantity, DateTime? validFrom, DateTime? validTo)
+        public void UpdateItemFields(int itemId, int quantity, DateTime? validFrom, DateTime? validTo)
         {
-            var item = _context.TalepFormItems.Find(TalepFormitemId);
-            if (item == null) return;
-
-            item.Quantity = quantity;
-            item.ValidFrom = validFrom;
-            item.ValidTo = validTo;
-
-            _context.SaveChanges();
+            var item = _context.TalepFormItems.Find(itemId);
+            if (item != null)
+            {
+                item.Quantity = quantity;
+                item.ValidFrom = validFrom;
+                item.ValidTo = validTo;
+                _context.SaveChanges();
+            }
         }
 
         public TalepForm GetDetailsForForm(int formId)
         {
             return _context.TalepForms
-                                    .Include(x => x.AppUser)
-                                    .Include(x => x.Items)
-                                        .ThenInclude(i => i.Product)
-                                    .FirstOrDefault(x => x.TalepFormId == formId);
+                .Include(tf => tf.AppUser)
+                .Include(tf => tf.Kanal)
+                .Include(tf => tf.Distributor)
+                .Include(tf => tf.PointGroupType)
+                .Include(tf => tf.Point)
+                .Include(tf => tf.TalepFormItems)
+                    .ThenInclude(item => item.Product)
+                .Include(tf => tf.TalepFormItems)
+                    .ThenInclude(item => item.Category)
+                .Include(tf => tf.TalepFormItems)
+                    .ThenInclude(item => item.SubCategory)
+                .FirstOrDefault(tf => tf.TalepFormId == formId);
         }
     }
 }

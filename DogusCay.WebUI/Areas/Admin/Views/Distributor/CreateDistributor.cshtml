@@ -1,0 +1,48 @@
+﻿@model CreateDistributorDto
+
+@{
+    ViewData["Title"] = "Yeni Distributor";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h3 class="mb-4">Yeni Distributor Girişi</h3>
+
+            <form asp-action="CreateDistributor" method="post">
+                <!-- Distributor Adı -->
+                <div class="form-group mb-3">
+                    <label asp-for="DistributorName" class="form-label"></label>
+                    <input asp-for="DistributorName" class="form-control" />
+                    <span asp-validation-for="DistributorName" class="text-danger"></span>
+                </div>
+
+                <!-- ERC Kodu -->
+                <div class="form-group mb-3">
+                    <label asp-for="DistributorErcKod" class="form-label"></label>
+                    <input asp-for="DistributorErcKod" class="form-control" />
+                    <span asp-validation-for="DistributorErcKod" class="text-danger"></span>
+                </div>
+
+                <!-- Bölge Müdürü Dropdown (sadece ID gösterimi için test) -->
+                <div class="form-group mb-3">
+                    <label asp-for="AppUserId" class="form-label">Bölge Müdürü Seç (ID)</label>
+                    <select asp-for="AppUserId" asp-items="ViewBag.Users" class="form-control">
+                        <option value="">Seçiniz</option>
+                    </select>
+                    <span asp-validation-for="AppUserId" class="text-danger"></span>
+                </div>
+
+
+                <!-- Kaydet Butonu -->
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <a asp-action="Index" class="btn btn-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

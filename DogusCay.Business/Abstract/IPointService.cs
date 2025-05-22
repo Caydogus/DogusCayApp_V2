@@ -10,6 +10,8 @@ namespace DogusCay.Business.Abstract
 {
     public interface IPointService : IGenericService<Point>
     {
-        List<Point> TGetByPointGroupId(int pointGroupId);
+        List<Point> TGetByDistributorAndGroup(int distributorId, int groupTypeId);
+        List<Point> TGetByKanalId(int KanalId);
+        List<Point> TGetListWithIncludes();
     }
 }

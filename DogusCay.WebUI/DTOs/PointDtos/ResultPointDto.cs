@@ -11,19 +11,11 @@ namespace DogusCay.WebUI.DTOs.PointDtos
     public class ResultPointDto
     {
         public int PointId { get; set; }
-
-        [Required, MaxLength(150)]
-        public string PointName { get; set; } // Firma adı, nokta adı
-
-        [Required]
-        public decimal Total { get; set; }
-
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-
-        public int PointGroupId { get; set; }
-        public PointGroup PointGroup { get; set; }
-
-        public int AppUserId { get; set; } // Bölge Müdürü
-        public AppUser AppUser { get; set; }
+        public string PointName { get; set; }
+        public string PointErc { get; set; }
+        public string? KanalName { get; set; }
+        public string? DistributorName { get; set; }
+        public string? PointGroupTypeName { get; set; }
+        public string? AppUserFullName { get; set; }
     }
 }

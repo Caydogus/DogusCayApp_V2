@@ -18,6 +18,8 @@ namespace DogusCay.DataAccess.Abstract
         List<Product> GetAllProductsWithCategories(Expression<Func<Product, bool>> filter = null);
         void ShowOnHome(int id);
         void DontShowOnHome(int id);
-
+        // ✅ Yeni eklenenler:
+        List<Product> GetProductsBySubCategoryId(int subCategoryId);
+        Product GetProductWithCategory(int productId);
     }
 }

@@ -10,19 +10,18 @@ namespace DogusCay.Entity.Entities
     public class Point
     {
         public int PointId { get; set; }
+        public string PointErc { get; set; }
+        public string PointName { get; set; }
+        
+        public int? DistributorId { get; set; }
+      
+        public Distributor? Distributor { get; set; }
 
-        [Required, MaxLength(150)]
-        public string PointName { get; set; } // Firma adı, nokta adı
+        public int? PointGroupTypeId { get; set; } // Foreign Key
+        public PointGroupType? PointGroupType { get; set; }
 
-        [Required]
-        public decimal Total { get; set; }
-
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-
-        public int? PointGroupId { get; set; }
-        public PointGroup? PointGroup { get; set; }
-        public int KanalId { get; set; }        // ❗ zorunlu
-        public Kanal Kanal { get; set; }
+        public int? KanalId { get; set; }
+        public Kanal? Kanal { get; set; }
         public int AppUserId { get; set; } // Bölge Müdürü
         public AppUser AppUser { get; set; }
 

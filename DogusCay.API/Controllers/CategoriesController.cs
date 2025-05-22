@@ -103,5 +103,12 @@ namespace DogusCay.API.Controllers
 
             return flatList.Where(c => c.ParentCategoryId == null).ToList();
         }
+        [HttpGet("{id}/children")]
+        public IActionResult GetSubCategories(int id)
+        {
+            var subCategories = _categoryService.TGetFilteredList(c => c.ParentCategoryId == id);
+            var dto = _mapper.Map<List<ResultCategoryDto>>(subCategories);
+            return Ok(dto);
+        }
     }
 }

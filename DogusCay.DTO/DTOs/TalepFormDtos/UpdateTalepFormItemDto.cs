@@ -9,13 +9,18 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
     // Güncelleme sırasında kullanılacak ürün detayları
     public class UpdateTalepFormItemDto
     {
-        public int TalepFormItemId { get; set; } // mevcut item ID'si
+        public int TalepFormItemId { get; set; }
+
+        public int? CategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
+
         public int ProductId { get; set; }
 
         public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
-        public decimal KoliFiyati { get; set; }
+
+        public decimal Price { get; set; }
         public int KoliIciAdet { get; set; }
+        public decimal KoliFiyati { get; set; }
         public decimal KoliAgirligiKg { get; set; }
 
         public decimal Iskonto1 { get; set; }

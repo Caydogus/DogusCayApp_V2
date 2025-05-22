@@ -1,4 +1,4 @@
-﻿@model List<ResultPointGroupDto>
+﻿@model List<ResultPointGroupTypeDto>
 @{
     ViewData["Title"] = "";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -16,7 +16,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nokta Grubu Adı</th>
-                                <th>Kanal</th>
+                                
                                 @* <th>Güncelle</th> *@
                             </tr>
                         </thead>
@@ -26,8 +26,8 @@
                                 count++;
                                 <tr>
                                     <th scope="row">@count</th>
-                                    <th>@item.GroupName</th>
-                                    <td>@item.Kanal?.KanalName</td>
+                                    <th>@item.PointGroupTypeName</th>
+                                    
                             @*         <td><a href="/Admin/PointGroup/DeletePointGroup/@item.PointGroupId" class="btn btn-danger">Sil</a></td>
                                     <td><a href="/Admin/PointGroup/UpdatePointGroup/@item.PointGroupId" class="btn btn-success">Güncelle</a></td>
                                 *@ </tr>

@@ -31,7 +31,7 @@ namespace DogusCay.WebUI.DTOs.ProductDtos
         public decimal? ApproximateWeightKg { get; set; }
 
         public bool IsShown { get; set; } = true;
-        public int Price { get; set; }
+        public decimal Price { get; set; }
 
 
 

@@ -1,4 +1,4 @@
-﻿@model CreatePointGroupDto
+﻿@model CreatePointGroupTypeDto
 
 @{
     ViewData["Title"] = "";
@@ -16,17 +16,12 @@
                     <form method="post">
                         <!-- Nokta Grup Adı -->
                         <label>Nokta Grup Adı</label>
-                        <input type="text" class="form-control" asp-for="GroupName" />
-                        <span asp-validation-for="GroupName" class="text-danger"></span>
+                        <input type="text" class="form-control" asp-for="PointGroupTypeName" />
+                        <span asp-validation-for="PointGroupTypeName" class="text-danger"></span>
                         <br />
 
-                        <!-- Kanal Seçimi -->
-                        <label>Kanal Seç</label>
-                        <select class="form-control" asp-for="KanalId" asp-items="ViewBag.Kanals">
-                            <option value="">-- Kanal Seçiniz --</option>
-                        </select>
-                        <span asp-validation-for="KanalId" class="text-danger"></span>
-                        <br />
+                    
+                       
 
                         <!-- Buton -->
                         <button class="btn btn-primary">Nokta Grubu Ekle</button>

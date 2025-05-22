@@ -16,9 +16,9 @@ namespace DogusCay.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var values = _kanalService.TGetList();
-            var courseKanals = _mapper.Map<List<ResultKanalDto>>(values);
-            return Ok(courseKanals);
+            var kanallar = _kanalService.TGetList();
+            var result = _mapper.Map<List<ResultKanalDto>>(kanallar);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

@@ -14,9 +14,8 @@ namespace DogusCay.DTO.DTOs.ChannelDtos
 
         [Required]
         [MaxLength(100)]
-        public string KanalName { get; set; } // Örn: Ulusal Zincir, Online
+        public string KanalName { get; set; } // "DIST", "NA", "LC"
 
-        // Navigasyon: Bu kanala bağlı satış noktaları
-        //public ICollection<SalesPoint> SalesPoints { get; set; }
+      
     }
 }

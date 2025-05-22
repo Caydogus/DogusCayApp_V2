@@ -21,7 +21,7 @@ namespace DogusCay.DTO.DTOs.PointDtos
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public int PointGroupId { get; set; }
-        public PointGroup PointGroup { get; set; }
+        public PointGroupType PointGroupType { get; set; }
 
         public int AppUserId { get; set; } // Bölge Müdürü
         public AppUser AppUser { get; set; }

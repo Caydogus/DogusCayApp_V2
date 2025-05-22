@@ -1,36 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DogusCay.Entity.Entities.Talep;
+using DogusCay.Entity.Entities;
 
-namespace DogusCay.Entity.Entities.Talep
+public class TalepForm
 {
-    public class TalepForm
-    {
-        public int TalepFormId { get; set; }
-        public int AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
+    public int TalepFormId { get; set; }
 
-        public TalepTip TalepTip { get; set; }
+    public int AppUserId { get; set; }
+    public AppUser AppUser { get; set; }
 
-        public int KanalId { get; set; }
-        public Kanal Kanal { get; set; }
+    public TalepTip TalepTip { get; set; } = TalepTip.Insert;
 
-        public int PointGroupId { get; set; }
-        public PointGroup PointGroup { get; set; }
+    public int KanalId { get; set; }
+    public Kanal Kanal { get; set; }
 
-        public int PointId { get; set; }
-        public Point Point { get; set; }
+    public int? DistributorId { get; set; }
+    public Distributor? Distributor { get; set; }
 
-        public DateTime TalepTarihi { get; set; }
-        public TalepDurumu TalepDurumu { get; set; } = TalepDurumu.Bekliyor;
+    public int? PointGroupTypeId { get; set; }
+    public PointGroupType? PointGroupType { get; set; }
 
-        public int? OnaylayanAdminId { get; set; }
-        public AppUser? OnaylayanAdmin { get; set; }
+    public int PointId { get; set; }
+    public Point Point { get; set; }
 
-        public ICollection<TalepFormItem> Items { get; set; }
-        public string? Note { get; set; }
-    }
+    public DateTime TalepBaslangicTarihi { get; set; } 
+    public DateTime TalepBitisTarihi { get; set; } 
 
+    public TalepDurumu TalepDurumu { get; set; } = TalepDurumu.Bekliyor;
+
+    public int? OnaylayanAdminId { get; set; }
+    public AppUser? OnaylayanAdmin { get; set; }
+
+    public string? Note { get; set; }
+
+    public ICollection<TalepFormItem> TalepFormItems { get; set; }
 }

@@ -13,9 +13,10 @@ namespace DogusCay.DTO.DTOs.PointDtos
 
         [Required, MaxLength(150)]
         public string PointName { get; set; } // Firma adı, nokta adı
+        public string PointErc { get; set; }
         public int KanalId { get; set; }
-        public int? PointGroupId { get; set; }
-        public decimal Total { get; set; }
+        public int? PointGroupTypeId { get; set; }
+       
 
     }
 }

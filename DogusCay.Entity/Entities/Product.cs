@@ -1,9 +1,6 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DogusCay.Entity.Entities
 {
@@ -14,9 +11,9 @@ namespace DogusCay.Entity.Entities
         [Required]
         [MaxLength(150)]
         public string ProductName { get; set; }
+
         public string ErpCode { get; set; }
 
-     
         // Kategori bilgisi (alt kategori olabilir)
         public int CategoryId { get; set; }
         public Category Category { get; set; }
@@ -30,13 +27,12 @@ namespace DogusCay.Entity.Entities
 
         // Aktif/pasif ürün durumu
         public bool IsShown { get; set; } = true;
-        public int Price { get; set; }
 
+        // Fiyat bilgileri
+        public decimal Price { get; set; }             // Birim fiyat
+        public int KoliIciAdet { get; set; }           // 1 kolideki adet sayısı     
 
         // Satışlar ile ilişki
-        public ICollection<Sale> Sales { get; set; } 
-
-
+        public ICollection<Sale> Sales { get; set; }
     }
-
 }

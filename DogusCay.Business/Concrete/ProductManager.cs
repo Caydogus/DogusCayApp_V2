@@ -9,35 +9,45 @@ namespace DogusCay.Business.Concrete
 {
     public class ProductManager : GenericManager<Product>, IProductService
     {
-        private readonly IProductRepository _ProductRepository;
+        private readonly IProductRepository _productRepository;
         public ProductManager(IRepository<Product> _repository, IProductRepository ProductRepository) : base(_repository)
         {
-            _ProductRepository = ProductRepository;
+            _productRepository = ProductRepository;
         }
 
         public void TDontShowOnHome(int id)
         {
-            _ProductRepository.DontShowOnHome(id);
+            _productRepository.DontShowOnHome(id);
         }
 
         public List<Product> TGetAllProductsWithCategories()
         {
-            return _ProductRepository.GetAllProductsWithCategories();
+            return _productRepository.GetAllProductsWithCategories();
         }
 
         public List<Product> TGetAllProductsWithCategories(Expression<Func<Product, bool>> filter = null)
         {
-            return _ProductRepository.GetAllProductsWithCategories(filter);
+            return _productRepository.GetAllProductsWithCategories(filter);
         }
         //kategorileri ve tum alt kategorileride getirsin:09.05.2025
         public List<ResultProductDto> TGetAllProductsWithCategoryDetails()
         {
-            return _ProductRepository.GetAllProductsWithCategoryDetails();
+            return _productRepository.GetAllProductsWithCategoryDetails();
+        }
+
+        public List<Product> TGetProductsBySubCategoryId(int subCategoryId)
+        {
+            return _productRepository.GetProductsBySubCategoryId((int)subCategoryId);
+        }
+
+        public Product TGetProductWithCategory(int productId)
+        {
+            return _productRepository.GetProductWithCategory(productId);
         }
 
         public void TShowOnHome(int id)
         {
-            _ProductRepository.ShowOnHome(id);
+            _productRepository.ShowOnHome(id);
         }
     }
 

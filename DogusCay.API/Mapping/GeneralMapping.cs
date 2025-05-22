@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DogusCay.DTO.DTOs.CategoryDtos;
 using DogusCay.DTO.DTOs.ChannelDtos;
+using DogusCay.DTO.DTOs.DistributorDtos;
 using DogusCay.DTO.DTOs.PaymentTypeDtos;
 using DogusCay.DTO.DTOs.PointDtos;
 using DogusCay.DTO.DTOs.PointGrupDtos;
@@ -48,28 +49,46 @@ namespace DogusCay.API.Mapping
             CreateMap<Point, GetByIdPointDto>().ReverseMap();
 
             // POINT GROUP ↔ DTO
-            CreateMap<PointGroup, ResultPointGroupDto>().ReverseMap();
-            CreateMap<PointGroup, CreatePointGroupDto>().ReverseMap();
-            CreateMap<PointGroup, UpdatePointGroupDto>().ReverseMap();
-            CreateMap<PointGroup, GetByIdPointGroupDto>().ReverseMap();
+            CreateMap<PointGroupType, ResultPointGroupTypeDto>().ReverseMap();
+            CreateMap<PointGroupType, CreatePointGroupTypeDto>().ReverseMap();
+            CreateMap<PointGroupType, UpdatePointGroupTypeDto>().ReverseMap();
 
             // PAYMENT TYPE ↔ DTO
             CreateMap<PaymentType, ResultPaymentTypeDto>().ReverseMap();
             CreateMap<PaymentType, CreatePaymentTypeDto>().ReverseMap();
             CreateMap<PaymentType, UpdatePaymentTypeDto>().ReverseMap();
+           
+            CreateMap<Distributor, CreateDistributorDto>().ReverseMap();
+            CreateMap<Distributor, UpdateDistributorDto>().ReverseMap();
+            CreateMap<Distributor, ResultDistributorDto>().ReverseMap();
+            CreateMap<AppUser,     SimpleUserDto>().ReverseMap(); ;
 
-            // REGION ↔ DTO
-            CreateMap<Region, ResultRegionDto>()
-                .ForMember(dest => dest.ManagerFirstName, opt => opt.MapFrom(src => src.ManagerUser.FirstName))
-                .ForMember(dest => dest.ManagerLastName, opt => opt.MapFrom(src => src.ManagerUser.LastName));
-            CreateMap<Region, CreateRegionDto>().ReverseMap();
-            CreateMap<Region, UpdateRegionDto>().ReverseMap();
+            // Create DTO -> Entity
+            CreateMap<CreateTalepFormDto, TalepForm>();
+            CreateMap<CreateTalepFormItemDto, TalepFormItem>();
 
-            // TALEP FORM ↔ DTO
-            CreateMap<TalepForm, CreateTalepFormDto>().ReverseMap();
-            CreateMap<TalepForm, UpdateTalepFormDto>().ReverseMap();
-            CreateMap<TalepFormItem, CreateTalepFormItemDto>().ReverseMap();
-            CreateMap<TalepFormItem, UpdateTalepFormItemDto>().ReverseMap();
+            // UPDATE
+            CreateMap<UpdateTalepFormDto, TalepForm>();
+            CreateMap<UpdateTalepFormItemDto, TalepFormItem>();
+
+            // RESULT (Form + Item)
+            CreateMap<TalepForm, ResultTalepFormDto>()
+                .ForMember(dest => dest.TalepTipName, opt => opt.MapFrom(src => src.TalepTip.ToString()))
+                .ForMember(dest => dest.TalepDurumuText, opt => opt.MapFrom(src => src.TalepDurumu.ToString()))
+                .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.AppUser.FirstName + " " + src.AppUser.LastName))
+                .ForMember(dest => dest.KanalName, opt => opt.MapFrom(src => src.Kanal.KanalName))
+                .ForMember(dest => dest.DistributorName, opt => opt.MapFrom(src => src.Distributor.DistributorName))
+                .ForMember(dest => dest.PointName, opt => opt.MapFrom(src => src.Point.PointName))
+                .ForMember(dest => dest.PointGroupTypeName, opt => opt.MapFrom(src => src.PointGroupType.PointGroupTypeName))
+                
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.TalepFormItems));
+             CreateMap<CreateTalepFormDto, TalepForm>()
+                .ForMember(dest => dest.TalepFormItems, opt => opt.MapFrom(src => src.Items));
+             CreateMap<TalepFormItem, ResultTalepFormItemDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
+                .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(src => src.SubCategory.CategoryName));
+
         }
     }
 }

@@ -22,9 +22,19 @@ namespace DogusCay.Business.Concrete
 
         }
 
-        public List<Point> TGetByPointGroupId(int pointGroupId)
+        public List<Point> TGetByDistributorAndGroup(int distributorId, int groupTypeId)
         {
-           return _pointRepository.GetByPointGroupId(pointGroupId);
+            return _pointRepository.GetByDistributorAndGroup(distributorId, groupTypeId);
+        }
+
+        public List<Point> TGetByKanalId(int KanalId)
+        {
+            return _pointRepository.GetByKanalId((int)KanalId);
+        }
+
+        public List<Point> TGetListWithIncludes()
+        {
+            return _pointRepository.GetListWithIncludes();
         }
     }
 }

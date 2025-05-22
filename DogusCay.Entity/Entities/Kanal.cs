@@ -10,14 +10,10 @@ namespace DogusCay.Entity.Entities
     public class Kanal
     {
         public int KanalId { get; set; }
+        public string KanalName { get; set; } // "DIST", "NA", "LC"
 
-        [Required]
-        [MaxLength(100)]
-        public string KanalName { get; set; } // Örn: Ulusal Zincir, Online
-
-        // Navigasyon: Bu kanala bağlı satış noktaları
-        public ICollection<PointGroup> PointGroups { get; set; }
-        public ICollection<Point> Points { get; set; }
+        public ICollection<Distributor> Distributors { get; set; }
+        public ICollection<Point> Points { get; set; } // NA & LC için doğrudan ilişki
     }
 
 }

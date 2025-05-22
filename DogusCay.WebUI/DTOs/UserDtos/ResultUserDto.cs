@@ -1,4 +1,6 @@
 ﻿
+using DogusCay.Entity.Entities;
+
 namespace DogusCay.WebUI.DTOs.UserDtos
 {
     public class ResultUserDto
@@ -8,11 +10,10 @@ namespace DogusCay.WebUI.DTOs.UserDtos
         public string? ImageUrl { get; set; }
         public IList<string> Roles { get; set; }
         public string? RegionName { get; set; } // Yeni alan
-        //public string FirstName { get; set; }
-        //public string LastName { get; set; }
-        //public string UserName { get; set; }
-        //public string Email { get; set; }
-        //public string? ImageUrl { get; set; }
-        //public string RoleName { get; set; } 
+
+        public int Id { get; set; }   // Distrubutor eklerken bolge mudurlerini getirmek için eklendi.liste halinde
+      //  public AppUser AppUser { get; set; } 
+
+
     }
 }

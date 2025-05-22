@@ -1,0 +1,36 @@
+﻿@model List<ResultPointDto>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            <th>Nokta ERC</th>PointErc
+            <th>Nokta Adı</th>
+            <th>Nokta Grubu</th>
+            <th>Kanal Adı</th>
+            <th>Bölge Müdürü</th>
+            <th>Distributor Adı</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            count++;
+            <tr>
+                <th scope="row">@count</th>
+                <td>@(!string.IsNullOrWhiteSpace(item.PointErc) ? item.PointErc : "—")</td>
+                <td>@(!string.IsNullOrWhiteSpace(item.PointName) ? item.PointName : "—")</td>
+                <td>@(!string.IsNullOrWhiteSpace(item.PointGroupTypeName) ? item.PointGroupTypeName : "—")</td>
+                <td>@(!string.IsNullOrWhiteSpace(item.KanalName) ? item.KanalName : "—")</td>
+                <td>@(!string.IsNullOrWhiteSpace(item.AppUserFullName) ? item.AppUserFullName : "—")</td>
+                <td>@(!string.IsNullOrWhiteSpace(item.DistributorName) ? item.DistributorName : "—")</td>
+            </tr>
+        }
+    </tbody>
+</table>

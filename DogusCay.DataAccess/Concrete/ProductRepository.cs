@@ -67,12 +67,28 @@ namespace DogusCay.DataAccess.Concrete
                             }).ToList();
         }
 
+      
         public void ShowOnHome(int id)
         {
             var value = _context.Products.Find(id);
             value.IsShown = true;
             _context.SaveChanges();
         }
+        public List<Product> GetProductsBySubCategoryId(int subCategoryId)
+        {
+            return _context.Products
+                                   .Include(p => p.Category)
+                                   .Where(p => p.CategoryId == subCategoryId)
+                                   .ToList();
+        }
+
+        public Product GetProductWithCategory(int productId)
+        {
+            return _context.Products
+                                 .Include(p => p.Category)
+                                 .FirstOrDefault(p => p.ProductId == productId);
+        }
+
     }
 
-}
+}   

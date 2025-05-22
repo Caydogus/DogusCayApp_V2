@@ -1,0 +1,51 @@
+﻿@model List<ResultDistributorDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart-box">
+                <div class="bs-example" data-example-id="bordered-table">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Dist Adı</th>
+                                <th>Erc Kodu</th>
+                                <th>Bölge Müdür</th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                count++;
+                                <tr>
+                                    <th scope="row">@count</th>
+                                    <td>@item.DistributorName</td>
+                                    <td>@item.DistributorErcKod</td>
+                                    <td>
+                                        @(item.AppUser != null
+                                            ? $"{item.AppUser.FirstName} {item.AppUser.LastName}"
+                                            : "<span class='text-danger'>Tanımsız</span>")
+                                    </td>
+                                   @*  <td>
+                                        <a href="/Admin/Distributor/UpdateDistributor/@item.DistributorId" class="btn btn-success">Güncelle</a>
+                                    </td> *@
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <a asp-area="Admin" asp-controller="Distributor" asp-action="CreateDistributor" class="btn btn-primary">
+                        Yeni Distributor Girişi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -26,7 +26,7 @@ namespace DogusCay.Entity.Entities
         public DateTime SaleDate { get; set; }
 
         // Satış adedi (kilo veya koli olacak, ürünün birimine göre)
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         // Anlaşma fiyatı (birim fiyat)
         public decimal UnitPrice { get; set; }

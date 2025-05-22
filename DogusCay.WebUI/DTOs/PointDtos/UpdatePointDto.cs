@@ -9,13 +9,14 @@ namespace DogusCay.WebUI.DTOs.PointDtos
 {
     public class UpdatePointDto
     {
-        public int PointId { get; set; }
-
         [Required, MaxLength(150)]
         public string PointName { get; set; } // Firma adı, nokta adı
-        public int KanalId { get; set; }
-        public int? PointGroupId { get; set; }
-        public decimal Total { get; set; }
+        public string PointErc { get; set; }
+        public int PointId { get; set; }
+        public int KanalId { get; set; }             // ❗ zorunlu
+        public int? PointGroupTypeId { get; set; }
+        public int? DistributorId { get; set; }
+        public int AppUserId { get; set; } // ✅ dışarıdan gelecek
 
     }
 }

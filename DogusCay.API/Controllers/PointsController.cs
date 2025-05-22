@@ -5,6 +5,7 @@ using DogusCay.DTO.DTOs.PointDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace DogusCay.API.Controllers
@@ -15,25 +16,44 @@ namespace DogusCay.API.Controllers
     {
         private readonly IPointService _pointService;
         private readonly IMapper _mapper;
+        private readonly IKanalService _kanalService;
+        private readonly IDistributorService _distributorService;
 
-        public PointsController(IPointService pointService, IMapper mapper)
+        public PointsController(IPointService pointService, IMapper mapper, IKanalService kanalService, IDistributorService distributorService)
         {
             _pointService = pointService;
             _mapper = mapper;
+            _kanalService = kanalService;
+            _distributorService = distributorService;
         }
 
         [HttpGet]
        // [Authorize] // Sadece giriş yapan kullanıcılar
         public IActionResult Get()
         {
-            //  Giriş yapan kullanıcının ID'sini al
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            //  Sadece bu kullanıcıya ait noktaları çek
-            var values = _pointService.TGetFilteredList(p => p.AppUserId == userId);
+            var values = _pointService.TGetListWithIncludes();
 
-            var coursePoints = _mapper.Map<List<ResultPointDto>>(values);
-            return Ok(coursePoints);
+            var result = values.Select(p => new ResultPointDto
+            {
+                PointId = p.PointId,
+                PointErc = p.PointErc,
+                PointName = p.PointName,
+                KanalName = p.Kanal?.KanalName,
+                DistributorName = p.Distributor?.DistributorName,
+                PointGroupTypeName = p.PointGroupType?.PointGroupTypeName,
+                AppUserFullName = $"{p.AppUser?.FirstName} {p.AppUser?.LastName}"
+            }).ToList();
+
+            return Ok(result);
+            ////  Giriş yapan kullanıcının ID'sini al
+            //var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            ////  Sadece bu kullanıcıya ait noktaları çek
+            //var values = _pointService.TGetFilteredList(p => p.AppUserId == userId);
+
+            //var points = _mapper.Map<List<ResultPointDto>>(values);
+            //return Ok(points);
         }
 
         [HttpGet("{id}")]
@@ -67,15 +87,39 @@ namespace DogusCay.API.Controllers
         }
 
         [HttpPost]
-      //  [Authorize]
+        //  [Authorize]
+        [HttpPost]
         public IActionResult Create(CreatePointDto createPointDto)
         {
-            //Giriş yapan kullanıcı ID'si atanır
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (createPointDto == null)
+                return BadRequest("Veri eksik.");
 
             var newPoint = _mapper.Map<Point>(createPointDto);
-            newPoint.AppUserId = userId; // DTO'dan gelmesini engelle, burada set et
-            newPoint.CreatedDate = DateTime.Now;
+
+            // Kanalı bul (adıyla kontrol için)
+            var kanal = _kanalService.TGetById(createPointDto.KanalId);
+
+            if (kanal == null)
+                return BadRequest("Geçersiz KanalId");
+
+            if (kanal.KanalName == "DIST")
+            {
+                if (!createPointDto.DistributorId.HasValue)
+                    return BadRequest("DIST kanalı için DistributorId zorunlu.");
+
+                var distributor = _distributorService.TGetById(createPointDto.DistributorId.Value);
+                if (distributor == null)
+                    return NotFound("Distributor bulunamadı.");
+
+                newPoint.AppUserId = distributor.AppUserId;
+            }
+            else // LC veya NA
+            {
+                if (createPointDto.AppUserId == 0)
+                    return BadRequest("LC veya NA kanalı için AppUserId gönderilmelidir.");
+
+                newPoint.AppUserId = createPointDto.AppUserId;
+            }
 
             _pointService.TCreate(newPoint);
             return Ok("Nokta oluşturuldu.");
@@ -110,82 +154,28 @@ namespace DogusCay.API.Controllers
             var count = _pointService.TFilteredCount(p => p.AppUserId == userId);
             return Ok(count);
         }
-        //seçilen nokta grubuna bağlı noktalar gelecek
-        [AllowAnonymous]
-        [HttpGet("by-pointgroup/{pointGroupId}")]
-        public IActionResult GetByPointGroup(int pointGroupId)
+
+
+        //PointGroupTypeId + DistributorId’ye göre noktaları getirir.DIST kanalına ait zincir içindir.
+        
+        [HttpGet("by-group/{pointGroupTypeId}/distributor/{distributorId}")]
+        public IActionResult GetByGroupAndDistributor(int distributorId, int pointGroupTypeId)
         {
-            var values = _pointService.TGetByPointGroupId(pointGroupId);
-            var result = _mapper.Map<List<ResultPointDto>>(values);
+            var list = _pointService.TGetByDistributorAndGroup(distributorId, pointGroupTypeId);
+            var result = _mapper.Map<List<ResultPointDto>>(list);
+            return Ok(result);
+        }
+
+
+        //NA / LC gibi distributor olmayan kanallar için.KanalId ile doğrudan noktaları getirir.
+        [HttpGet("by-kanal/{kanalId}")]
+        public IActionResult GetByKanal(int kanalId)
+        {
+            var list = _pointService.TGetByKanalId(kanalId);
+            var result = _mapper.Map<List<ResultPointDto>>(list);
             return Ok(result);
         }
     }
 }
 
 
-#region
-//using AutoMapper;
-//using DogusCay.Business.Abstract;
-//using DogusCay.DTO.DTOs.PointDtos;
-//using DogusCay.Entity.Entities;
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Mvc;
-
-//namespace DogusCay.API.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class PointsController(IPointService _pointService, IMapper _mapper) : ControllerBase
-//    {
-//        [AllowAnonymous]
-//        [HttpGet]
-//        public IActionResult Get()
-//        {
-//            var values = _pointService.TGetList();
-//            var coursePoints = _mapper.Map<List<ResultPointDto>>(values);
-//            return Ok(coursePoints);
-//        }
-
-//        [HttpGet("{id}")]
-
-//        public IActionResult GetById(int id)
-//        {
-//            var value = _pointService.TGetById(id);
-//            return Ok(value);
-//        }
-
-//        [HttpDelete("{id}")]
-//        public IActionResult Delete(int id)
-//        {
-//            _pointService.TDelete(id);
-//            return Ok("Nokta  silindi");
-//        }
-
-//        [HttpPost]
-//        public IActionResult Create(CreatePointDto createPointDto)
-//        {
-//            var newValue = _mapper.Map<Point>(createPointDto);
-//            _pointService.TCreate(newValue);
-//            return Ok(" Nokta  Oluşturuldu");
-//        }
-
-//        [HttpPut]
-//        public IActionResult Update(UpdatePointDto updatePointDto)
-//        {
-//            var value = _mapper.Map<Point>(updatePointDto);
-//            _pointService.TUpdate(value);
-//            return Ok("Nokta Güncellendi");
-//        }
-
-//        [AllowAnonymous]
-//        [HttpGet("GetPointCount")]
-//        public IActionResult GetPointCount()
-//        {
-//            var courseCount = _pointService.TCount();
-//            return Ok(courseCount);
-//        }
-
-
-//    }
-//}
-#endregion
