@@ -24,5 +24,10 @@ namespace DogusCay.WebUI.Models
 
         public DateTime? ValidFrom { get; set; }
         public DateTime? ValidTo { get; set; }
+
+        public decimal Iskonto1 { get; set; }
+        public decimal Iskonto2 { get; set; }
+        public decimal Iskonto3 { get; set; }
+        public decimal Iskonto4 { get; set; }
     }
 }

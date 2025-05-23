@@ -27,8 +27,8 @@ namespace DogusCay.DataAccess.Concrete
         public List<Point> GetByKanalId(int KanalId)
         {
             return _context.Points
-             .Where(p => p.KanalId == KanalId && p.DistributorId == null)
-             .ToList();
+          .Where(p => p.KanalId == KanalId)
+          .ToList();
         }
 
         public List<Point> GetListWithIncludes()

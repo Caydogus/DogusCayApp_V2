@@ -1,157 +1,62 @@
 ﻿@model TalepFormViewModel
 @{
-	ViewData["Title"] = "";
-	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Talep Formu Oluştur";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <form asp-action="CreateTalepForm" method="post">
     @Html.AntiForgeryToken()
 
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label>Talep Tipi</label>
-            <div class="form-control">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="TalepTip" value="Insert" checked />
-                    <label class="form-check-label">Insert</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="TalepTip" value="MalYukleme" />
-                    <label class="form-check-label">Mal Yükleme</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <label>Kanal</label>
-            <select asp-for="KanalId" asp-items="Model.Kanallar" class="form-control" id="kanalSelect">
-                <option value="">Kanal Seçiniz</option>
-            </select>
-        </div>
+    <div class="form-group">
+        <label>Kanal</label>
+        <select asp-for="KanalId" asp-items="Model.Kanallar" class="form-control" onchange="this.form.submit()">
+            <option value="">Kanal Seçiniz</option>
+        </select>
     </div>
 
-    <div class="row mb-3" id="distributorRow" style="display:none;">
-        <div class="col-md-4">
-            <label>Distributor</label>
-            <select asp-for="DistributorId" asp-items="Model.Distributors" class="form-control" id="distributorSelect">
-                <option value="">Distributor Seçiniz</option>
+    @if (Model.Distributors?.Count > 0)
+    {
+        <div class="form-group">
+            <label>Distribütör</label>
+            <select asp-for="DistributorId" asp-items="Model.Distributors" class="form-control" onchange="this.form.submit()">
+                <option value="">Distribütör Seçiniz</option>
             </select>
         </div>
 
-        <div class="col-md-4">
+        <!-- ✅ Eklenen uyarı alanı: Nokta grubu yoksa göster -->
+        @if (Model.DistributorId > 0 && (Model.PointGruplar == null || Model.PointGruplar.Count == 0))
+        {
+            <div class="alert alert-warning mt-2">
+                Bu distribütöre ait <strong>nokta grubu</strong> bulunamadı.
+            </div>
+        }
+    }
+
+
+    @if (Model.PointGruplar?.Count > 0)
+    {
+        <div class="form-group">
             <label>Nokta Grubu</label>
-            <select asp-for="PointGroupId" asp-items="Model.PointGruplar" class="form-control" id="pointGroupSelect">
+            <select asp-for="PointGroupTypeId" asp-items="Model.PointGruplar" class="form-control" onchange="this.form.submit()">
                 <option value="">Nokta Grubu Seçiniz</option>
             </select>
         </div>
+    }
 
-        <div class="col-md-4">
-            <label>Nokta</label>
-            <select asp-for="PointId" asp-items="Model.Noktalar" class="form-control" id="pointWrapper">
-                <option value="">Nokta Seçiniz</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="row mb-3" id="pointRow" style="display:none;">
-        <div class="col-md-4">
+    @if (Model.Noktalar?.Count > 0)
+    {
+        <div class="form-group">
             <label>Nokta</label>
             <select asp-for="PointId" asp-items="Model.Noktalar" class="form-control">
                 <option value="">Nokta Seçiniz</option>
             </select>
         </div>
-    </div>
+    }
 
-    <div class="form-group mb-4">
+    <div class="form-group">
         <label>Not</label>
         <textarea asp-for="Note" class="form-control" rows="3"></textarea>
     </div>
 
-    <h4 class="mt-4">Ürün Bilgileri</h4>
-
-    @for (int i = 0; i < Model.Items.Count; i++)
-    {
-        <div class="border rounded p-3 mb-4 bg-light">
-            <div class="row">
-                <div class="col-md-3">
-                    <label>Ana Kategori</label>
-                    <select asp-for="Items[@i].AnaKategoriId" asp-items="Model.Items[@i].AnaKategoriler" class="form-control"></select>
-                </div>
-                <div class="col-md-3">
-                    <label>Kategori</label>
-                    <select asp-for="Items[@i].KategoriId" asp-items="Model.Items[@i].Kategoriler" class="form-control"></select>
-                </div>
-                <div class="col-md-3">
-                    <label>Alt Kategori</label>
-                    <select asp-for="Items[@i].AltKategoriId" asp-items="Model.Items[@i].AltKategoriler" class="form-control"></select>
-                </div>
-                <div class="col-md-3">
-                    <label>Ürün</label>
-                    <select asp-for="Items[@i].ProductId" asp-items="Model.Items[@i].Urunler" class="form-control"></select>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-2">
-                    <label>Adet</label>
-                    <input asp-for="Items[@i].Quantity" class="form-control" />
-                </div>
-                <div class="col-md-2">
-                    <label>Fiyat</label>
-                    <input asp-for="Items[@i].Price" class="form-control" readonly />
-                </div>
-                <div class="col-md-4">
-                    <label>Geçerlilik Başlangıç</label>
-                    <input asp-for="Items[@i].ValidFrom" class="form-control" type="date" />
-                </div>
-                <div class="col-md-4">
-                    <label>Geçerlilik Bitiş</label>
-                    <input asp-for="Items[@i].ValidTo" class="form-control" type="date" />
-                </div>
-            </div>
-        </div>
-    }
-
-    <button type="submit" class="btn btn-success">Talep Gönder</button>
+    <button type="submit" class="btn btn-success">Kaydet</button>
 </form>
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function updateViewByTalepTip() {
-                const talepTip = document.querySelector('input[name="TalepTip"]:checked').value;
-                const kanalGroup = document.getElementById("kanalSelect").closest('.form-group');
-                kanalGroup.style.display = (talepTip === "Insert") ? 'block' : 'none';
-            }
-
-            function updateKanalRelatedFields() {
-                const kanalText = document.getElementById("kanalSelect").selectedOptions[0].text;
-                const distributorWrapper = document.getElementById("distributorWrapper");
-                const pointGroupWrapper = document.getElementById("pointGroupWrapper");
-                const pointWrapper = document.getElementById("pointWrapper");
-
-                if (kanalText === "DIST") {
-                    distributorWrapper.style.display = 'block';
-                    pointGroupWrapper.style.display = 'block';
-                    pointWrapper.style.display = 'block';
-                } else if (kanalText === "LC" || kanalText === "NA") {
-                    distributorWrapper.style.display = 'none';
-                    pointGroupWrapper.style.display = 'none';
-                    pointWrapper.style.display = 'block';
-                } else {
-                    distributorWrapper.style.display = 'none';
-                    pointGroupWrapper.style.display = 'none';
-                    pointWrapper.style.display = 'none';
-                }
-            }
-
-            document.querySelectorAll('input[name="TalepTip"]').forEach(radio => {
-                radio.addEventListener('change', updateViewByTalepTip);
-            });
-
-            document.getElementById("kanalSelect").addEventListener("change", updateKanalRelatedFields);
-
-            updateViewByTalepTip();
-            updateKanalRelatedFields();
-        });
-    </script>
-}

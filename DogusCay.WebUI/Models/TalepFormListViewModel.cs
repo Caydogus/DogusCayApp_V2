@@ -8,7 +8,10 @@
         public string NoktaAdi { get; set; }
         public string TalepTip { get; set; }
         public string TalepDurumu { get; set; }
-        public DateTime TalepTarihi { get; set; }
+        public DateTime TalepTarihi { get; set; } // Sistem tarafından atanan tarih
+        public DateTime TalepBaslangicTarihi { get; set; }
+        public DateTime TalepBitisTarihi { get; set; }
+
         public bool Silinebilir { get; set; }
         public bool Guncellenebilir { get; set; }
     }

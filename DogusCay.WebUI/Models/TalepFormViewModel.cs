@@ -16,7 +16,7 @@ namespace DogusCay.WebUI.Models
 
         // Eğer DIST ise:
         public int? DistributorId { get; set; }
-        public int? PointGroupId { get; set; }
+        public int? PointGroupTypeId { get; set; }
 
         // Her durumda
         public int? PointId { get; set; }
@@ -31,5 +31,16 @@ namespace DogusCay.WebUI.Models
         public List<TalepFormItemViewModel> Items { get; set; } = new();
 
         public string? Note { get; set; }
+
+        [Display(Name = "Talep Başlangıç Tarihi")]
+        [DataType(DataType.Date)]
+        [Required]
+        public DateTime TalepBaslangicTarihi { get; set; }
+
+        [Display(Name = "Talep Bitiş Tarihi")]
+        [DataType(DataType.Date)]
+        [Required]
+        public DateTime TalepBitisTarihi { get; set; }
+
     }
 }
