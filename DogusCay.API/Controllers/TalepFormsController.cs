@@ -34,18 +34,21 @@ namespace DogusCay.API.Controllers
         // 🔹 Admin: tüm talepler
         [HttpGet]
         // [Authorize(Roles = "Admin")]
+        [HttpGet]
         public IActionResult GetAllForms()
         {
             var result = _talepFormService.TGetAllWithUser();
-            return Ok(result);
+            var dtoList = _mapper.Map<List<ResultTalepFormListDto>>(result);
+            return Ok(dtoList);
         }
+
 
         // 🔹 Form oluşturma
         [HttpPost]
         // [Authorize(Roles = "BolgeMuduru")]
-        public IActionResult Create([FromBody] CreateTalepFormDto dto)
+        public IActionResult Create([FromBody] CreateTalepFormDto createTalepFormDto)
         {
-            var entity = _mapper.Map<TalepForm>(dto);
+            var entity = _mapper.Map<TalepForm>(createTalepFormDto);
             _talepFormService.TCreate(entity);
             return Ok("Talep başarıyla oluşturuldu.");
         }

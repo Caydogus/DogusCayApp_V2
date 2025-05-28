@@ -19,7 +19,7 @@ namespace DogusCay.WebUI.Models
         public int? PointGroupTypeId { get; set; }
 
         // Her durumda
-        public int? PointId { get; set; }
+        public int PointId { get; set; }
 
         // 🔹 Dropdown verileri
         public List<SelectListItem> Kanallar { get; set; } = new();
@@ -31,16 +31,8 @@ namespace DogusCay.WebUI.Models
         public List<TalepFormItemViewModel> Items { get; set; } = new();
 
         public string? Note { get; set; }
-
-        [Display(Name = "Talep Başlangıç Tarihi")]
-        [DataType(DataType.Date)]
-        [Required]
-        public DateTime TalepBaslangicTarihi { get; set; }
-
-        [Display(Name = "Talep Bitiş Tarihi")]
-        [DataType(DataType.Date)]
-        [Required]
-        public DateTime TalepBitisTarihi { get; set; }
+        public DateTime ValidFrom { get; set; }
+        public DateTime ValidTo { get; set; }
 
     }
 }

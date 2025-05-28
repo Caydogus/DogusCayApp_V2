@@ -1,62 +1,277 @@
 ﻿@model TalepFormViewModel
+@using DogusCay.Entity.Entities.Talep;
 @{
-    ViewData["Title"] = "Talep Formu Oluştur";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	ViewData["Title"] = "Talep Formu Oluştur";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <form asp-action="CreateTalepForm" method="post">
-    @Html.AntiForgeryToken()
+	@Html.AntiForgeryToken()
 
-    <div class="form-group">
-        <label>Kanal</label>
-        <select asp-for="KanalId" asp-items="Model.Kanallar" class="form-control" onchange="this.form.submit()">
-            <option value="">Kanal Seçiniz</option>
-        </select>
-    </div>
+	<div class="form-group">
+		<label asp-for="TalepTip">Talep Tipi</label>
+		<select asp-for="TalepTip" class="form-control" asp-items="Html.GetEnumSelectList<TalepTip>()" onchange="this.form.submit()">
+			<option value="">Talep Tipi Seçiniz</option>
+		</select>
+		<span asp-validation-for="TalepTip" class="text-danger"></span>
+	</div>
 
-    @if (Model.Distributors?.Count > 0)
-    {
-        <div class="form-group">
-            <label>Distribütör</label>
-            <select asp-for="DistributorId" asp-items="Model.Distributors" class="form-control" onchange="this.form.submit()">
-                <option value="">Distribütör Seçiniz</option>
-            </select>
-        </div>
+	<div class="form-group">
+		<label>Kanal</label>
+		<select asp-for="KanalId" asp-items="Model.Kanallar" class="form-control" onchange="this.form.submit()">
+			<option value="">Kanal Seçiniz</option>
+		</select>
+	</div>
 
-        <!-- ✅ Eklenen uyarı alanı: Nokta grubu yoksa göster -->
-        @if (Model.DistributorId > 0 && (Model.PointGruplar == null || Model.PointGruplar.Count == 0))
-        {
-            <div class="alert alert-warning mt-2">
-                Bu distribütöre ait <strong>nokta grubu</strong> bulunamadı.
-            </div>
-        }
-    }
+	@if (Model.Distributors?.Count > 0)
+	{
+		<div class="form-group">
+			<label>Distribütör</label>
+			<select asp-for="DistributorId" asp-items="Model.Distributors" class="form-control" onchange="this.form.submit()">
+				<option value="">Distribütör Seçiniz</option>
+			</select>
+		</div>
 
+		@if (Model.DistributorId > 0 && (Model.PointGruplar == null || Model.PointGruplar.Count == 0))
+		{
+			<div class="alert alert-warning mt-2">
+				Bu distribütöre ait <strong>nokta grubu</strong> bulunamadı.
+			</div>
+		}
+	}
 
-    @if (Model.PointGruplar?.Count > 0)
-    {
-        <div class="form-group">
-            <label>Nokta Grubu</label>
-            <select asp-for="PointGroupTypeId" asp-items="Model.PointGruplar" class="form-control" onchange="this.form.submit()">
-                <option value="">Nokta Grubu Seçiniz</option>
-            </select>
-        </div>
-    }
+	@if (Model.PointGruplar?.Count > 0)
+	{
+		<div class="form-group">
+			<label>Nokta Grubu</label>
+			<select asp-for="PointGroupTypeId" asp-items="Model.PointGruplar" class="form-control" onchange="this.form.submit()">
+				<option value="">Nokta Grubu Seçiniz</option>
+			</select>
+		</div>
+	}
 
-    @if (Model.Noktalar?.Count > 0)
-    {
-        <div class="form-group">
-            <label>Nokta</label>
-            <select asp-for="PointId" asp-items="Model.Noktalar" class="form-control">
-                <option value="">Nokta Seçiniz</option>
-            </select>
-        </div>
-    }
+	@if (Model.Noktalar?.Count > 0)
+	{
+		<div class="form-group">
+			<label>Nokta</label>
+			<select asp-for="PointId" asp-items="Model.Noktalar" class="form-control">
+				<option value="">Nokta Seçiniz</option>
+			</select>
+		</div>
+	}
 
-    <div class="form-group">
-        <label>Not</label>
-        <textarea asp-for="Note" class="form-control" rows="3"></textarea>
-    </div>
+	<div class="form-group">
+		<label>Not</label>
+		<textarea asp-for="Note" class="form-control" rows="3"></textarea>
+	</div>
 
-    <button type="submit" class="btn btn-success">Kaydet</button>
+	<h4>Ürün Listesi</h4>
+
+	@for (int i = 0; i < Model.Items.Count; i++)
+	{
+		<div class="border p-3 mb-3">
+			<input type="hidden" asp-for="Items[i].PreviousAnaKategoriId" />
+			<input type="hidden" asp-for="Items[i].PreviousKategoryId" />
+			<input type="hidden" asp-for="Items[i].PreviousAltKategoriId" />
+
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label>Ana Kategori</label>
+					<select asp-for="Items[i].AnaKategoriId" asp-items="Model.Items[i].AnaKategoriler" class="form-control" onchange="this.form.submit()">
+						<option value="">Seçiniz</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-4">
+					<label>Kategori</label>
+					<select asp-for="Items[i].KategoriId" asp-items="Model.Items[i].Kategoriler" class="form-control" onchange="this.form.submit()">
+						<option value="">Seçiniz</option>
+					</select>
+				</div>
+
+				@if (Model.Items[i].ShowAltKategori)
+				{
+					<div class="form-group col-md-4">
+						<label>Alt Kategori</label>
+						<select asp-for="Items[i].AltKategoriId" asp-items="Model.Items[i].AltKategoriler" class="form-control" onchange="this.form.submit()">
+							<option value="">Seçiniz</option>
+						</select>
+					</div>
+				}
+
+				<div class="form-group col-md-4">
+					<label>Ürün</label>
+					<select asp-for="Items[i].ProductId" asp-items="Model.Items[i].Urunler" class="form-control" onchange="this.form.submit()">
+						<option value="">Seçiniz</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-md-3">
+					<label>Koli</label>
+					<input asp-for="Items[i].Quantity" class="form-control" onchange="this.form.submit()" />
+				</div>
+				<div class="form-group col-md-3">
+					<label>Erp Kodu</label>
+					<input asp-for="Items[i].ErpCode" class="form-control" readonly />
+				</div>
+				<div class="form-group col-md-3">
+					<label>Toplam Koli Ağırlığı (kg)</label>
+					<input asp-for="Items[i].ApproximateWeightKg" class="form-control" readonly />
+				</div>
+				<div class="form-group col-md-3">
+					<label>Koliİçi Toplam Adet</label>
+					<input asp-for="Items[i].KoliIciToplamAdet" class="form-control" readonly />
+				</div>
+				<div class="form-group col-md-3">
+					<label>Liste Fiyatı</label>
+					<input asp-for="Items[i].ListeFiyat" class="form-control" readonly />
+				</div>
+				<div class="form-group col-md-3">
+					<label>Son Adet Fiyatı</label>
+					<input asp-for="Items[i].SonAdetFiyati" class="form-control" readonly />
+				</div>
+				<div class="form-group col-md-3">
+					<label>Toplam</label>
+					<input asp-for="Items[i].Total" class="form-control" readonly />
+				</div>
+
+				<div class="p-2 border rounded bg-light mb-2">
+					<strong class="d-block mb-2">Mevcut Alış Şartları</strong>
+					<!-- 🟢 Grup 1: İskonto 1–2–3 -->
+					<div class="p-2 border rounded bg-light mb-2">
+						<strong class="d-block mb-2">İskonto</strong>
+						<div class="row">
+							<!-- İskonto 1 -->
+							<div class="form-group col-md-4">
+								<label>İskonto 1 (%)</label>
+								<input name="Items[@i].Iskonto1"
+									   value="@Model.Items[i].Iskonto1"
+									   class="form-control"
+									   data-autopost="true" />
+							</div>
+
+							<!-- İskonto 2 -->
+							<div class="form-group col-md-4">
+								<label>İskonto 2 (%)</label>
+								<input name="Items[@i].Iskonto2"
+									   value="@Model.Items[i].Iskonto2"
+									   class="form-control"
+									   data-autopost="true" />
+							</div>
+
+							<!-- İskonto 3 -->
+							<div class="form-group col-md-4">
+								<label>İskonto 3 (%)</label>
+								<input name="Items[@i].Iskonto3"
+									   value="@Model.Items[i].Iskonto3"
+									   class="form-control"
+									   data-autopost="true" />
+							</div>
+						</div>
+					</div>
+
+					<!-- 🟣 Grup 2: İskonto 4 + Adet Farkı -->
+					<div class="p-2 border rounded bg-light mb-2">
+						<strong class="d-block mb-2">İnsert Talep Bütçesi</strong>
+						<div class="row">
+							<!-- İskonto 4 -->
+							<div class="form-group col-md-4">
+								<label>Adet Fark (%)</label>
+								<input name="Items[@i].Iskonto4"
+									   value="@Model.Items[i].Iskonto4"
+									   class="form-control"
+									   data-autopost="true"
+								@(Model.Items[i].UseIskonto4 ? "" : "disabled") />
+								<div class="form-check mt-1">
+									<input type="checkbox" class="form-check-input"
+										   asp-for="Items[i].UseIskonto4"
+										   onchange="this.form.submit()" />
+									<label class="form-check-label">Aktif</label>
+								</div>
+							</div>
+
+							<!-- Adet Farkı (₺) -->
+							<div class="form-group col-md-4">
+								<label>Adet Farkı (₺)</label>
+								<input name="Items[@i].AdetFarkDonusuTL"
+									   value="@Model.Items[i].AdetFarkDonusuTL"
+									   class="form-control"
+									   data-autopost="true"
+								@(Model.Items[i].UseAdetFarkDonusuTL ? "" : "disabled") />
+								<div class="form-check mt-1">
+									<input type="checkbox" class="form-check-input"
+										   asp-for="Items[i].UseAdetFarkDonusuTL"
+										   onchange="this.form.submit()" />
+									<label class="form-check-label">Aktif</label>
+								</div>
+							</div>
+
+							<!-- Sabit Bedel TL (her zaman açık) -->
+							<div class="form-group col-md-4">
+								<label>Sabit Bedel TL</label>
+								<input name="Items[@i].SabitBedel"
+									   value="@Model.Items[i].SabitBedel"
+									   class="form-control"
+									   data-autopost="true" />
+							</div>
+						</div>
+					</div>
+
+               </div>
+
+				<div class="form-group col-md-3">
+					<label>Geçerlilik Başlangıç</label>
+					<input asp-for="Items[i].ValidFrom" type="date" class="form-control" />
+				</div>
+				<div class="form-group col-md-3">
+					<label>Geçerlilik Bitiş</label>
+					<input asp-for="Items[i].ValidTo" type="date" class="form-control" />
+				</div>
+			</div>
+		</div>
+	}
+
+	<button type="submit" name="submitType" value="save" class="btn btn-success">Kaydet</button>
 </form>
+
+@section Scripts {
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const doneTypingInterval = 1200; // 1.2 saniye sonra tetiklenecek
+			const forms = document.querySelectorAll("form");
+
+			forms.forEach(form => {
+				let typingTimer;
+
+				form.querySelectorAll("input[data-autopost=true]").forEach(function (input) {
+					input.addEventListener("input", function () {
+						clearTimeout(typingTimer);
+
+						typingTimer = setTimeout(() => {
+							const val = input.value.trim();
+							if (val === "" || val === "0") return;
+
+							// Formun submitType'lı butonunu gönderme
+							const hidden = document.createElement("input");
+							hidden.type = "hidden";
+							hidden.name = "submitType";
+							hidden.value = "autopost"; // sadece zincir güncellemesi olduğunu anlıyoruz
+							form.appendChild(hidden);
+
+							form.submit();
+						}, doneTypingInterval);
+					});
+
+					input.addEventListener("keydown", function (e) {
+						if (e.key === "Enter") {
+							e.preventDefault();
+							input.blur();
+						}
+					});
+				});
+			});
+		});
+	</script>
+}

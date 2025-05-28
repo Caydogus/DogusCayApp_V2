@@ -9,6 +9,8 @@ namespace DogusCay.DTO.DTOs.PointDtos
 {
     public class UpdatePointDto
     {
+        [Required(ErrorMessage = "Nokta seçimi zorunludur.")]
+
         public int PointId { get; set; }
 
         [Required, MaxLength(150)]

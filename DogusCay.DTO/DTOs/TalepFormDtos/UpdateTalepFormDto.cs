@@ -15,9 +15,8 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public int? PointGroupTypeId { get; set; }
         public int PointId { get; set; }
 
-        public DateTime TalepBaslangicTarihi { get; set; }
-        public DateTime TalepBitisTarihi { get; set; }
-
+        public DateTime ValidFrom { get; set; }
+        public DateTime ValidTo { get; set; }
         public string? Note { get; set; }
 
         public int TalepDurumu { get; set; } = 0;

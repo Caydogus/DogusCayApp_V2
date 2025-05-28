@@ -23,8 +23,8 @@ namespace DogusCay.DTOs.ProductDtos
         public int UnitTypeId { get; set; }
         public string UnitTypeName { get; set; }  // DTO'da sadeleştirilmiş şekilde
 
-        public decimal? ApproximateWeightKg { get; set; }
-
+        public decimal ApproximateWeightKg { get; set; }
+        public int KoliIciAdet { get; set; }
         public bool IsShown { get; set; } = true;
         public decimal Price { get; set; }
 

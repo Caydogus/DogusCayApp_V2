@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using DogusCay.WebUI.Services.TokenServices;
 using DogusCay.WebUI.Services.UserServices;
 using FluentValidation;
@@ -23,6 +24,7 @@ builder.Services.AddHttpClient("EduClient", cfg =>
         cfg.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetUserToken);
     }
 });
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
 {

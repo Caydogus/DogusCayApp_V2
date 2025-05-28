@@ -9,7 +9,7 @@ namespace DogusCay.DataAccess.Abstract
         List<TalepForm> GetAllByUserId(int userId); // Kullanıcıya özel
         void UpdateStatus(int formId, TalepDurumu durum, int adminId); // Admin onay/red
         TalepFormItem GetItemById(int itemId); // Ürünle birlikte
-        void UpdateItemFields(int TalepFormitemId, int quantity, DateTime? validFrom, DateTime? validTo); // Güvenli alan güncelleme
+        void UpdateItemFields(int TalepFormitemId, int quantity, DateTime validFrom, DateTime validTo); // Güvenli alan güncelleme
         TalepForm GetDetailsForForm(int formId); // Tek talep detay
     }
 }

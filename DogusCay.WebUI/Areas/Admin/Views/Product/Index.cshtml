@@ -27,7 +27,7 @@
                 <td>@item.CategoryName</td>
                 <td>@item.ErpCode</td>
                 <td>@item.UnitTypeName</td>
-                <td>@(item.ApproximateWeightKg?.ToString("N2") ?? "0,00")</td>
+                <td>@(item.ApproximateWeightKg.ToString("N2") ?? "0,00")</td>
                 <td>@(item.IsShown ? "Aktif" : "Pasif")</td>
                 <td>@item.Price</td>
       

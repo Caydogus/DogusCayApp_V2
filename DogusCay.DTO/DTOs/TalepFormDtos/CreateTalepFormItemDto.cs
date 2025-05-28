@@ -4,17 +4,15 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
 {
     public class CreateTalepFormItemDto
     {
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public int? SubCategoryId { get; set; }
 
         public int ProductId { get; set; }
-
+        public string ErpCode { get; set; }
         public int Quantity { get; set; }
-
         public decimal Price { get; set; }
         public int KoliIciAdet { get; set; }
-        public decimal KoliFiyati { get; set; }
-        public decimal KoliAgirligiKg { get; set; }
+        public decimal ApproximateWeightKg { get; set; }
 
         public decimal Iskonto1 { get; set; }
         public decimal Iskonto2 { get; set; }

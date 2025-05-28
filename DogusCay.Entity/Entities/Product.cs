@@ -23,7 +23,7 @@ namespace DogusCay.Entity.Entities
         public UnitType UnitType { get; set; }
 
         // Her bir ürün için yaklaşık kilo karşılığı (koli ise tonaj hesabı için)
-        public decimal? ApproximateWeightKg { get; set; }
+        public decimal ApproximateWeightKg { get; set; }
 
         // Aktif/pasif ürün durumu
         public bool IsShown { get; set; } = true;

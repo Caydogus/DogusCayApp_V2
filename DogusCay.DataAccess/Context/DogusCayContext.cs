@@ -71,7 +71,8 @@ namespace DogusCay.DataAccess.Context
                 .WithMany()
                 .HasForeignKey(tf => tf.PointId)
                 .OnDelete(DeleteBehavior.Restrict);
-
+           
+    
             modelBuilder.Entity<TalepForm>()
                 .HasOne(tf => tf.Kanal)
                 .WithMany()
@@ -153,12 +154,12 @@ namespace DogusCay.DataAccess.Context
 
             // Decimal hassasiyet ayarları (TalepFormItem için)
             modelBuilder.Entity<TalepFormItem>().Property(x => x.Price).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.KoliFiyati).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.KoliAgirligiKg).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto1).HasColumnType("decimal(5,2)");
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto2).HasColumnType("decimal(5,2)");
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto3).HasColumnType("decimal(5,2)");
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto4).HasColumnType("decimal(5,2)");
+          //  modelBuilder.Entity<TalepFormItem>().Property(x => x.KoliFiyati).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<TalepFormItem>().Property(x => x.ApproximateWeightKg).HasColumnType("decimal(18,2)");
+            //modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto1).HasColumnType("decimal(5,2)");
+            //modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto2).HasColumnType("decimal(5,2)");
+            //modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto3).HasColumnType("decimal(5,2)");
+            //modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto4).HasColumnType("decimal(5,2)");
 
         }
     }

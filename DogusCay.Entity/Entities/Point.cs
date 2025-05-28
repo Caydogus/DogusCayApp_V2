@@ -9,6 +9,7 @@ namespace DogusCay.Entity.Entities
 {
     public class Point
     {
+        [Required(ErrorMessage = "Nokta seçimi zorunludur.")]
         public int PointId { get; set; }
         public string PointErc { get; set; }
         public string PointName { get; set; }

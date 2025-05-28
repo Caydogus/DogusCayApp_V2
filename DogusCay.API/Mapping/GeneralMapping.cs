@@ -73,21 +73,26 @@ namespace DogusCay.API.Mapping
 
             // RESULT (Form + Item)
             CreateMap<TalepForm, ResultTalepFormDto>()
-                .ForMember(dest => dest.TalepTipName, opt => opt.MapFrom(src => src.TalepTip.ToString()))
-                .ForMember(dest => dest.TalepDurumuText, opt => opt.MapFrom(src => src.TalepDurumu.ToString()))
-                .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.AppUser.FirstName + " " + src.AppUser.LastName))
-                .ForMember(dest => dest.KanalName, opt => opt.MapFrom(src => src.Kanal.KanalName))
-                .ForMember(dest => dest.DistributorName, opt => opt.MapFrom(src => src.Distributor.DistributorName))
-                .ForMember(dest => dest.PointName, opt => opt.MapFrom(src => src.Point.PointName))
-                .ForMember(dest => dest.PointGroupTypeName, opt => opt.MapFrom(src => src.PointGroupType.PointGroupTypeName))
-                
-                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.TalepFormItems));
-             CreateMap<CreateTalepFormDto, TalepForm>()
-                .ForMember(dest => dest.TalepFormItems, opt => opt.MapFrom(src => src.Items));
-             CreateMap<TalepFormItem, ResultTalepFormItemDto>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
-                .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(src => src.SubCategory.CategoryName));
+            .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.AppUser.LastName + " " + src.AppUser.FirstName))
+            .ForMember(dest => dest.KanalName, opt => opt.MapFrom(src => src.Kanal.KanalName))
+            .ForMember(dest => dest.DistributorName, opt => opt.MapFrom(src => src.Distributor != null ? src.Distributor.DistributorName : null))
+            .ForMember(dest => dest.PointGroupTypeName, opt => opt.MapFrom(src => src.PointGroupType != null ? src.PointGroupType.PointGroupTypeName : null))
+            .ForMember(dest => dest.PointName, opt => opt.MapFrom(src => src.Point.PointName));
+
+            // TalepFormItem → ResultTalepFormItemDto
+            CreateMap<TalepFormItem, ResultTalepFormItemDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
+           
+            CreateMap<CreateTalepFormDto, TalepForm>()
+            .ForMember(dest => dest.TalepFormItems, opt => opt.MapFrom(src => src.Items));
+            CreateMap<CreateTalepFormItemDto, TalepFormItem>();
+
+            CreateMap<TalepForm, ResultTalepFormListDto>()
+            .ForMember(dest => dest.KullaniciAdi, opt => opt.MapFrom(src => src.AppUser.LastName + " " + src.AppUser.FirstName))
+            .ForMember(dest => dest.KanalAdi, opt => opt.MapFrom(src => src.Kanal.KanalName))
+            .ForMember(dest => dest.NoktaAdi, opt => opt.MapFrom(src => src.Point.PointName))
+            .ForMember(dest => dest.TalepTip, opt => opt.MapFrom(src => src.TalepTip.ToString()))
+            .ForMember(dest => dest.TalepDurumu, opt => opt.MapFrom(src => src.TalepDurumu.ToString()));
 
         }
     }

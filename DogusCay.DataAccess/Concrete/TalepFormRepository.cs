@@ -1,4 +1,5 @@
-﻿using DogusCay.DataAccess.Abstract;
+﻿
+using DogusCay.DataAccess.Abstract;
 using DogusCay.DataAccess.Context;
 using DogusCay.DataAccess.Repositories;
 using DogusCay.Entity.Entities.Talep;
@@ -61,7 +62,7 @@ namespace DogusCay.DataAccess.Concrete
                 .FirstOrDefault(x => x.TalepFormItemId == itemId);
         }
 
-        public void UpdateItemFields(int itemId, int quantity, DateTime? validFrom, DateTime? validTo)
+        public void UpdateItemFields(int itemId, int quantity, DateTime validFrom, DateTime validTo)
         {
             var item = _context.TalepFormItems.Find(itemId);
             if (item != null)

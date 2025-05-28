@@ -17,27 +17,27 @@ namespace DogusCay.Business.Concrete
 
         public List<TalepForm> TGetAllByUserId(int userId)
         {
-          return _talepFormRepository.GetAllByUserId(userId);
+            return _talepFormRepository.GetAllByUserId(userId);
         }
 
         public List<TalepForm> TGetAllWithUser()
         {
-           return _talepFormRepository.GetAllWithUser();
+            return _talepFormRepository.GetAllWithUser();
         }
 
         public TalepForm TGetDetailsForForm(int formId)
         {
-           return _talepFormRepository.GetDetailsForForm(formId);
+            return _talepFormRepository.GetDetailsForForm(formId);
         }
 
         public TalepFormItem TGetItemById(int itemId)
         {
-           return _talepFormRepository.GetItemById(itemId);
+            return _talepFormRepository.GetItemById(itemId);
         }
 
-        public void TUpdateItemFields(int TalepFormitemId, int quantity, DateTime? validFrom, DateTime? validTo)
+        public void TUpdateItemFields(int TalepFormitemId, int quantity, DateTime validFrom, DateTime validTo)
         {
-           _talepFormRepository.UpdateItemFields(TalepFormitemId, quantity, validFrom, validTo);
+            _talepFormRepository.UpdateItemFields(TalepFormitemId, quantity, validFrom, validTo);
         }
 
         public void TUpdateStatus(int formId, TalepDurumu durum, int adminId)

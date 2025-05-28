@@ -57,7 +57,7 @@ namespace DogusCay.API.Controllers
         }
 
         [HttpGet("{id}")]
-       // [Authorize]
+       //[Authorize]
         public IActionResult GetById(int id)
         {
             //Giriş yapan kullanıcı sadece kendi noktasını görebilsin

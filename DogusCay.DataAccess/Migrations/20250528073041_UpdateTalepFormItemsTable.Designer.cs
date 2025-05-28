@@ -4,6 +4,7 @@ using DogusCay.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DogusCay.DataAccess.Migrations
 {
     [DbContext(typeof(DogusCayContext))]
-    partial class DogusCayContextModelSnapshot : ModelSnapshot
+    [Migration("20250528073041_UpdateTalepFormItemsTable")]
+    partial class UpdateTalepFormItemsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -422,20 +425,16 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ErpCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("Iskonto1")
+                    b.Property<decimal>("Iskonto1")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("Iskonto2")
+                    b.Property<decimal>("Iskonto2")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("Iskonto3")
+                    b.Property<decimal>("Iskonto3")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("Iskonto4")
+                    b.Property<decimal>("Iskonto4")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("KoliIciAdet")
@@ -456,10 +455,10 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<int>("TalepFormId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ValidFrom")
+                    b.Property<DateTime?>("ValidFrom")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ValidTo")
+                    b.Property<DateTime?>("ValidTo")
                         .HasColumnType("datetime2");
 
                     b.HasKey("TalepFormItemId");
@@ -613,10 +612,6 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<int?>("DistributorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ErpCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal?>("Iskonto1")
                         .HasColumnType("decimal(18,2)");
 
@@ -656,11 +651,23 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("TalepBaslangicTarihi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TalepBitisTarihi")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("TalepDurumu")
                         .HasColumnType("int");
 
                     b.Property<int>("TalepTip")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("ValidFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ValidTo")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("TalepFormId");
 

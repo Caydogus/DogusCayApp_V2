@@ -9,7 +9,8 @@ namespace DogusCay.WebUI.DTOs.PointDtos
 {
     public class CreatePointDto
     {
-        [Required, MaxLength(150)]
+        [Required(ErrorMessage = "Nokta seçimi zorunludur.")]
+        
         public string PointName { get; set; } // Firma adı, nokta adı
         public string PointErc { get; set; }
         public int KanalId { get; set; }             // ❗ zorunlu
