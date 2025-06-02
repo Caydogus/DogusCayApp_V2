@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
+using DogusCay.DTO.DTOs.PointGroupTypeDtos;
 using DogusCay.DTO.DTOs.PointGrupDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -57,9 +58,25 @@ namespace DogusCay.API.Controllers
         [HttpGet("by-distributor/{distributorId}")]
         public IActionResult GetByDistributor(int distributorId)
         {
+            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var list = _pointGroupTypeService.TGetPointGroupsByDistributorId(distributorId);
             var result = _mapper.Map<List<ResultPointGroupTypeDto>>(list);
             return Ok(result);
         }
+        [AllowAnonymous]
+        [HttpGet("dropdown")]
+        public IActionResult GetDropdown()
+        {
+          
+            var list = _pointGroupTypeService.TGetList()
+                .Select(pg => new PointGroupTypeDropdownDto
+                {
+                    PointGroupTypeId = pg.PointGroupTypeId,
+                    PointGroupTypeName = pg.PointGroupTypeName
+                }).ToList();
+
+            return Ok(list);
+        }
+
     }
 }

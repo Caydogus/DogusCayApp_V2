@@ -49,9 +49,50 @@ namespace DogusCay.API.Controllers
         public IActionResult Create([FromBody] CreateTalepFormDto createTalepFormDto)
         {
             var entity = _mapper.Map<TalepForm>(createTalepFormDto);
+            foreach (var item in entity.TalepFormItems)
+            {
+                // Ürün bilgileri varsa güncelle (servis gerekirse inject et)
+                item.Quantity = item.Quantity <= 0 ? 1 : item.Quantity;
+
+                // 1. Koli adet & kg hesapla
+                item.KoliIciToplamAdet = item.Quantity * item.KoliIciAdet;
+                item.KoliToplamAgirligiKg = item.Quantity * item.ApproximateWeightKg;
+
+                // 2. Liste fiyat
+                item.ListeFiyat = item.KoliIciAdet > 0 ? item.Price / item.KoliIciAdet : 0;
+
+                // 3. Toplam = Price * Quantity
+                decimal toplam = item.Quantity * item.Price;
+
+                // 4. İskontoları uygula
+                if (item.Iskonto1 is > 0) toplam *= (100 - item.Iskonto1.Value) / 100m;
+                if (item.Iskonto2 is > 0) toplam *= (100 - item.Iskonto2.Value) / 100m;
+                if (item.Iskonto3 is > 0) toplam *= (100 - item.Iskonto3.Value) / 100m;
+                if (item.Iskonto4 is > 0) toplam *= (100 - item.Iskonto4.Value) / 100m;
+
+                // 5. İlk adet fiyatı hesapla
+                var calculatedSonAdetFiyati = item.KoliIciToplamAdet > 0
+                    ? Math.Round(toplam / item.KoliIciToplamAdet, 2)
+                    : 0;
+
+                // 6. Eğer AdetFarkDonusuTL varsa, son adet fiyatı bundan etkilenir
+                if (item.AdetFarkDonusuTL > 0)
+                {
+                    item.SonAdetFiyati = Math.Round(calculatedSonAdetFiyati - item.AdetFarkDonusuTL, 2);
+                    item.Total = Math.Round(item.SonAdetFiyati * item.KoliIciToplamAdet, 2); // ✔ override
+                }
+                else
+                {
+                    item.SonAdetFiyati = calculatedSonAdetFiyati;
+                    item.Total = Math.Round(toplam, 2);
+                }
+
+            }
+
             _talepFormService.TCreate(entity);
             return Ok("Talep başarıyla oluşturuldu.");
         }
+
 
         // 🔹 Detay (form + ürünler)
         [HttpGet("{id}")]

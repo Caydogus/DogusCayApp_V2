@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
 using DogusCay.DTO.DTOs.ChannelDtos;
+using DogusCay.DTO.DTOs.KanalDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DogusCay.API.Controllers
 {
@@ -20,7 +22,20 @@ namespace DogusCay.API.Controllers
             var result = _mapper.Map<List<ResultKanalDto>>(kanallar);
             return Ok(result);
         }
+        [AllowAnonymous]
+        [HttpGet("dropdown")]
+        public IActionResult GetDropdown()
+        {
+            var list = _kanalService.TGetList()
+                .Select(k => new KanalDropdownDto
+                {
+                    KanalId = k.KanalId,
+                    KanalName = k.KanalName
+                }).ToList();
 
+            return Ok(list);
+        }
+        
         [HttpGet("{id}")]
 
         public IActionResult GetById(int id)

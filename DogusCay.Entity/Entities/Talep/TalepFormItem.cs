@@ -21,7 +21,13 @@ namespace DogusCay.Entity.Entities.Talep
         public decimal Price { get; set; }
         public int KoliIciAdet { get; set; }
         public decimal ApproximateWeightKg { get; set; }
-
+        public decimal KoliToplamAgirligiKg { get; set; }
+        public int KoliIciToplamAdet { get; set; }
+        public decimal ListeFiyat { get; set; }
+        public decimal SonAdetFiyati { get; set; }
+        public decimal Total { get; set; }
+        public decimal AdetFarkDonusuTL { get; set; }
+        public decimal? SabitBedelTL { get; set; }
         public decimal? Iskonto1 { get; set; }
         public decimal? Iskonto2 { get; set; }
         public decimal? Iskonto3 { get; set; }

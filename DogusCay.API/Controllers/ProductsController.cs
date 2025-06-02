@@ -136,6 +136,35 @@ namespace DogusCay.API.Controllers
             var result = _mapper.Map<ResultProductDto>(product);
             return Ok(result);
         }
+        [HttpGet("dropdown")]
+        public IActionResult GetDropdown()
+        {
+            var list = _productService.TGetList()
+                .Select(p => new ProductDropdownDto
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName
+                }).ToList();
+
+            return Ok(list);
+        }
+
+        [HttpGet("get-product-info/{id}")]
+        public IActionResult GetProductInfo(int id)
+        {
+            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
+            var product = _productService.TGetById(id);
+            if (product == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                Price = product.Price,
+                KoliIciAdet = product.KoliIciAdet,
+                ApproximateWeightKg = product.ApproximateWeightKg,
+                ErpCode=product.ErpCode
+            });
+        }
     }
 
 

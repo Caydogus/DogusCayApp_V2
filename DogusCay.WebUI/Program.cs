@@ -14,15 +14,19 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddHttpContextAccessor();
 
+//builder.Services.AddHttpClient("EduClient", cfg =>
+//{
+//    var tokenService = builder.Services.BuildServiceProvider().GetRequiredService<ITokenService>();
+//    var token = tokenService.GetUserToken;
+//    cfg.BaseAddress = new Uri("https://localhost:7076/api/");
+//    if (token != null)
+//    {
+//        cfg.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetUserToken);
+//    }
+//});
 builder.Services.AddHttpClient("EduClient", cfg =>
 {
-    var tokenService = builder.Services.BuildServiceProvider().GetRequiredService<ITokenService>();
-    var token = tokenService.GetUserToken;
     cfg.BaseAddress = new Uri("https://localhost:7076/api/");
-    if (token != null)
-    {
-        cfg.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetUserToken);
-    }
 });
 
 

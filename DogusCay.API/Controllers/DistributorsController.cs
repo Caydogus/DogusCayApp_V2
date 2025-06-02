@@ -28,6 +28,18 @@ namespace DogusCay.API.Controllers
             var result = _mapper.Map<List<ResultDistributorDto>>(values);
             return Ok(result);
         }
+        [HttpGet("dropdown")]
+        public IActionResult GetDropdown()
+        {
+            var list = _distributorService.TGetList()
+                .Select(x => new DistributorDropdownDto
+                {
+                    DistributorId = x.DistributorId,
+                    DistributorName = x.DistributorName
+                }).ToList();
+
+            return Ok(list);
+        }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -68,13 +80,21 @@ namespace DogusCay.API.Controllers
         }
 
         //KanalId'ye bağlı olan tüm distributorları getirir.
+        [AllowAnonymous]
         [HttpGet("by-kanal/{kanalId}")]
         public IActionResult GetByKanal(int kanalId)
         {
+            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var list = _distributorService.TGetDistributorsByKanalId(kanalId);
-            var result = _mapper.Map<List<ResultDistributorDto>>(list);
+            var result = list.Select(x => new
+            {
+                DistributorId = x.DistributorId,
+                DistributorName = x.DistributorName
+            }).ToList();
+
             return Ok(result);
         }
+
 
     }
 }

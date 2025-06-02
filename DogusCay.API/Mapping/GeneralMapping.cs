@@ -64,12 +64,12 @@ namespace DogusCay.API.Mapping
             CreateMap<AppUser,     SimpleUserDto>().ReverseMap(); ;
 
             // Create DTO -> Entity
-            CreateMap<CreateTalepFormDto, TalepForm>();
-            CreateMap<CreateTalepFormItemDto, TalepFormItem>();
+            CreateMap<CreateTalepFormDto, TalepForm>().ReverseMap();
+            CreateMap<CreateTalepFormItemDto, TalepFormItem>().ReverseMap();
 
             // UPDATE
-            CreateMap<UpdateTalepFormDto, TalepForm>();
-            CreateMap<UpdateTalepFormItemDto, TalepFormItem>();
+            CreateMap<UpdateTalepFormDto, TalepForm>().ReverseMap();
+            CreateMap<UpdateTalepFormItemDto, TalepFormItem>().ReverseMap();
 
             // RESULT (Form + Item)
             CreateMap<TalepForm, ResultTalepFormDto>()
@@ -82,11 +82,9 @@ namespace DogusCay.API.Mapping
             // TalepFormItem → ResultTalepFormItemDto
             CreateMap<TalepFormItem, ResultTalepFormItemDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
-           
-            CreateMap<CreateTalepFormDto, TalepForm>()
-            .ForMember(dest => dest.TalepFormItems, opt => opt.MapFrom(src => src.Items));
-            CreateMap<CreateTalepFormItemDto, TalepFormItem>();
 
+            CreateMap<CreateTalepFormDto, TalepForm>().ReverseMap();
+            CreateMap<CreateTalepFormItemDto, TalepFormItem>().ReverseMap();
             CreateMap<TalepForm, ResultTalepFormListDto>()
             .ForMember(dest => dest.KullaniciAdi, opt => opt.MapFrom(src => src.AppUser.LastName + " " + src.AppUser.FirstName))
             .ForMember(dest => dest.KanalAdi, opt => opt.MapFrom(src => src.Kanal.KanalName))

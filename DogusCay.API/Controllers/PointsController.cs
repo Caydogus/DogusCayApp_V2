@@ -156,25 +156,52 @@ namespace DogusCay.API.Controllers
         }
 
 
+        [AllowAnonymous]
+        //NA / LC gibi distributor olmayan kanallar için.KanalId ile doğrudan noktaları getirir.
+        [HttpGet("by-kanal/{kanalId}")]
+        public IActionResult GetByKanal(int kanalId)
+        {
+            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
+            var list = _pointService.TGetByKanalId(kanalId);
+            var result = _mapper.Map<List<ResultPointDto>>(list);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpGet("dropdown")]
+        public IActionResult GetDropdown()
+        {
+           
+            var list = _pointService.TGetList()
+                .Select(p => new PointDropdownDto
+                {
+                    PointId = p.PointId,
+                    PointName = p.PointName
+                }).ToList();
+
+            return Ok(list);
+        }
+        ////lc ve na için
+        //[AllowAnonymous]
+        //[HttpGet("by-group/{pointGroupTypeId}")]
+        //public IActionResult GetPointsByGroup(int pointGroupTypeId)
+        //{
+        //    var list = _pointService.TGetFilteredList(p => p.PointGroupTypeId == pointGroupTypeId);
+        //    var result = _mapper.Map<List<ResultPointDto>>(list);
+        //    return Ok(result);
+        //}
+
+
         //PointGroupTypeId + DistributorId’ye göre noktaları getirir.DIST kanalına ait zincir içindir.
-        
+
         [HttpGet("by-group/{pointGroupTypeId}/distributor/{distributorId}")]
         public IActionResult GetByGroupAndDistributor(int distributorId, int pointGroupTypeId)
         {
+            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var list = _pointService.TGetByDistributorAndGroup(distributorId, pointGroupTypeId);
             var result = _mapper.Map<List<ResultPointDto>>(list);
             return Ok(result);
         }
 
-
-        //NA / LC gibi distributor olmayan kanallar için.KanalId ile doğrudan noktaları getirir.
-        [HttpGet("by-kanal/{kanalId}")]
-        public IActionResult GetByKanal(int kanalId)
-        {
-            var list = _pointService.TGetByKanalId(kanalId);
-            var result = _mapper.Map<List<ResultPointDto>>(list);
-            return Ok(result);
-        }
     }
 }
 
