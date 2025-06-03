@@ -42,56 +42,136 @@ namespace DogusCay.API.Controllers
             return Ok(dtoList);
         }
 
-
-        // 🔹 Form oluşturma
         [HttpPost]
-        // [Authorize(Roles = "BolgeMuduru")]
-        public IActionResult Create([FromBody] CreateTalepFormDto createTalepFormDto)
+        public IActionResult Create([FromBody] CreateTalepFormDto dto)
         {
-            var entity = _mapper.Map<TalepForm>(createTalepFormDto);
-            foreach (var item in entity.TalepFormItems)
+            Console.WriteLine("🚀 API'ye veri ulaştı:");
+            Console.WriteLine($"ProductId: {dto.ProductId}, Quantity: {dto.Quantity}, Total: {dto.Total}");
+
+            if (!ModelState.IsValid)
             {
-                // Ürün bilgileri varsa güncelle (servis gerekirse inject et)
-                item.Quantity = item.Quantity <= 0 ? 1 : item.Quantity;
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                Console.WriteLine("❌ Validation Hataları: " + string.Join(", ", errors));
+                return BadRequest(ModelState);
+            }
 
-                // 1. Koli adet & kg hesapla
-                item.KoliIciToplamAdet = item.Quantity * item.KoliIciAdet;
-                item.KoliToplamAgirligiKg = item.Quantity * item.ApproximateWeightKg;
+            Console.WriteLine($"📥 DTO: ProductId={dto.ProductId}, PointId={dto.PointId}, KanalId={dto.KanalId}");
 
-                // 2. Liste fiyat
-                item.ListeFiyat = item.KoliIciAdet > 0 ? item.Price / item.KoliIciAdet : 0;
+            var entity = new TalepForm
+            {
+                AppUserId = dto.AppUserId ?? 9,
+                KanalId = dto.KanalId,
+                DistributorId = dto.DistributorId,
+                PointGroupTypeId = dto.PointGroupTypeId,
+                PointId = dto.PointId ?? 0,
+                CategoryId = dto.CategoryId,
+                SubCategoryId = dto.SubCategoryId,
+                ProductId = dto.ProductId,
+                ProductName = dto.ProductName,
+                ErpCode = dto.ErpCode,
+                Quantity = dto.Quantity <= 0 ? 1 : dto.Quantity,
+                Price = dto.Price,
+                KoliIciAdet = dto.KoliIciAdet,
+                ApproximateWeightKg = dto.ApproximateWeightKg,
+                SabitBedelTL = dto.SabitBedelTL,
+                Note = dto.Note,
+                ValidFrom = dto.ValidFrom < new DateTime(1753, 1, 1) ? DateTime.Now : dto.ValidFrom,
+                ValidTo = dto.ValidTo < new DateTime(1753, 1, 1) ? DateTime.Now.AddDays(7) : dto.ValidTo,
+                Iskonto1 = dto.Iskonto1,
+                Iskonto2 = dto.Iskonto2,
+                Iskonto3 = dto.Iskonto3,
+                Iskonto4 = dto.Iskonto4,
+                AdetFarkDonusuTL = dto.AdetFarkDonusuTL,
+                TalepTip = TalepTip.Insert,
+            };
 
-                // 3. Toplam = Price * Quantity
-                decimal toplam = item.Quantity * item.Price;
+            // Hesaplamalar
+            entity.KoliIciToplamAdet = entity.Quantity * dto.KoliIciAdet;
+            entity.KoliToplamAgirligiKg = entity.Quantity * dto.ApproximateWeightKg;
+            entity.ListeFiyat = dto.KoliIciAdet > 0 ? dto.Price / dto.KoliIciAdet : 0;
 
-                // 4. İskontoları uygula
-                if (item.Iskonto1 is > 0) toplam *= (100 - item.Iskonto1.Value) / 100m;
-                if (item.Iskonto2 is > 0) toplam *= (100 - item.Iskonto2.Value) / 100m;
-                if (item.Iskonto3 is > 0) toplam *= (100 - item.Iskonto3.Value) / 100m;
-                if (item.Iskonto4 is > 0) toplam *= (100 - item.Iskonto4.Value) / 100m;
+            decimal toplam = dto.Price * entity.Quantity;
+            if (dto.Iskonto1 > 0) toplam *= (100 - dto.Iskonto1) / 100m;
+            if (dto.Iskonto2 > 0) toplam *= (100 - dto.Iskonto2) / 100m;
+            if (dto.Iskonto3 > 0) toplam *= (100 - dto.Iskonto3) / 100m;
+            if (dto.Iskonto4 > 0) toplam *= (100 - dto.Iskonto4) / 100m;
 
-                // 5. İlk adet fiyatı hesapla
-                var calculatedSonAdetFiyati = item.KoliIciToplamAdet > 0
-                    ? Math.Round(toplam / item.KoliIciToplamAdet, 2)
-                    : 0;
+            var calculated = entity.KoliIciToplamAdet > 0 ? Math.Round(toplam / entity.KoliIciToplamAdet, 2) : 0;
 
-                // 6. Eğer AdetFarkDonusuTL varsa, son adet fiyatı bundan etkilenir
-                if (item.AdetFarkDonusuTL > 0)
-                {
-                    item.SonAdetFiyati = Math.Round(calculatedSonAdetFiyati - item.AdetFarkDonusuTL, 2);
-                    item.Total = Math.Round(item.SonAdetFiyati * item.KoliIciToplamAdet, 2); // ✔ override
-                }
-                else
-                {
-                    item.SonAdetFiyati = calculatedSonAdetFiyati;
-                    item.Total = Math.Round(toplam, 2);
-                }
-
+            if (dto.AdetFarkDonusuTL > 0)
+            {
+                entity.SonAdetFiyati = Math.Round(calculated - dto.AdetFarkDonusuTL, 2);
+                entity.Total = Math.Round(entity.SonAdetFiyati * entity.KoliIciToplamAdet, 2);
+            }
+            else
+            {
+                entity.SonAdetFiyati = calculated;
+                entity.Total = Math.Round(toplam, 2);
             }
 
             _talepFormService.TCreate(entity);
+
             return Ok("Talep başarıyla oluşturuldu.");
         }
+
+        //[HttpPost]
+        //// [Authorize(Roles = "BolgeMuduru")]
+        //public IActionResult Create([FromBody] CreateTalepFormDto dto)
+        //{
+        //    Console.WriteLine("🚀 API'ye veri ulaştı: " + dto.ProductId);
+
+        //    var entity = _mapper.Map<TalepForm>(dto);
+        //    entity.TalepTip = TalepTip.Insert;
+
+        //    // Hesaplamalar (direkt TalepForm üzerinde yapılacak)
+        //    entity.Quantity = dto.Quantity <= 0 ? 1 : dto.Quantity;
+        //    entity.KoliIciToplamAdet = (int)entity.Quantity * dto.KoliIciAdet;
+        //    entity.KoliToplamAgirligiKg = (int)entity.Quantity * dto.ApproximateWeightKg;
+        //    entity.ListeFiyat = dto.KoliIciAdet > 0 ? dto.Price / dto.KoliIciAdet : 0;
+
+        //    decimal toplam = dto.Price * (int)entity.Quantity;
+
+        //    if (dto.Iskonto1 is > 0) toplam *= (100 - dto.Iskonto1.Value) / 100m;
+        //    if (dto.Iskonto2 is > 0) toplam *= (100 - dto.Iskonto2.Value) / 100m;
+        //    if (dto.Iskonto3 is > 0) toplam *= (100 - dto.Iskonto3.Value) / 100m;
+        //    if (dto.Iskonto4 is > 0) toplam *= (100 - dto.Iskonto4.Value) / 100m;
+
+        //    var calculatedSonAdetFiyat = entity.KoliIciToplamAdet > 0
+        //        ? Math.Round(toplam / entity.KoliIciToplamAdet, 2)
+        //        : 0;
+
+        //    if (dto.AdetFarkDonusuTL > 0)
+        //    {
+        //        entity.SonAdetFiyati = Math.Round(calculatedSonAdetFiyat - dto.AdetFarkDonusuTL, 2);
+        //        entity.Total = Math.Round(entity.SonAdetFiyati * entity.KoliIciToplamAdet, 2);
+        //    }
+        //    else
+        //    {
+        //        entity.SonAdetFiyati = calculatedSonAdetFiyat;
+        //        entity.Total = Math.Round(toplam, 2);
+        //    }
+
+        //    // Ek alanlar
+        //    entity.ProductId = dto.ProductId;
+        //    entity.Price = dto.Price;
+        //    entity.KoliIciAdet = dto.KoliIciAdet;
+        //    entity.ErpCode = dto.ErpCode;
+        //    entity.ApproximateWeightKg = dto.ApproximateWeightKg;
+        //    entity.ValidFrom = dto.ValidFrom;
+        //    entity.ValidTo = dto.ValidTo;
+        //    entity.SabitBedelTL = dto.SabitBedelTL;
+        //    entity.Iskonto1 = dto.Iskonto1;
+        //    entity.Iskonto2 = dto.Iskonto2;
+        //    entity.Iskonto3 = dto.Iskonto3;
+        //    entity.Iskonto4 = dto.Iskonto4;
+        //    entity.AdetFarkDonusuTL = dto.AdetFarkDonusuTL;
+
+        //    _talepFormService.TCreate(entity);
+
+        //    return Ok("Talep başarıyla oluşturuldu.");
+        //}
+
+
 
 
         // 🔹 Detay (form + ürünler)

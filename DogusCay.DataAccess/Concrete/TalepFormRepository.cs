@@ -82,12 +82,6 @@ namespace DogusCay.DataAccess.Concrete
                 .Include(tf => tf.Distributor)
                 .Include(tf => tf.PointGroupType)
                 .Include(tf => tf.Point)
-                .Include(tf => tf.TalepFormItems)
-                    .ThenInclude(item => item.Product)
-                .Include(tf => tf.TalepFormItems)
-                    .ThenInclude(item => item.Category)
-                .Include(tf => tf.TalepFormItems)
-                    .ThenInclude(item => item.SubCategory)
                 .FirstOrDefault(tf => tf.TalepFormId == formId);
         }
     }

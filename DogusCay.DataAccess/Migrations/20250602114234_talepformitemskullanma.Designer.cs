@@ -4,6 +4,7 @@ using DogusCay.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DogusCay.DataAccess.Migrations
 {
     [DbContext(typeof(DogusCayContext))]
-    partial class DogusCayContextModelSnapshot : ModelSnapshot
+    [Migration("20250602114234_talepformitemskullanma")]
+    partial class talepformitemskullanma
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -628,14 +631,14 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<decimal>("AdetFarkDonusuTL")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("AdetFarkDonusuYuzde")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("ApproximateWeightKg")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("DistributorId")
                         .HasColumnType("int");
@@ -686,14 +689,10 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Quantity")
+                    b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("SabitBedelTL")
@@ -702,19 +701,16 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<decimal>("SonAdetFiyati")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("SubCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SubSubCategoryId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TalepDurumu")
                         .HasColumnType("int");
 
                     b.Property<int>("TalepTip")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Total")
+                    b.Property<decimal>("ToplamFiyat")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Total")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("ValidFrom")
@@ -980,9 +976,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasOne("DogusCay.Entity.Entities.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.Navigation("AppUser");
 

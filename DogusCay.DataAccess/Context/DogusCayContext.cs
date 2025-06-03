@@ -127,12 +127,12 @@ namespace DogusCay.DataAccess.Context
                 .HasForeignKey(tf => tf.DistributorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // TalepFormItem ilişkileri
-            modelBuilder.Entity<TalepFormItem>()
-                .HasOne(tfi => tfi.TalepForm)
-                .WithMany(tf => tf.TalepFormItems)
-                .HasForeignKey(tfi => tfi.TalepFormId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //// TalepFormItem ilişkileri
+            //modelBuilder.Entity<TalepFormItem>()
+            //    .HasOne(tfi => tfi.TalepForm)
+            //    .WithMany(tf => tf.TalepFormItems)
+            //    .HasForeignKey(tfi => tfi.TalepFormId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<TalepFormItem>()
                 .HasOne(tfi => tfi.Product)

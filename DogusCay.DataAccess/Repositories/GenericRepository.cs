@@ -22,12 +22,26 @@ namespace DogusCay.DataAccess.Repositories
         {
             return Table.Count();
         }
-
         public void Create(T entity)
         {
-            Table.Add(entity);
-            _context.SaveChanges();
+            try
+            {
+                Table.Add(entity);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Db SaveChanges Hatası: " + ex.Message);
+                if (ex.InnerException != null)
+                    Console.WriteLine("📛 Inner Exception: " + ex.InnerException.Message);
+                throw; // isteğe bağlı: tekrar fırlatmak istersen
+            }
         }
+        //public void Create(T entity)
+        //{
+        //    Table.Add(entity);
+        //    _context.SaveChanges();
+        //}
 
         public void Delete(int id)
         {

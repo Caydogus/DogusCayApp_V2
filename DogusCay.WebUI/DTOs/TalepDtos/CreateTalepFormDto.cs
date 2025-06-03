@@ -14,6 +14,11 @@ namespace DogusCay.WebUI.DTOs.TalepFormDtos
         public int? PointId { get; set; }
 
         // Ürün bilgileri
+        public int CategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
+        public int? SubSubCategoryId { get; set; }
+
+
         public int ProductId { get; set; }
         public string ProductName { get; set; } // UI için
         public string ErpCode { get; set; } // opsiyonel
@@ -33,16 +38,16 @@ namespace DogusCay.WebUI.DTOs.TalepFormDtos
         public decimal ListeFiyat { get; set; }
         public decimal SonAdetFiyati { get; set; }
         public decimal AdetFarkDonusuTL { get; set; }
-        public decimal AdetFarkDonusuYuzde { get; set; }
+        // public decimal AdetFarkDonusuYuzde { get; set; }
 
-        public DateTime ValidFrom { get; set; }
-        public DateTime ValidTo { get; set; }
+        public DateTime ValidFrom { get; set; } = DateTime.Today;
+        public DateTime ValidTo { get; set; } = DateTime.Today.AddDays(7);
 
         public string Note { get; set; }
 
-        public int AppUserId { get; set; } = 9;
+        public int? AppUserId { get; set; } = 9;
 
         // Hesaplanan alanlar
-        public decimal ToplamFiyat { get; set; }
+        public decimal Total { get; set; }
     }
 }

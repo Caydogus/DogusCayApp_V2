@@ -41,22 +41,40 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateTalepForm(CreateTalepFormDto createTalepFormDto)
-        {
+        {   // 🔍 Formdan gelen tüm key-value'ları yaz
+            Console.WriteLine("🔥 METODA GELDİ");
             if (!ModelState.IsValid)
             {
                 await SetDropdownsAsync();
                 return View(createTalepFormDto);
             }
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(createTalepFormDto);
+                Console.WriteLine("📦 Gönderilen JSON:");
+                Console.WriteLine(json);
 
-            var response = await _client.PostAsJsonAsync("talepforms", createTalepFormDto);
-            if (response.IsSuccessStatusCode)
-                return RedirectToAction("Index");
+                var response = await _client.PostAsJsonAsync("talepforms", createTalepFormDto);
+                var responseText = await response.Content.ReadAsStringAsync();
 
-            TempData["error"] = "Talep kaydedilemedi.";
+                Console.WriteLine("📤 POST Status: " + response.StatusCode);
+                Console.WriteLine("📩 API Yanıtı: " + responseText);
+
+                if (response.IsSuccessStatusCode)
+                    return RedirectToAction("Index");
+
+                TempData["error"] = "Talep kaydedilemedi.";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ HATA: " + ex.Message);
+                TempData["error"] = "İstek gönderilirken hata oluştu: " + ex.Message;
+            }
+
             await SetDropdownsAsync();
             return View(createTalepFormDto);
         }
-        
-       
+
+
     }
 }

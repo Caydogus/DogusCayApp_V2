@@ -80,11 +80,11 @@ namespace DogusCay.API.Mapping
             .ForMember(dest => dest.PointName, opt => opt.MapFrom(src => src.Point.PointName));
 
             // TalepFormItem → ResultTalepFormItemDto
-            CreateMap<TalepFormItem, ResultTalepFormItemDto>()
+            CreateMap<TalepForm, ResultTalepFormItemDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
 
             CreateMap<CreateTalepFormDto, TalepForm>().ReverseMap();
-            CreateMap<CreateTalepFormItemDto, TalepFormItem>().ReverseMap();
+            CreateMap<CreateTalepFormItemDto, TalepForm>().ReverseMap();
             CreateMap<TalepForm, ResultTalepFormListDto>()
             .ForMember(dest => dest.KullaniciAdi, opt => opt.MapFrom(src => src.AppUser.LastName + " " + src.AppUser.FirstName))
             .ForMember(dest => dest.KanalAdi, opt => opt.MapFrom(src => src.Kanal.KanalName))
