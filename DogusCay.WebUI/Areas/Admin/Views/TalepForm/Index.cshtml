@@ -1,0 +1,54 @@
+﻿@model List<DogusCay.WebUI.DTOs.TalepDtos.ResultTalepFormDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h3 class="mb-4">Insert Tipi Talep Formları</h3>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning">Hiç talep formu bulunamadı.</div>
+}
+else
+{
+    <div class="table-responsive" style="overflow-x:auto; max-width:100%;">
+        <table class="table table-striped table-hover text-nowrap" style="min-width: 1300px;">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>Geçerlilik</th>
+                    <th>Müşteri</th>
+                    <th>Ürün Adı</th>
+                    <th>Ana Kategori</th>
+                    <th>Alt Kategori</th>
+                    <th>Alt Alt Kategori</th>
+                    <th>ERP Kodu</th>
+                    <th>Ağırlık (kg)</th>
+                    <th>Adet Farkı (₺)</th>
+                    <th>Son Adet Fiyatı</th>
+                    <th>Toplam (₺)</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</td>
+                        <td>@item.PointName</td>
+                        <td>@item.ProductName</td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.SubCategoryName</td>
+                        <td>@item.SubSubCategoryName</td>
+                        <td>@item.ErpCode</td>
+                        <td>@item.ApproximateWeightKg.ToString("0.00")</td>
+                        <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
+                        <td>@item.SonAdetFiyati.ToString("C2")</td>
+                        <td class="fw-bold">@item.Total.ToString("C2")</td>
+                       
+                        <td>Aktif</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

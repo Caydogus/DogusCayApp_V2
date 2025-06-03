@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net.Http.Json;
 using DogusCay.WebUI.DTOs.PointGroupTypeDtos;
+using DogusCay.WebUI.DTOs.TalepDtos;
 
 namespace DogusCay.WebUI.Areas.Admin.Controllers
 {
@@ -31,7 +32,21 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             // Diğer dropdown'lar başlangıçta boş olacak, JavaScript ile doldurulacak
         }
-
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var response = await _client.GetFromJsonAsync<List<ResultTalepFormDto>>("https://localhost:7076/api/talepforms");
+                return View(response);
+            }
+            catch (Exception ex)
+            {
+                // Hata yönetimi
+                ViewBag.Error = "Talep listesi alınamadı: " + ex.Message;
+                return View(new List<ResultTalepFormDto>());
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> CreateTalepForm()
         {

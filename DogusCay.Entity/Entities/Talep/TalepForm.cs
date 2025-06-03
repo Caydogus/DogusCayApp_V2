@@ -21,6 +21,9 @@ public class TalepForm
     public int CategoryId { get; set; }
     public int? SubCategoryId { get; set; }
     public int? SubSubCategoryId { get; set; }
+    public Category Category { get; set; }
+    public Category SubCategory { get; set; }
+    public Category SubSubCategory { get; set; }
 
     public int ProductId { get; set; } // Insert tipi için zorunlu
     public Product Product { get; set; }

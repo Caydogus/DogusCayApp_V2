@@ -26,6 +26,9 @@ namespace DogusCay.DataAccess.Concrete
                 .Include(tf => tf.Distributor)
                 .Include(tf => tf.PointGroupType)
                 .Include(tf => tf.Point)
+                .Include(tf => tf.Category)
+                .Include(tf => tf.SubCategory)
+                .Include(tf => tf.SubSubCategory)
                 .OrderByDescending(tf => tf.TalepFormId)
                 .ToList();
         }
@@ -38,6 +41,10 @@ namespace DogusCay.DataAccess.Concrete
                 .Include(tf => tf.Distributor)
                 .Include(tf => tf.PointGroupType)
                 .Include(tf => tf.Point)
+                .Include(tf => tf.Category)
+                .Include(tf => tf.SubCategory)
+                .Include(tf => tf.SubSubCategory)
+
                 .OrderByDescending(tf => tf.TalepFormId)
                 .ToList();
         }

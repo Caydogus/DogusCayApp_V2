@@ -71,13 +71,17 @@ namespace DogusCay.API.Mapping
             CreateMap<UpdateTalepFormDto, TalepForm>().ReverseMap();
             CreateMap<UpdateTalepFormItemDto, TalepFormItem>().ReverseMap();
 
-            // RESULT (Form + Item)
             CreateMap<TalepForm, ResultTalepFormDto>()
-            .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.AppUser.LastName + " " + src.AppUser.FirstName))
-            .ForMember(dest => dest.KanalName, opt => opt.MapFrom(src => src.Kanal.KanalName))
-            .ForMember(dest => dest.DistributorName, opt => opt.MapFrom(src => src.Distributor != null ? src.Distributor.DistributorName : null))
-            .ForMember(dest => dest.PointGroupTypeName, opt => opt.MapFrom(src => src.PointGroupType != null ? src.PointGroupType.PointGroupTypeName : null))
-            .ForMember(dest => dest.PointName, opt => opt.MapFrom(src => src.Point.PointName));
+              .ForMember(dest => dest.KanalName, opt => opt.MapFrom(src => src.Kanal.KanalName))
+              .ForMember(dest => dest.DistributorName, opt => opt.MapFrom(src => src.Distributor.DistributorName))
+              .ForMember(dest => dest.PointGroupTypeName, opt => opt.MapFrom(src => src.PointGroupType.PointGroupTypeName))
+              .ForMember(dest => dest.PointName, opt => opt.MapFrom(src => src.Point.PointName))
+              .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.AppUser.LastName + " " + src.AppUser.FirstName))
+
+              // 🔻 Kategori isimleri
+              .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
+              .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(src => src.SubCategory.CategoryName))
+              .ForMember(dest => dest.SubSubCategoryName, opt => opt.MapFrom(src => src.SubSubCategory.CategoryName));
 
             // TalepFormItem → ResultTalepFormItemDto
             CreateMap<TalepForm, ResultTalepFormItemDto>()
