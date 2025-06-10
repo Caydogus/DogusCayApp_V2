@@ -53,7 +53,7 @@ namespace DogusCay.WebUI.Controllers
 
                 await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProps);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "TalepForm", new { area = "Admin" });
             }
             ModelState.AddModelError("", "Kullanıcı Adı veya Şifre Hatalı");
             return View(userLoginDto);

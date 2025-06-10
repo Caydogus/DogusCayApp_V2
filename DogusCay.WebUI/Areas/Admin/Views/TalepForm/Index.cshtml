@@ -3,7 +3,10 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<h3 class="mb-4">Insert Tipi Talep Formları</h3>
+<h3 class="mb-4 d-flex justify-content-between align-items-center">
+    <span>Insert Tipi Talep Formları</span>
+    <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni Talep Oluştur</a>
+</h3>
 
 @if (Model == null || !Model.Any())
 {
@@ -27,6 +30,7 @@ else
                     <th>Son Adet Fiyatı</th>
                     <th>Toplam (₺)</th>
                     <th>Durum</th>
+                    <th>İşlemler</th> <!-- Yeni eklenen kolon -->
                 </tr>
             </thead>
             <tbody>
@@ -44,11 +48,34 @@ else
                         <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
                         <td>@item.SonAdetFiyati.ToString("C2")</td>
                         <td class="fw-bold">@item.Total.ToString("C2")</td>
-                       
                         <td>Aktif</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteTalep(@item.TalepFormId)">Sil</button>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 }
+<script>
+    async function deleteTalep(id) {
+        if (!confirm("Bu talep formunu silmek istediğinize emin misiniz?")) return;
+
+        try {
+            const response = await fetch(`https://localhost:7076/api/talepforms/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert("Talep başarıyla silindi.");
+                location.reload(); // sayfayı yenile
+            } else {
+                const error = await response.text();
+                alert("Silme başarısız: " + error);
+            }
+        } catch (err) {
+            alert("Hata oluştu: " + err);
+        }
+    }
+</script>

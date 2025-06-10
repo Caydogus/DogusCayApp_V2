@@ -175,6 +175,7 @@ namespace DogusCay.API.Controllers
         // 🔹 Kendi onaylanmamış formunu silebilir
         [HttpDelete("{id}")]
         // [Authorize(Roles = "BolgeMuduru")]
+       
         public IActionResult Delete(int id)
         {
             int userId = 9; // TEST kullanıcısı
@@ -186,6 +187,7 @@ namespace DogusCay.API.Controllers
             _talepFormService.TDelete(id);
             return Ok("Talep silindi.");
         }
+
 
         // 🔹 Toplam form sayısı
         [HttpGet("count")]

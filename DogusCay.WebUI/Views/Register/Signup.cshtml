@@ -22,7 +22,7 @@
 	<div class="wrapper">
 		<div class="inner">
 			<img src="~/colorlib-regform-26/images/image-1.png" alt="" class="image-1">
-			<form method="post">
+			<form asp-action="Signup" asp-controller="Register" method="post">
 				<h3>Yeni Hesap</h3>
 				<div class="form-holder">
 					<span class="lnr lnr-user"></span>
@@ -48,7 +48,7 @@
 					<span class="lnr lnr-lock"></span>
 					<input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="Şifre Tekrarı">
 				</div>
-				<button>
+				<button type="submit">
 					<span>Kayıt Ol</span>
 				</button>
 				<br />

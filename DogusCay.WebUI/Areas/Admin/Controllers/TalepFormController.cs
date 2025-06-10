@@ -90,6 +90,30 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             return View(createTalepFormDto);
         }
 
+        //talep silme
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var response = await _client.DeleteAsync($"https://localhost:7076/api/talepforms/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Success"] = "Talep başarıyla silindi.";
+                }
+                else
+                {
+                    TempData["Error"] = "Talep silinirken bir hata oluştu.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Hata: " + ex.Message;
+            }
+
+            return RedirectToAction("Index");
+        }
 
     }
+
 }

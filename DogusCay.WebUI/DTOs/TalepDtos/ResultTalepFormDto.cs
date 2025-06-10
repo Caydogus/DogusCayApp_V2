@@ -3,6 +3,7 @@
     public class ResultTalepFormDto
     {
         // Zincir alanları (isim bazlı)
+        public int TalepFormId { get; set; }
         public string KanalName { get; set; }
         public string DistributorName { get; set; }
         public string PointGroupTypeName { get; set; }
