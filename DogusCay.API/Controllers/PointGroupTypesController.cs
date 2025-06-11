@@ -9,11 +9,12 @@ using Microsoft.SqlServer.Server;
 
 namespace DogusCay.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PointGroupTypesController(IPointGroupTypeService _pointGroupTypeService, IMapper _mapper) : ControllerBase
     {
-        [AllowAnonymous]
+        
         [HttpGet]
         public IActionResult Get()
         {
@@ -63,7 +64,7 @@ namespace DogusCay.API.Controllers
             var result = _mapper.Map<List<ResultPointGroupTypeDto>>(list);
             return Ok(result);
         }
-        [AllowAnonymous]
+        
         [HttpGet("dropdown")]
         public IActionResult GetDropdown()
         {

@@ -1,56 +1,85 @@
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text.Json.Serialization;
 using DogusCay.WebUI.Services.TokenServices;
 using DogusCay.WebUI.Services.UserServices;
 using FluentValidation;
-using FluentValidation.AspNetCore;  // FluentValidation namespace ekleyin
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DogusCay.WebUI.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ---------------------- SESSION ve COOKIE POLICY ----------------------
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
+// 🔧 Cookie policy tanımlanmalı, yoksa bazı ortamlarda session cookie yazılmaz
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+});
+
+// ----------------------------------------------------------------------
+
+// Servis kayıtları
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddHttpContextAccessor();
 
-//builder.Services.AddHttpClient("EduClient", cfg =>
-//{
-//    var tokenService = builder.Services.BuildServiceProvider().GetRequiredService<ITokenService>();
-//    var token = tokenService.GetUserToken;
-//    cfg.BaseAddress = new Uri("https://localhost:7076/api/");
-//    if (token != null)
-//    {
-//        cfg.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetUserToken);
-//    }
-//});
+// HttpClient için Token Header handler
+builder.Services.AddTransient<AuthHeaderHandler>();
 builder.Services.AddHttpClient("EduClient", cfg =>
 {
     cfg.BaseAddress = new Uri("https://localhost:7076/api/");
-});
+})
+.AddHttpMessageHandler<AuthHeaderHandler>();
 
+// ------------------ COOKIE tabanlı JWT Authentication ------------------
+builder.Services.AddAuthentication("DogusCookie")
+    .AddCookie("DogusCookie", opt =>
+    {
+        opt.LoginPath = "/Login/SignIn";
+        opt.LogoutPath = "/Login/Logout";
+        opt.AccessDeniedPath = "/ErrorPage/AccessDenied";
+        opt.Cookie.SameSite = SameSiteMode.Strict;
+        opt.Cookie.HttpOnly = true;
+        opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        opt.Cookie.Name = "DogusCayJwt";
+        opt.SlidingExpiration = true;
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
-{
-    opt.LoginPath = "/Login/SignIn";
-    opt.LogoutPath = "/Login/Logout";
-    opt.AccessDeniedPath = "/ErrorPage/AccessDenied";
-    opt.Cookie.SameSite = SameSiteMode.Strict;
-    opt.Cookie.HttpOnly = true;
-    opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-    opt.Cookie.Name = "DogusCayJwt";
-    opt.SlidingExpiration = true;
-});
+        opt.Events.OnSigningIn = async context =>
+        {
+            var identity = (ClaimsIdentity)context.Principal.Identity;
+            if (!identity.HasClaim(c => c.Type == ClaimTypes.NameIdentifier))
+            {
+                var userId = context.Principal.Claims
+                    .FirstOrDefault(c => c.Type == "UserId" || c.Type.EndsWith("nameidentifier"))?.Value;
 
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly()).AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+                if (userId != null)
+                {
+                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId));
+                }
+            }
+            await Task.CompletedTask;
+        };
+    });
+
+// FluentValidation
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly())
+    .AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
+
 builder.Services.AddControllersWithViews();
-
-//consume i�lemi yapmak i�in ekle.
-builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-// HTTP request pipeline'� yap�land�r�n
+// -------------------- MIDDLEWARE PIPELINE --------------------
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -61,20 +90,19 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// 🔥 CookiePolicy mutlaka burada olmalı!
+app.UseCookiePolicy();
+
+// 🔥 Session cookie yazılmadan önce çalışmalı
+app.UseSession();
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Normal (area olmayan) controller'lar
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=SignIn}/{id?}"
 );
-//app.UseEndpoints(endpoints =>
-//{ 
-//    endpoints.MapControllerRoute(
-//        name: "areas",
-//        pattern: "{area=exists}/{controller=Home}/{action=Index}/{id?}"
-//    );
-//});
+
 app.Run();

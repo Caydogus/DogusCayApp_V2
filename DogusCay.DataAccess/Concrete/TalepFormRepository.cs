@@ -17,7 +17,7 @@ namespace DogusCay.DataAccess.Concrete
         {
             _context = context;
         }
-
+        //admin tum talep formlarını gorur
         public List<TalepForm> GetAllWithUser()
         {
             return _context.TalepForms
@@ -32,7 +32,7 @@ namespace DogusCay.DataAccess.Concrete
                 .OrderByDescending(tf => tf.TalepFormId)
                 .ToList();
         }
-
+        //bolge muduru sadece kendi talep formlarını görür
         public List<TalepForm> GetAllByUserId(int userId)
         {
             return _context.TalepForms
@@ -44,7 +44,6 @@ namespace DogusCay.DataAccess.Concrete
                 .Include(tf => tf.Category)
                 .Include(tf => tf.SubCategory)
                 .Include(tf => tf.SubSubCategory)
-
                 .OrderByDescending(tf => tf.TalepFormId)
                 .ToList();
         }
@@ -80,7 +79,8 @@ namespace DogusCay.DataAccess.Concrete
                 _context.SaveChanges();
             }
         }
-
+        
+        //belirli talep formunun detaylarını getir.indexe çek
         public TalepForm GetDetailsForForm(int formId)
         {
             return _context.TalepForms
@@ -89,6 +89,9 @@ namespace DogusCay.DataAccess.Concrete
                 .Include(tf => tf.Distributor)
                 .Include(tf => tf.PointGroupType)
                 .Include(tf => tf.Point)
+                .Include(tf => tf.Category)
+                .Include(tf => tf.SubCategory)
+                .Include(tf => tf.SubSubCategory)
                 .FirstOrDefault(tf => tf.TalepFormId == formId);
         }
     }

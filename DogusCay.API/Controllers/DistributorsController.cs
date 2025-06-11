@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DogusCay.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DistributorsController : ControllerBase
@@ -20,7 +21,7 @@ namespace DogusCay.API.Controllers
             _mapper = mapper;
         }
 
-        [AllowAnonymous]
+       
         [HttpGet]
         public IActionResult Get()
         {
@@ -71,7 +72,7 @@ namespace DogusCay.API.Controllers
             return Ok("Distributor güncellendi.");
         }
 
-        [AllowAnonymous]
+       
         [HttpGet("GetDistributorCount")]
         public IActionResult GetDistributorCount()
         {
@@ -80,7 +81,7 @@ namespace DogusCay.API.Controllers
         }
 
         //KanalId'ye bağlı olan tüm distributorları getirir.
-        [AllowAnonymous]
+       
         [HttpGet("by-kanal/{kanalId}")]
         public IActionResult GetByKanal(int kanalId)
         {

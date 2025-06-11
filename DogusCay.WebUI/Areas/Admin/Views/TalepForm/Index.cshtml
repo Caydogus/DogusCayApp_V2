@@ -2,9 +2,10 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var jwt = Context.Session.GetString("JwtToken");
 }
+<input type="hidden" id="jwtToken" value="@jwt" />
 <h3 class="mb-4 d-flex justify-content-between align-items-center">
-    <span>Insert Tipi Talep Formları</span>
     <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni Talep Oluştur</a>
 </h3>
 
@@ -18,6 +19,7 @@ else
         <table class="table table-striped table-hover text-nowrap" style="min-width: 1300px;">
             <thead class="bg-dark text-white">
                 <tr>
+                    <th></th>
                     <th>Geçerlilik</th>
                     <th>Müşteri</th>
                     <th>Ürün Adı</th>
@@ -37,6 +39,9 @@ else
                 @foreach (var item in Model)
                 {
                     <tr>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteTalep(@item.TalepFormId)">Sil</button>
+                        </td>
                         <td>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</td>
                         <td>@item.PointName</td>
                         <td>@item.ProductName</td>
@@ -49,9 +54,7 @@ else
                         <td>@item.SonAdetFiyati.ToString("C2")</td>
                         <td class="fw-bold">@item.Total.ToString("C2")</td>
                         <td>Aktif</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="deleteTalep(@item.TalepFormId)">Sil</button>
-                        </td>
+                       
                     </tr>
                 }
             </tbody>
@@ -62,9 +65,19 @@ else
     async function deleteTalep(id) {
         if (!confirm("Bu talep formunu silmek istediğinize emin misiniz?")) return;
 
+        // 🔐 JWT token'ı al (örneğin sayfanın en başında hidden input varsa oradan)
+        const token = document.getElementById("jwtToken")?.value;
+        if (!token) {
+            alert("Oturum süresi dolmuş olabilir. Lütfen tekrar giriş yapın.");
+            return;
+        }
+
         try {
             const response = await fetch(`https://localhost:7076/api/talepforms/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (response.ok) {

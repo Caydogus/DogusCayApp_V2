@@ -45,7 +45,7 @@ namespace DogusCay.WebUI.DTOs.TalepFormDtos
 
         public string Note { get; set; }
 
-        public int? AppUserId { get; set; } = 9;
+        public int? AppUserId { get; set; }
 
         // Hesaplanan alanlar
         public decimal Total { get; set; }

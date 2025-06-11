@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DogusCay.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -25,7 +26,7 @@ namespace DogusCay.API.Controllers
         }
 
         // Tüm kategorileri getirir
-        [AllowAnonymous]
+        
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -84,7 +85,7 @@ namespace DogusCay.API.Controllers
         }
 
         // IsShown == true olan kategorileri getirir
-        [AllowAnonymous]
+      
         [HttpGet("GetActiveCategories")]
         public IActionResult GetActiveCategories()
         {

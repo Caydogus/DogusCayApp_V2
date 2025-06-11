@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DogusCay.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
 
     public class PaymentTypesController(IPaymentTypeService _paymentTypeService, IMapper _mapper) : ControllerBase
     {
-        [AllowAnonymous]
+   
         [HttpGet]
         public IActionResult Get()
         {

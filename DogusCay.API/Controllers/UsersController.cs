@@ -3,6 +3,7 @@ using DogusCay.Business.Abstract;
 using DogusCay.DTO.DTOs.LoginRegisterDtos;
 using DogusCay.DTO.DTOs.UserDtos;
 using DogusCay.Entity.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DogusCay.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController(UserManager<AppUser> _userManager, SignInManager<AppUser> _signInManager, IJwtService _jwtService, IMapper _mapper) : ControllerBase
@@ -98,33 +100,5 @@ namespace DogusCay.API.Controllers
 
             return Ok(result);
         }
-        //[HttpGet("SatisTemsilcisiList")]
-        //public async Task<IActionResult> SatisTemsilcisiList()
-        //{
-        //    var users = await _userManager.Users
-        //        .Include(u => u.Region)
-        //        .Where(u => _userManager.GetRolesAsync(u).Result.Contains("SatisTemsilcisi"))
-        //        .ToListAsync();
-
-        //    var result = new List<ResultUserDto>();
-
-        //    foreach (var user in users)
-        //    {
-        //        var roles = await _userManager.GetRolesAsync(user);
-        //        result.Add(new ResultUserDto
-        //        {
-        //            FirstName = user.FirstName,
-        //            LastName = user.LastName,
-        //            ImageUrl = user.ImageUrl,
-        //            Roles = roles,
-        //            RegionName = user.Region?.RegionName
-        //        });
-        //    }
-
-        //    return Ok(result);
-        //}
-
-
-
     }
 }

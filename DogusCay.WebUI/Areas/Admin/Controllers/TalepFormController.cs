@@ -32,37 +32,46 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             // Diğer dropdown'lar başlangıçta boş olacak, JavaScript ile doldurulacak
         }
+    
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             try
             {
-                var response = await _client.GetFromJsonAsync<List<ResultTalepFormDto>>("https://localhost:7076/api/talepforms");
+                string endpoint;
+
+                if (User.IsInRole("Admin"))
+                    endpoint = "talepforms";           // tümü
+                else
+                    endpoint = "talepforms/mine";      // sadece kendisi
+
+                var response = await _client.GetFromJsonAsync<List<ResultTalepFormDto>>(endpoint);
                 return View(response);
             }
             catch (Exception ex)
             {
-                // Hata yönetimi
                 ViewBag.Error = "Talep listesi alınamadı: " + ex.Message;
                 return View(new List<ResultTalepFormDto>());
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> CreateTalepForm()
         {
             await SetDropdownsAsync();
             return View(new CreateTalepFormDto());
         }
-
         [HttpPost]
         public async Task<IActionResult> CreateTalepForm(CreateTalepFormDto createTalepFormDto)
-        {   // 🔍 Formdan gelen tüm key-value'ları yaz
+        {
             Console.WriteLine("🔥 METODA GELDİ");
+
             if (!ModelState.IsValid)
             {
                 await SetDropdownsAsync();
                 return View(createTalepFormDto);
             }
+
             try
             {
                 var json = System.Text.Json.JsonSerializer.Serialize(createTalepFormDto);
@@ -89,6 +98,42 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             await SetDropdownsAsync();
             return View(createTalepFormDto);
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> CreateTalepForm(CreateTalepFormDto createTalepFormDto)
+        //{   // 🔍 Formdan gelen tüm key-value'ları yaz
+        //    Console.WriteLine("🔥 METODA GELDİ");
+        //    if (!ModelState.IsValid)
+        //    {
+        //        await SetDropdownsAsync();
+        //        return View(createTalepFormDto);
+        //    }
+        //    try
+        //    {
+        //        var json = System.Text.Json.JsonSerializer.Serialize(createTalepFormDto);
+        //        Console.WriteLine("📦 Gönderilen JSON:");
+        //        Console.WriteLine(json);
+
+        //        var response = await _client.PostAsJsonAsync("talepforms", createTalepFormDto);
+        //        var responseText = await response.Content.ReadAsStringAsync();
+
+        //        Console.WriteLine("📤 POST Status: " + response.StatusCode);
+        //        Console.WriteLine("📩 API Yanıtı: " + responseText);
+
+        //        if (response.IsSuccessStatusCode)
+        //            return RedirectToAction("Index");
+
+        //        TempData["error"] = "Talep kaydedilemedi.";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("❌ HATA: " + ex.Message);
+        //        TempData["error"] = "İstek gönderilirken hata oluştu: " + ex.Message;
+        //    }
+
+        //    await SetDropdownsAsync();
+        //    return View(createTalepFormDto);
+        //}
 
         //talep silme
         [HttpPost]

@@ -10,6 +10,8 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
 {
     public class CreateTalepFormDto
     { // Zincir alanları
+
+        public int? AppUserId { get; set; }
         public int KanalId { get; set; }
         public int? DistributorId { get; set; }
         public int? PointGroupTypeId { get; set; } // opsiyonel, eğer nokta grubu tipi seçilirse
@@ -45,9 +47,6 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public DateTime ValidTo { get; set; } = DateTime.Today.AddDays(7);
 
         public string Note { get; set; }
-
-        public int? AppUserId { get; set; } = 9;
-
         // Hesaplanan alanlar
         public decimal Total { get; set; }
     }

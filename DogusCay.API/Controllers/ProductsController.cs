@@ -10,12 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DogusCay.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController(IProductService _productService, IMapper _mapper) : ControllerBase
     {
         // ✅ TÜM ÜRÜNLER
-        [AllowAnonymous]
+       
         [HttpGet]
         public IActionResult Get()
         {
@@ -25,7 +26,7 @@ namespace DogusCay.API.Controllers
         }
 
         // ✅ ID'ye göre tek ürün
-        [AllowAnonymous]
+       
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {

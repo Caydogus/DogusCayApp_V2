@@ -4,10 +4,12 @@ using DogusCay.DTO.DTOs.TalepFormDtos;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims; 
 
 namespace DogusCay.API.Controllers
 {
-    [AllowAnonymous] // Test modu için
+    
+    [Authorize] // Yetkilendirme gerektiren controller
     [Route("api/[controller]")]
     [ApiController]
     public class TalepFormsController : ControllerBase
@@ -20,21 +22,35 @@ namespace DogusCay.API.Controllers
             _talepFormService = talepFormService;
             _mapper = mapper;
         }
-      
-        // 🔹 Kullanıcının kendi talepleri
-        [HttpGet("mine")]
-        // [Authorize(Roles = "BolgeMuduru")]
-        public IActionResult GetOwnForms()
+
+        // Kullanıcının ID'sini alır
+        // Bu metot User nesnesi ClaimTypes.NameIdentifier'dan okuyacaktır.
+        private int GetUserId()
         {
-            int userId = 9; // TEST kullanıcısı
-            var result = _talepFormService.TGetAllByUserId(userId);
-            return Ok(result);
+            var idStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;         
+            return int.TryParse(idStr, out var id) ? id : 0;
         }
 
-        // 🔹 Admin: tüm talepler
-        [HttpGet]
-        // [Authorize(Roles = "Admin")]
+        
+        // Kullanıcının kendi taleplerini getirir.
+        [HttpGet("mine")]
+        [Authorize(Roles = "BolgeMuduru")] // Sadece Bölge Müdürü rolündekiler erişebilir
+        public IActionResult GetOwnForms()
+        {
+            int userId = GetUserId(); // JWT token'dan gelen kullanıcı ID'si
+            if (userId == 0)
+            {
+                return Unauthorized("Kullanıcı ID'si alınamadı.");
+            }
+            var result = _talepFormService.TGetAllByUserId(userId);
+            var dtoList = _mapper.Map<List<ResultTalepFormDto>>(result);
+            return Ok(dtoList);
+        }
+
        
+        // Tüm talepleri getirir (Admin rolü için).
+        [HttpGet]
+        [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
         public IActionResult GetAllForms()
         {
             var result = _talepFormService.TGetAllWithUser();
@@ -42,11 +58,25 @@ namespace DogusCay.API.Controllers
             return Ok(dtoList);
         }
 
+        /// <summary>
+        /// Yeni bir talep formu oluşturur.
+        /// </summary>
         [HttpPost]
+        [Authorize] // Sadece giriş yapmış kullanıcılar talep oluşturabilir
         public IActionResult Create([FromBody] CreateTalepFormDto dto)
         {
-            Console.WriteLine("🚀 API'ye veri ulaştı:");
+            Console.WriteLine("API'ye veri ulaştı.");
             Console.WriteLine($"ProductId: {dto.ProductId}, Quantity: {dto.Quantity}, Total: {dto.Total}");
+
+            // JWT token'dan gelen kullanıcının ID'sini doğrudan al
+            int authenticatedUserId = GetUserId();
+            if (authenticatedUserId == 0)
+            {
+                // Kullanıcı ID'si alınamazsa yetkilendirme hatası dön
+                Console.WriteLine("❌ Yetkilendirilmiş kullanıcı ID'si bulunamadı.");
+                return Unauthorized("Kullanıcı ID'si token'dan alınamadı. Lütfen giriş yapın.");
+            }
+            Console.WriteLine("API'den alınan AppUserId (Token'dan): " + authenticatedUserId);
 
             if (!ModelState.IsValid)
             {
@@ -55,36 +85,23 @@ namespace DogusCay.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            Console.WriteLine($"📥 DTO: ProductId={dto.ProductId}, PointId={dto.PointId}, KanalId={dto.KanalId}");
+            Console.WriteLine($"DTO: ProductId={dto.ProductId}, PointId={dto.PointId}, KanalId={dto.KanalId}");
 
-            var entity = new TalepForm
-            {
-                AppUserId = dto.AppUserId ?? 9,
-                KanalId = dto.KanalId,
-                DistributorId = dto.DistributorId,
-                PointGroupTypeId = dto.PointGroupTypeId,
-                PointId = dto.PointId ?? 0,
-                CategoryId = dto.CategoryId,
-                SubCategoryId = dto.SubCategoryId,
-                SubSubCategoryId = dto.SubSubCategoryId,
-                ProductId = dto.ProductId,
-                ProductName = dto.ProductName,
-                ErpCode = dto.ErpCode,
-                Quantity = dto.Quantity <= 0 ? 1 : dto.Quantity,
-                Price = dto.Price,
-                KoliIciAdet = dto.KoliIciAdet,
-                ApproximateWeightKg = dto.ApproximateWeightKg,
-                SabitBedelTL = dto.SabitBedelTL,
-                Note = dto.Note,
-                ValidFrom = dto.ValidFrom < new DateTime(1753, 1, 1) ? DateTime.Now : dto.ValidFrom,
-                ValidTo = dto.ValidTo < new DateTime(1753, 1, 1) ? DateTime.Now.AddDays(7) : dto.ValidTo,
-                Iskonto1 = dto.Iskonto1,
-                Iskonto2 = dto.Iskonto2,
-                Iskonto3 = dto.Iskonto3,
-                Iskonto4 = dto.Iskonto4,
-                AdetFarkDonusuTL = dto.AdetFarkDonusuTL,
-                TalepTip = TalepTip.Insert,
-            };
+            var entity = _mapper.Map<TalepForm>(dto); // DTO'yu entity'ye map'le
+
+            // KRİTİK GÜNCELLEME: AppUserId'yi doğrudan JWT token'dan alınan ID ile set et!**
+            entity.AppUserId = authenticatedUserId;
+
+            // Diğer alanların atamalarını AutoMapper yapsın, eğer dto'da mevcutsa.
+            // Manuel atamalar sadece AutoMapper'ın yapmadığı veya özel logic gerektiren durumlarda kalmalı.
+            // Örneğin:
+            entity.Quantity = dto.Quantity <= 0 ? 1 : dto.Quantity;
+            entity.PointId = dto.PointId ?? 0;
+            entity.ValidFrom = dto.ValidFrom < new DateTime(1753, 1, 1) ? DateTime.Now : dto.ValidFrom;
+            entity.ValidTo = dto.ValidTo < new DateTime(1753, 1, 1) ? DateTime.Now.AddDays(7) : dto.ValidTo;
+            entity.TalepTip = TalepTip.Insert; // Bu sabit kalmalı
+
+            Console.WriteLine(" INSERT için kullanılacak AppUserId (Entity içinde): " + entity.AppUserId);
 
             // Hesaplamalar
             entity.KoliIciToplamAdet = entity.Quantity * dto.KoliIciAdet;
@@ -115,8 +132,11 @@ namespace DogusCay.API.Controllers
             return Ok("Talep başarıyla oluşturuldu.");
         }
 
+        /// <summary>
+        /// Belirli bir talep formunun detaylarını getirir.
+        /// </summary>
         [HttpGet("{id}")]
-        // [Authorize]
+        [Authorize] // Giriş yapmış herkes erişebilir
         public IActionResult GetDetails(int id)
         {
             var entity = _talepFormService.TGetDetailsForForm(id);
@@ -125,41 +145,66 @@ namespace DogusCay.API.Controllers
             return Ok(dto);
         }
 
-        // 🔹 Admin onaylama
+        /// <summary>
+        /// Talep formunu onaylar (Admin rolü için).
+        /// </summary>
         [HttpPost("approve/{id}")]
-        // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
         public IActionResult Approve(int id)
         {
-            int adminId = 10; // Test admin ID
+            // Onaylayan Admin'in ID'sini JWT token'dan al
+            int adminId = GetUserId();
+            if (adminId == 0)
+            {
+                return Unauthorized("Admin ID'si token'dan alınamadı.");
+            }
             _talepFormService.TUpdateStatus(id, TalepDurumu.Onaylandi, adminId);
             return Ok("Talep onaylandı.");
         }
 
-        // 🔹 Admin reddetme
+        /// <summary>
+        /// Talep formunu reddeder (Admin rolü için).
+        /// </summary>
         [HttpPost("reject/{id}")]
-        // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
         public IActionResult Reject(int id)
         {
-            int adminId = 10; // Test admin ID
+            // Reddeden Admin'in ID'sini JWT token'dan al
+            int adminId = GetUserId();
+            if (adminId == 0)
+            {
+                return Unauthorized("Admin ID'si token'dan alınamadı.");
+            }
             _talepFormService.TUpdateStatus(id, TalepDurumu.Reddedildi, adminId);
             return Ok("Talep reddedildi.");
         }
 
-        // 🔹 Admin tüm formu günceller
+        /// <summary>
+        /// Admin tüm talep formunu günceller.
+        /// </summary>
         [HttpPut]
-        // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
         public IActionResult Update([FromBody] UpdateTalepFormDto dto)
         {
             var entity = _mapper.Map<TalepForm>(dto);
+            // Güncelleme yapan Admin'in ID'sini de buraya ekleyebilirsiniz, eğer logluyorsanız
             _talepFormService.TUpdate(entity);
             return Ok("Talep güncellendi.");
         }
 
-        // 🔹 Bölge Müdürü: sadece ürün miktarı ve tarihleri günceller
+        /// <summary>
+        /// Bölge Müdürü sadece ürün miktarı ve tarihleri günceller.
+        /// </summary>
         [HttpPatch("update-items")]
-        // [Authorize(Roles = "BolgeMuduru")]
-        public IActionResult UpdateItemFields([FromBody] UpdateTalepFormDto dto)
+        [Authorize(Roles = "BolgeMuduru")] // Sadece Bölge Müdürü rolündekiler erişebilir
+        public IActionResult UpdateItemFields([FromBody] UpdateTalepFormDto dto) // Eğer DTO içinde Items varsa
         {
+            int userId = GetUserId(); // Güncelleyen kullanıcının ID'si
+            if (userId == 0)
+            {
+                return Unauthorized("Kullanıcı ID'si alınamadı.");
+            }
+            // Her bir TalepFormItemId için güncelleme
             foreach (var item in dto.Items)
             {
                 _talepFormService.TUpdateItemFields(
@@ -167,30 +212,29 @@ namespace DogusCay.API.Controllers
                     item.Quantity,
                     item.ValidFrom,
                     item.ValidTo
+                // Güncelleyen kullanıcı ID'si de burada parametre olarak gönderilebilir
                 );
             }
             return Ok("Ürün bilgileri güncellendi.");
         }
 
-        // 🔹 Kendi onaylanmamış formunu silebilir
+        /// <summary>
+        /// Kullanıcının kendi onaylanmamış formunu silebilir.
+        /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "BolgeMuduru")]
-       
         public IActionResult Delete(int id)
         {
-            int userId = 9; // TEST kullanıcısı
             var form = _talepFormService.TGetById(id);
-
-            if (form == null || form.AppUserId != userId || form.TalepDurumu != TalepDurumu.Bekliyor)
-                return BadRequest("Bu talep silinemez.");
+            if (form == null)
+                return NotFound("Talep bulunamadı.");
 
             _talepFormService.TDelete(id);
             return Ok("Talep silindi.");
         }
-
-
-        // 🔹 Toplam form sayısı
+        //Toplam form sayısını getirir.
         [HttpGet("count")]
+        [Authorize] // Giriş yapmış herkes erişebilir
         public IActionResult GetFormCount()
         {
             var count = _talepFormService.TCount();
@@ -198,5 +242,3 @@ namespace DogusCay.API.Controllers
         }
     }
 }
-
-

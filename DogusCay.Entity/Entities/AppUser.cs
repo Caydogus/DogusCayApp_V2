@@ -16,9 +16,9 @@ namespace DogusCay.Entity.Entities
         public string? ImageUrl { get; set; }
 
         //bölge müdürü
-        public ICollection<Point> Points { get; set; }
+      public ICollection<Point> Points { get; set; }
         // Bu kullanıcının yaptığı satışlar (Satış Temsilcisi ise)
-        public ICollection<Sale> Sales { get; set; }
+       public ICollection<Sale> Sales { get; set; }
 
     }
 }

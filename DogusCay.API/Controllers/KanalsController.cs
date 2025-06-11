@@ -10,11 +10,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DogusCay.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class KanalsController(IKanalService _kanalService, IMapper _mapper) : ControllerBase
     {
-        [AllowAnonymous]
+       
         [HttpGet]
         public IActionResult Get()
         {
@@ -22,7 +23,7 @@ namespace DogusCay.API.Controllers
             var result = _mapper.Map<List<ResultKanalDto>>(kanallar);
             return Ok(result);
         }
-        [AllowAnonymous]
+       
         [HttpGet("dropdown")]
         public IActionResult GetDropdown()
         {
@@ -67,7 +68,7 @@ namespace DogusCay.API.Controllers
             return Ok("Kanal Güncellendi");
         }
    
-        [AllowAnonymous]
+        
         [HttpGet("GetKanalCount")]
         public IActionResult GetKanalCount()
         {

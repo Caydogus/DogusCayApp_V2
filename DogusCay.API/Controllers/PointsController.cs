@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 namespace DogusCay.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PointsController : ControllerBase 
@@ -46,14 +47,7 @@ namespace DogusCay.API.Controllers
             }).ToList();
 
             return Ok(result);
-            ////  Giriş yapan kullanıcının ID'sini al
-            //var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-            ////  Sadece bu kullanıcıya ait noktaları çek
-            //var values = _pointService.TGetFilteredList(p => p.AppUserId == userId);
-
-            //var points = _mapper.Map<List<ResultPointDto>>(values);
-            //return Ok(points);
+            
         }
 
         [HttpGet("{id}")]
@@ -180,19 +174,7 @@ namespace DogusCay.API.Controllers
 
             return Ok(list);
         }
-        ////lc ve na için
-        //[AllowAnonymous]
-        //[HttpGet("by-group/{pointGroupTypeId}")]
-        //public IActionResult GetPointsByGroup(int pointGroupTypeId)
-        //{
-        //    var list = _pointService.TGetFilteredList(p => p.PointGroupTypeId == pointGroupTypeId);
-        //    var result = _mapper.Map<List<ResultPointDto>>(list);
-        //    return Ok(result);
-        //}
-
-
-        //PointGroupTypeId + DistributorId’ye göre noktaları getirir.DIST kanalına ait zincir içindir.
-
+    
         [HttpGet("by-group/{pointGroupTypeId}/distributor/{distributorId}")]
         public IActionResult GetByGroupAndDistributor(int distributorId, int pointGroupTypeId)
         {

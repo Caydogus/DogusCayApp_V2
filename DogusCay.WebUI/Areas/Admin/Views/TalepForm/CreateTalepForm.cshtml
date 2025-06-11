@@ -1,11 +1,13 @@
 ﻿@model DogusCay.WebUI.DTOs.TalepFormDtos.CreateTalepFormDto
 
 @{
-	ViewData["Title"] = "Insert Tipi Talep Formu";
+	ViewData["Title"] = "";
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<input type="hidden" id="jwtToken" value="@Context.Session.GetString("JwtToken")" />
 
-<form id="talepForm">
+
+ <form id="talepForm">
 	<div class="row">
 		<input asp-for="AppUserId" type="hidden" value="9" />
 		<div class="row">
@@ -202,6 +204,12 @@
 	<script>
 		$(document).ready(function () {
 			const apiBaseUrl = "https://localhost:7076/api";
+			// 🔐 Token'ı al
+			const token = document.getElementById("jwtToken")?.value;
+			if (!token) {
+				alert("Oturum süresi dolmuş olabilir. Lütfen yeniden giriş yapın.");
+				return;
+			}
 
 			$('#distributorDiv, #pointGroupDiv').hide();
 
@@ -465,7 +473,7 @@
 					validFrom: $('#ValidFrom').val(),
 					validTo: $('#ValidTo').val(),
 					note: $('#Note').val(),
-					appUserId: parseInt($('#AppUserId').val()) || 9,
+					// appUserId: parseInt($('#AppUserId').val()) || 9,
 					total: parseFloat($('#Total').val()) || 0
 				};
 						function validateForm(dto) {
@@ -487,7 +495,9 @@
 				try {
 					const res = await fetch(`${apiBaseUrl}/talepforms`, {
 						method: "POST",
-						headers: { "Content-Type": "application/json" },
+						headers: { "Content-Type": "application/json",
+						"Authorization": "Bearer " + token
+						},
 						body: JSON.stringify(dto)
 					});
 

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DogusCay.API.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class RolesController(RoleManager<AppRole> _roleManager, IMapper _mapper) : ControllerBase

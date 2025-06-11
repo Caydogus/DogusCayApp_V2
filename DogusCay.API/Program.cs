@@ -42,7 +42,8 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = tokenOptions.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.Key)),
         ClockSkew = TimeSpan.Zero,
-        NameClaimType = ClaimTypes.Name
+        NameClaimType = ClaimTypes.NameIdentifier
+        //NameClaimType = ClaimTypes.Name
     };
 });
 

@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
 using DogusCay.WebUI.DTOs.UserDtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DogusCay.WebUI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RegisterController : Controller
     {
         private readonly HttpClient _client;
