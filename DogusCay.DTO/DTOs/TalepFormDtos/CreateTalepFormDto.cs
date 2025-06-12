@@ -49,6 +49,10 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public string Note { get; set; }
         // Hesaplanan alanlar
         public decimal Total { get; set; }
+        public decimal BrutTotal { get; set; }
+
+        public decimal Maliyet { get; set; }
+
     }
 
 }

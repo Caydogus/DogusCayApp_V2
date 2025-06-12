@@ -98,9 +98,6 @@ namespace DogusCay.API.Controllers
             // KRİTİK GÜNCELLEME: AppUserId'yi doğrudan JWT token'dan alınan ID ile set et!**
             entity.AppUserId = authenticatedUserId;
 
-            // Diğer alanların atamalarını AutoMapper yapsın, eğer dto'da mevcutsa.
-            // Manuel atamalar sadece AutoMapper'ın yapmadığı veya özel logic gerektiren durumlarda kalmalı.
-            // Örneğin:
             entity.Quantity = dto.Quantity <= 0 ? 1 : dto.Quantity;
             entity.PointId = dto.PointId ?? 0;
             entity.ValidFrom = dto.ValidFrom < new DateTime(1753, 1, 1) ? DateTime.Now : dto.ValidFrom;
@@ -110,30 +107,56 @@ namespace DogusCay.API.Controllers
             Console.WriteLine(" INSERT için kullanılacak AppUserId (Entity içinde): " + entity.AppUserId);
 
             // Hesaplamalar
+            entity.BrutTotal = entity.Quantity * dto.Price;//yeni eklendi
+           
+
             entity.KoliIciToplamAdet = entity.Quantity * dto.KoliIciAdet;
             entity.KoliToplamAgirligiKg = entity.Quantity * dto.ApproximateWeightKg;
             entity.ListeFiyat = dto.KoliIciAdet > 0 ? dto.Price / dto.KoliIciAdet : 0;
 
             decimal toplam = dto.Price * entity.Quantity;
+
+            // 2. İskontoları sırayla uygula
             if (dto.Iskonto1 > 0) toplam *= (100 - dto.Iskonto1) / 100m;
             if (dto.Iskonto2 > 0) toplam *= (100 - dto.Iskonto2) / 100m;
             if (dto.Iskonto3 > 0) toplam *= (100 - dto.Iskonto3) / 100m;
             if (dto.Iskonto4 > 0) toplam *= (100 - dto.Iskonto4) / 100m;
 
-            var calculated = entity.KoliIciToplamAdet > 0 ? Math.Round(toplam / entity.KoliIciToplamAdet, 2) : 0;
+            // 3. Sabit bedeli çıkar
+            if (dto.SabitBedelTL > 0)
+            {
+                toplam -= (decimal)dto.SabitBedelTL;
+                if (toplam < 0) toplam = 0;
+            }
 
+            // 4. Son adet fiyatı: toplam / koli içi toplam adet
+            decimal sonAdetFiyat = entity.KoliIciToplamAdet > 0 ? toplam / entity.KoliIciToplamAdet : 0;
+
+            // 5. Adet farkı varsa, bundan da düş
             if (dto.AdetFarkDonusuTL > 0)
             {
-                entity.SonAdetFiyati = Math.Round(calculated - dto.AdetFarkDonusuTL, 2);
-                entity.Total = Math.Round(entity.SonAdetFiyati * entity.KoliIciToplamAdet, 2);
-            }
-            else
-            {
-                entity.SonAdetFiyati = calculated;
-                entity.Total = Math.Round(toplam, 2);
+                sonAdetFiyat -= dto.AdetFarkDonusuTL;
+                if (sonAdetFiyat < 0) sonAdetFiyat = 0;
             }
 
+            // 6. Toplamı tekrar hesapla
+            decimal finalToplam = Math.Round(sonAdetFiyat * entity.KoliIciToplamAdet, 2);
+
+            // 7. Ata
+            entity.SonAdetFiyati = Math.Round(sonAdetFiyat, 2);
+            entity.Total = finalToplam;
+
+            //maliyeti yuzde(%) cinsinden hesapla
+            entity.Maliyet = entity.BrutTotal != 0
+            ? Math.Round(((entity.BrutTotal - entity.Total) / entity.BrutTotal) * 100, 2)
+            : 0;
+
+
             _talepFormService.TCreate(entity);
+
+            Console.WriteLine($"Toplam (İskonto ve sabit bedel sonrası): {toplam}");
+            Console.WriteLine($"SonAdetFiyati (Adet fark sonrası): {entity.SonAdetFiyati}");
+            Console.WriteLine($"Final Total: {entity.Total}");
 
             return Ok("Talep başarıyla oluşturuldu.");
         }

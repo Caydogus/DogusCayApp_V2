@@ -7,7 +7,7 @@
 <input type="hidden" id="jwtToken" value="@Context.Session.GetString("JwtToken")" />
 
 
- <form id="talepForm">
+<form id="talepForm">
 	<div class="row">
 		<input asp-for="AppUserId" type="hidden" value="9" />
 		<div class="row">
@@ -96,14 +96,15 @@
 			<input asp-for="Quantity" class="form-control" id="Quantity" />
 		</div>
 
+		<div class="row">
+			<!-- Sol: Anlaşma Kondüsyonları -->
+			<div class="col-md-6">
+				<div class="border rounded p-3 bg-light h-100">
+					<h6 class="mb-3">Anlaşma Kondüsyonları</h6>
 
-
-		<div class="col-md-12">
-			<div class="border rounded p-3 bg-light">
-				<h6 class="mb-3">Anlaşma Kondüsyonları</h6>
-				<div class="row">
-					<!-- Sol Göz -->
-					<div class="col-md-6">
+					<!-- İskonto Bilgileri -->
+					<div class="border border-2 rounded p-3 bg-light mb-3">
+						<h6 class="mb-3">İskonto Bilgileri</h6>
 						<div class="form-group mb-2">
 							<label for="Iskonto1">İskonto 1 (%)</label>
 							<input asp-for="Iskonto1" class="form-control" />
@@ -118,85 +119,98 @@
 						</div>
 					</div>
 
-					<!-- Sağ Göz -->
-					<div class="col-md-6">
-						<div class="row">
-							<div class="form-group col-md-6">
-								<label for="Iskonto4">Adet Fark (%)</label>
-								<input asp-for="Iskonto4" class="form-control" />
-							</div>
-							<div class="form-group col-md-6">
-								<label for="AdetFarkDonusuTL">Adet Farkı (₺)</label>
-								<input asp-for="AdetFarkDonusuTL" class="form-control" />
-							</div>
-							<!-- Sabit Bedel ve Adet Farkı -->
-							<div class="form-group col-md-3">
-								<label for="SabitBedelTL">Sabit Bedel (₺)</label>
-								<input asp-for="SabitBedelTL" class="form-control" />
-							</div>
+					<!-- Kırmızı çizgi -->
+					<div style="border-top: 2px solid red; margin: 20px 0;"></div>
+
+					<!-- Fiyat Düzenleme -->
+					<div class="border border-2 rounded p-3 bg-light">
+						<h6 class="mb-3">Kampanya İskontoları</h6>
+						<div class="form-group mb-2">
+							<label for="Iskonto4">Adet Fark (%)</label>
+							<input asp-for="Iskonto4" class="form-control" />
 						</div>
+						<div class="form-group mb-2">
+							<label for="AdetFarkDonusuTL">Adet Farkı (₺)</label>
+							<input asp-for="AdetFarkDonusuTL" class="form-control" />
+						</div>
+						<div class="form-group mb-0">
+							<label for="SabitBedelTL">Sabit Bedel (₺)</label>
+							<input asp-for="SabitBedelTL" class="form-control" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Sağ: Hesaplanan Alanlar -->
+			<div class="col-md-6">
+				<div class="row">
+					<!-- Brüt Tutar -->
+					<input asp-for="BrutTotal" type="hidden" id="BrutTotal" />
+					<div class="form-group col-md-6">
+						<label>Toplam Brüt Tutar (₺)</label>
+						<input class="form-control" id="BrutTotalDisplay" readonly />
+					</div>
+
+					<!-- Net tutar -->
+					<input asp-for="Total" type="hidden" id="Total" />
+					<div class="form-group col-md-6">
+						<label>Toplam Net Tutar (₺)</label>
+						<input class="form-control" id="TotalDisplay" readonly />
+					</div>
+
+					<!-- Maliyet hesapla yuzde cinsinden -->
+					<input type="hidden" asp-for="Maliyet" id="Maliyet" />
+					<div class="form-group col-md-6">
+						<label>Maliyet (%)</label>
+						<input type="text" class="form-control" id="MaliyetDisplay" readonly />
+					</div>
+					<!-- Liste Fiyatı -->
+					<input asp-for="ListeFiyat" type="hidden" id="ListeFiyat" />
+					<div class="form-group col-md-6">
+						<label>Liste Fiyatı (₺)</label>
+						<input class="form-control" id="ListeFiyatDisplay" readonly />
+					</div>
+
+					<!-- Son Adet Fiyatı -->
+					<input asp-for="SonAdetFiyati" type="hidden" id="SonAdetFiyati" />
+					<div class="form-group col-md-6">
+						<label>Son Adet Fiyatı (₺)</label>
+						<input class="form-control" id="SonAdetFiyatiDisplay" readonly />
+					</div>
+
+					<!-- Koli İçi Toplam Adet -->
+					<input asp-for="KoliIciToplamAdet" type="hidden" id="KoliIciToplamAdet" />
+					<div class="form-group col-md-6">
+						<label>Koli İçi Toplam Adet</label>
+						<input class="form-control" id="KoliIciToplamAdetDisplay" readonly />
+					</div>
+
+					<!-- Koli Toplam Ağırlığı -->
+					<input asp-for="KoliToplamAgirligiKg" type="hidden" id="KoliToplamAgirligiKg" />
+					<div class="form-group col-md-6">
+						<label>Toplam Koli Ağırlığı (kg)</label>
+						<input class="form-control" id="KoliToplamAgirligiKgDisplay" readonly />
+					</div>
+
+					<!-- Tarihler -->
+					<div class="form-group col-md-6">
+						<label for="ValidFrom">Başlangıç Tarihi</label>
+						<input asp-for="ValidFrom" id="ValidFrom" type="date" class="form-control" />
+					</div>
+					<div class="form-group col-md-6">
+						<label for="ValidTo">Bitiş Tarihi</label>
+						<input asp-for="ValidTo" id="ValidTo" type="date" class="form-control" />
+					</div>
+					<!-- Not -->
+					<div class="form-group col-md-12">
+						<label for="Note">Açıklama</label>
+						<textarea asp-for="Note" class="form-control" rows="2"></textarea>
 					</div>
 				</div>
 			</div>
 		</div>
 
 
-		<!-- Hesaplanan Alanlar -->
-
-		<!-- 🔁 Toplam Tutar -->
-		<input asp-for="Total" type="hidden" id="Total" />
-		<div class="form-group col-md-3">
-			<label>Toplam Net Tutar (₺)</label>
-			<input class="form-control" id="TotalDisplay" readonly />
-		</div>
-
-		<!-- 🔁 Liste Fiyatı -->
-		<input asp-for="ListeFiyat" type="hidden" id="ListeFiyat" />
-		<div class="form-group col-md-3">
-			<label>Liste Fiyatı (₺)</label>
-			<input class="form-control" id="ListeFiyatDisplay" readonly />
-		</div>
-
-		<!-- 🔁 Son Adet Fiyatı -->
-		<input asp-for="SonAdetFiyati" type="hidden" id="SonAdetFiyati" />
-		<div class="form-group col-md-3">
-			<label>Son Adet Fiyatı (₺)</label>
-			<input class="form-control" id="SonAdetFiyatiDisplay" readonly />
-		</div>
-
-		<!-- 🔁 Koli İçi Toplam Adet -->
-		<input asp-for="KoliIciToplamAdet" type="hidden" id="KoliIciToplamAdet" />
-		<div class="form-group col-md-3">
-			<label>Koli İçi Toplam Adet</label>
-			<input class="form-control" id="KoliIciToplamAdetDisplay" readonly />
-		</div>
-
-		<!-- 🔁 Koli Toplam Ağırlığı -->
-		<input asp-for="KoliToplamAgirligiKg" type="hidden" id="KoliToplamAgirligiKg" />
-		<div class="form-group col-md-3">
-			<label>Toplam Koli Ağırlığı (kg)</label>
-			<input class="form-control" id="KoliToplamAgirligiKgDisplay" readonly />
-		</div>
-
-
-
-		
-
-		<!-- Tarihler -->
-		<div class="form-group col-md-3">
-			<label for="ValidFrom">Başlangıç Tarihi</label>
-			<input asp-for="ValidFrom" id="ValidFrom" type="date" class="form-control" />
-		</div>
-		<div class="form-group col-md-3">
-			<label for="ValidTo">Bitiş Tarihi</label>
-			<input asp-for="ValidTo" id="ValidTo" type="date" class="form-control" />
-		</div>
-
-		<!-- Not -->
-		<div class="form-group col-md-12">
-			<label for="Note">Açıklama</label>
-			<textarea asp-for="Note" class="form-control" rows="2"></textarea>
-		</div>
 
 	</div>
 
@@ -372,7 +386,7 @@
                 $(this).val(cleaned);
             });
 
-            $('#Price, #Quantity, #Iskonto1, #Iskonto2, #Iskonto3, #Iskonto4, #AdetFarkDonusuTL').on('input', hesaplaIskonto);
+		$('#Price, #Quantity, #Iskonto1, #Iskonto2, #Iskonto3, #Iskonto4, #AdetFarkDonusuTL, #SabitBedelTL').on('input', hesaplaIskonto);
 
             function hesaplaIskonto() {
                 const safeParse = sel => parseFloat($(sel).val()?.toString().replace(",", ".")) || 0;
@@ -383,6 +397,7 @@
                 const isk3 = safeParse('#Iskonto3');
                 const isk4 = safeParse('#Iskonto4');
                 const adetFarkTL = safeParse('#AdetFarkDonusuTL');
+				const sabitBedel = safeParse('#SabitBedelTL'); // 🔹 Eksik olan bu
                 const approxKg = safeParse('#ApproximateWeightKg');
                 const koliIci = parseInt($('#KoliIciAdet').val()) || 0;
 
@@ -395,6 +410,15 @@
                 [isk1, isk2, isk3, isk4].forEach(isk => {
                     if (isk > 0) toplam *= (100 - isk) / 100;
                 });
+						// 🔹 Sabit bedel düş
+				if (sabitBedel > 0) {
+					toplam -= sabitBedel;
+					if (toplam < 0) toplam = 0;
+				}
+				//brut total hesapla
+				const totalBrut = quantity * price;// ✅ YENİ
+				   $('#TotalBrut').val(totalBrut.toFixed(2)); // ✅ YENİ
+
 
                 const koliIciToplamAdet = quantity * koliIci;
                 const koliToplamAgirligi = (quantity * approxKg).toFixed(2);
@@ -406,6 +430,11 @@
                     toplam = sonAdetFiyat * koliIciToplamAdet;
                 }
 
+				 // 🔢 Maliyet hesaplama (%)
+				let maliyet = 0;
+				if (totalBrut !== 0) {
+					maliyet = ((totalBrut - toplam) / totalBrut) * 100;
+				}
                 $('#Total').val(toplam.toFixed(2));
                 $('#KoliToplamAgirligiKg').val(koliToplamAgirligi);
                 $('#KoliIciToplamAdet').val(koliIciToplamAdet);
@@ -417,6 +446,10 @@
                 $('#KoliIciToplamAdetDisplay').val(koliIciToplamAdet);
                 $('#ListeFiyatDisplay').val(listeFiyat);
                 $('#SonAdetFiyatiDisplay').val(sonAdetFiyat.toFixed(2));
+				$('#BrutTotal').val(totalBrut.toFixed(2));
+				$('#BrutTotalDisplay').val(totalBrut.toFixed(2));
+				$('#Maliyet').val(maliyet.toFixed(2));
+		        $('#MaliyetDisplay').val(maliyet.toFixed(2)); 
             }
 
             // ------------------ Tarihler ------------------
@@ -434,8 +467,6 @@
 					distributorId: parseInt($('#DistributorId').val()) || null,
 					pointGroupTypeId: parseInt($('#PointGroupTypeId').val()) || null,
 					pointId: parseInt($('#PointId').val()) || null,
-
-					// 🔗 Yeni kategori alanları
 					categoryId: parseInt($('#CategoryId').val()) || 0,
 					subCategoryId: parseInt($('#SubCategoryId').val()) || null,
 					subSubCategoryId: parseInt($('#SubSubCategoryId').val()) || null,
@@ -461,8 +492,8 @@
 					validFrom: $('#ValidFrom').val(),
 					validTo: $('#ValidTo').val(),
 					note: $('#Note').val(),
-					// appUserId: parseInt($('#AppUserId').val()) || 9,
-					total: parseFloat($('#Total').val()) || 0
+					total: parseFloat($('#Total').val()) || 0,
+					totalBrut: parseFloat($('#TotalBrut').val()) || 0
 				};
 						function validateForm(dto) {
 			let errors = [];
@@ -507,5 +538,4 @@
         });
 
     </script>
-}
-
+	}

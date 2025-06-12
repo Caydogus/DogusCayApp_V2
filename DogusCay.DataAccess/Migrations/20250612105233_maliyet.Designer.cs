@@ -4,6 +4,7 @@ using DogusCay.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DogusCay.DataAccess.Migrations
 {
     [DbContext(typeof(DogusCayContext))]
-    partial class DogusCayContextModelSnapshot : ModelSnapshot
+    [Migration("20250612105233_maliyet")]
+    partial class maliyet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Distributor", b =>
@@ -185,7 +188,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasIndex("KanalId");
 
-                    b.ToTable("Distributors", (string)null);
+                    b.ToTable("Distributors");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Kanal", b =>
@@ -202,7 +205,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasKey("KanalId");
 
-                    b.ToTable("Kanals", (string)null);
+                    b.ToTable("Kanals");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.PaymentType", b =>
@@ -220,7 +223,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasKey("PaymentTypeId");
 
-                    b.ToTable("PaymentTypes", (string)null);
+                    b.ToTable("PaymentTypes");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Point", b =>
@@ -261,7 +264,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasIndex("PointGroupTypeId");
 
-                    b.ToTable("Points", (string)null);
+                    b.ToTable("Points");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.PointGroupType", b =>
@@ -278,7 +281,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasKey("PointGroupTypeId");
 
-                    b.ToTable("PointGroupTypes", (string)null);
+                    b.ToTable("PointGroupTypes");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Product", b =>
@@ -322,7 +325,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasIndex("UnitTypeId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Sale", b =>
@@ -387,7 +390,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Sales", (string)null);
+                    b.ToTable("Sales");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.SaleType", b =>
@@ -405,7 +408,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasKey("SaleTypeId");
 
-                    b.ToTable("SaleTypes", (string)null);
+                    b.ToTable("SaleTypes");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Talep.TalepFormItem", b =>
@@ -421,9 +424,6 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.Property<decimal>("ApproximateWeightKg")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("BrutTotal")
-                        .HasColumnType("decimal(5,2)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -496,7 +496,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasIndex("TalepFormId");
 
-                    b.ToTable("TalepFormItems", (string)null);
+                    b.ToTable("TalepFormItems");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.UnitType", b =>
@@ -514,7 +514,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasKey("UnitTypeId");
 
-                    b.ToTable("UnitTypes", (string)null);
+                    b.ToTable("UnitTypes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -638,7 +638,6 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BrutTotal")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("CategoryId")
@@ -755,7 +754,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasIndex("SubSubCategoryId");
 
-                    b.ToTable("TalepForms", (string)null);
+                    b.ToTable("TalepForms");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Category", b =>

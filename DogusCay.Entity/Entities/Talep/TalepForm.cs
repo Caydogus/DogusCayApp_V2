@@ -33,6 +33,8 @@ public class TalepForm
     public decimal? Price { get; set; }
     public int? KoliIciAdet { get; set; }
     public decimal Total { get; set; }
+    public decimal BrutTotal { get; set; }
+    public decimal Maliyet { get; set; }
     public decimal? ApproximateWeightKg { get; set; }
     public decimal? SabitBedelTL { get; set; }
     public decimal? Iskonto1 { get; set; }

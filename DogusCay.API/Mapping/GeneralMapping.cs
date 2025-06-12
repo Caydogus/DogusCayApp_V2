@@ -95,7 +95,7 @@ namespace DogusCay.API.Mapping
             .ForMember(dest => dest.NoktaAdi, opt => opt.MapFrom(src => src.Point.PointName))
             .ForMember(dest => dest.TalepTip, opt => opt.MapFrom(src => src.TalepTip.ToString()))
             .ForMember(dest => dest.TalepDurumu, opt => opt.MapFrom(src => src.TalepDurumu.ToString()));
-
+           
         }
     }
 }

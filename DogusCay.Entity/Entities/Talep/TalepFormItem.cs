@@ -26,6 +26,7 @@ namespace DogusCay.Entity.Entities.Talep
         public decimal ListeFiyat { get; set; }
         public decimal SonAdetFiyati { get; set; }
         public decimal Total { get; set; }
+        public decimal BrutTotal { get; set; }
         public decimal AdetFarkDonusuTL { get; set; }
         public decimal? SabitBedelTL { get; set; }
         public decimal? Iskonto1 { get; set; }

@@ -49,7 +49,9 @@ namespace DogusCay.WebUI.DTOs.TalepDtos
 
         // Hesaplanan alanlar
         public decimal Total { get; set; }
-       // public decimal TotalNet { get; set; }
+        public decimal BrutTotal { get; set; }
+        public decimal Maliyet { get; set; }
+
 
     }
 }

@@ -71,8 +71,8 @@ namespace DogusCay.DataAccess.Context
                 .WithMany()
                 .HasForeignKey(tf => tf.PointId)
                 .OnDelete(DeleteBehavior.Restrict);
-           
-    
+
+
             modelBuilder.Entity<TalepForm>()
                 .HasOne(tf => tf.Kanal)
                 .WithMany()
@@ -90,6 +90,12 @@ namespace DogusCay.DataAccess.Context
                 .WithMany()
                 .HasForeignKey(tf => tf.AppUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TalepForm>()
+                .HasOne(t => t.Category)
+                .WithMany()
+                .HasForeignKey(t => t.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict); // ❗ veya DeleteBehavior.NoAction
 
             modelBuilder.Entity<TalepForm>()
                 .HasOne(tf => tf.OnaylayanAdmin)
@@ -127,13 +133,7 @@ namespace DogusCay.DataAccess.Context
                 .HasForeignKey(tf => tf.DistributorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //// TalepFormItem ilişkileri
-            //modelBuilder.Entity<TalepFormItem>()
-            //    .HasOne(tfi => tfi.TalepForm)
-            //    .WithMany(tf => tf.TalepFormItems)
-            //    .HasForeignKey(tfi => tfi.TalepFormId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
+       
             modelBuilder.Entity<TalepFormItem>()
                 .HasOne(tfi => tfi.Product)
                 .WithMany()
@@ -152,15 +152,10 @@ namespace DogusCay.DataAccess.Context
                 .HasForeignKey(tfi => tfi.SubCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Decimal hassasiyet ayarları (TalepFormItem için)
             modelBuilder.Entity<TalepFormItem>().Property(x => x.Price).HasColumnType("decimal(18,2)");
-          //  modelBuilder.Entity<TalepFormItem>().Property(x => x.KoliFiyati).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<TalepFormItem>().Property(x => x.ApproximateWeightKg).HasColumnType("decimal(18,2)");
-            //modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto1).HasColumnType("decimal(5,2)");
-            //modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto2).HasColumnType("decimal(5,2)");
-            //modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto3).HasColumnType("decimal(5,2)");
-            //modelBuilder.Entity<TalepFormItem>().Property(x => x.Iskonto4).HasColumnType("decimal(5,2)");
-
+            modelBuilder.Entity<TalepFormItem>().Property(x => x.BrutTotal).HasColumnType("decimal(5,2)");
+            modelBuilder.Entity<TalepForm>().Property(p => p.BrutTotal).HasPrecision(18, 2);
         }
     }
 }
