@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using DogusCay.Entity.Entities.Talep;
 
-namespace DogusCay.WebUI.DTOs.TalepFormDtos
+namespace DogusCay.WebUI.DTOs.TalepDtos
 {
     public class CreateTalepFormDto
     {

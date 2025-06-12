@@ -61,10 +61,16 @@ namespace DogusCay.API.Controllers
         /// <summary>
         /// Yeni bir talep formu oluşturur.
         /// </summary>
-        [HttpPost]
+       
         [Authorize] // Sadece giriş yapmış kullanıcılar talep oluşturabilir
+        [HttpPost]
         public IActionResult Create([FromBody] CreateTalepFormDto dto)
         {
+            Console.WriteLine("Claims:");
+            foreach (var claim in User.Claims)
+            {
+                Console.WriteLine($"{claim.Type}: {claim.Value}");
+            }
             Console.WriteLine("API'ye veri ulaştı.");
             Console.WriteLine($"ProductId: {dto.ProductId}, Quantity: {dto.Quantity}, Total: {dto.Total}");
 

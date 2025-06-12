@@ -1,4 +1,4 @@
-﻿using DogusCay.WebUI.DTOs.TalepFormDtos;
+﻿using DogusCay.WebUI.DTOs.TalepDtos;
 using DogusCay.WebUI.Models;
 
 namespace DogusCay.WebUI.Mappers

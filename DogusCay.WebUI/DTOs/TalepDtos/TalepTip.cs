@@ -1,4 +1,4 @@
-﻿namespace DogusCay.WebUI.DTOs.TalepFormDtos
+﻿namespace DogusCay.WebUI.DTOs.TalepDtos
 {
     public enum TalepTip
     {

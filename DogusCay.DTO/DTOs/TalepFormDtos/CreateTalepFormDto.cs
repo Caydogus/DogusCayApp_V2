@@ -11,7 +11,7 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
     public class CreateTalepFormDto
     { // Zincir alanları
 
-        public int? AppUserId { get; set; }
+       // public int? AppUserId { get; set; }
         public int KanalId { get; set; }
         public int? DistributorId { get; set; }
         public int? PointGroupTypeId { get; set; } // opsiyonel, eğer nokta grubu tipi seçilirse

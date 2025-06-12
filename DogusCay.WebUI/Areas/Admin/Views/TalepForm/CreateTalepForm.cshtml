@@ -1,4 +1,4 @@
-﻿@model DogusCay.WebUI.DTOs.TalepFormDtos.CreateTalepFormDto
+﻿@model CreateTalepFormDto
 
 @{
 	ViewData["Title"] = "";
@@ -201,241 +201,227 @@
 	<button type="submit" class="btn btn-success mt-3">Talep Oluştur</button>
 </form>
 @section Scripts {
-	<script>
-		$(document).ready(function () {
-			const apiBaseUrl = "https://localhost:7076/api";
-			// 🔐 Token'ı al
-			const token = document.getElementById("jwtToken")?.value;
-			if (!token) {
-				alert("Oturum süresi dolmuş olabilir. Lütfen yeniden giriş yapın.");
-				return;
-			}
+    <script>
+        $(document).ready(function () {
+            const apiBaseUrl = "https://localhost:7076/api";
+            const token = document.getElementById("jwtToken")?.value;
 
-			$('#distributorDiv, #pointGroupDiv').hide();
+            if (!token) {
+                alert("Oturum süresi dolmuş olabilir. Lütfen yeniden giriş yapın.");
+                return;
+            }
 
-			// -------------------------- Kategori Zinciri --------------------------
+            // Token'ı tüm jQuery isteklerine otomatik ekle
+            $.ajaxSetup({
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
 
-			// Ana kategorileri getir (sayfa ilk açıldığında)
-			$.get(`${apiBaseUrl}/categories/MainCategories`, function (data) {
-				const catSelect = $('#CategoryId');
-				catSelect.empty().append('<option value="">Seçiniz</option>');
-				data.forEach(cat => {
-					catSelect.append(`<option value="${cat.categoryId}">${cat.categoryName}</option>`);
-				});
-			});
+            $('#distributorDiv, #pointGroupDiv').hide();
 
-				  // 1. Ana kategorileri yükle
-		$.get(`${apiBaseUrl}/categories/MainCategories`, function (data) {
-			const catSelect = $('#CategoryId');
-			catSelect.empty().append('<option value="">Seçiniz</option>');
-			data.forEach(cat => {
-				catSelect.append(`<option value="${cat.categoryId}">${cat.categoryName}</option>`);
-			});
-		});
+            // Ana kategori yükle
+            $.get(`${apiBaseUrl}/categories/MainCategories`, function (data) {
+                const catSelect = $('#CategoryId');
+                catSelect.empty().append('<option value="">Seçiniz</option>');
+                data.forEach(cat => {
+                    catSelect.append(`<option value="${cat.categoryId}">${cat.categoryName}</option>`);
+                });
+            });
 
-		// 2. Ana kategori → Alt kategori
-		$('#CategoryId').change(function () {
-			const categoryId = $(this).val();
-			$('#SubCategoryId').empty().append('<option value="">Yükleniyor...</option>');
-			$('#SubSubCategoryId').empty().append('<option value="">Önce alt kategori seçiniz</option>');
-			$('#ProductId').empty().append('<option value="">Ürün bekleniyor...</option>');
+            $('#CategoryId').change(function () {
+                const categoryId = $(this).val();
+                $('#SubCategoryId').empty().append('<option value="">Yükleniyor...</option>');
+                $('#SubSubCategoryId').empty().append('<option value="">Önce alt kategori seçiniz</option>');
+                $('#ProductId').empty().append('<option value="">Ürün bekleniyor...</option>');
 
-			if (categoryId) {
-				$.get(`${apiBaseUrl}/categories/${categoryId}/children`, function (data) {
-					const subSelect = $('#SubCategoryId');
-					subSelect.empty().append('<option value="">Seçiniz</option>');
-					data.forEach(sub => {
-						subSelect.append(`<option value="${sub.categoryId}">${sub.categoryName}</option>`);
-					});
-				});
-			}
-		});
+                if (categoryId) {
+                    $.get(`${apiBaseUrl}/categories/${categoryId}/children`, function (data) {
+                        const subSelect = $('#SubCategoryId');
+                        subSelect.empty().append('<option value="">Seçiniz</option>');
+                        data.forEach(sub => {
+                            subSelect.append(`<option value="${sub.categoryId}">${sub.categoryName}</option>`);
+                        });
+                    });
+                }
+            });
 
-		// 3. Alt kategori → AltAlt kategori
-		$('#SubCategoryId').change(function () {
-			const subCategoryId = $(this).val();
-			$('#SubSubCategoryId').empty().append('<option value="">Yükleniyor...</option>');
-			$('#ProductId').empty().append('<option value="">Ürün bekleniyor...</option>');
+            $('#SubCategoryId').change(function () {
+                const subCategoryId = $(this).val();
+                $('#SubSubCategoryId').empty().append('<option value="">Yükleniyor...</option>');
+                $('#ProductId').empty().append('<option value="">Ürün bekleniyor...</option>');
 
-			if (subCategoryId) {
-				$.get(`${apiBaseUrl}/categories/${subCategoryId}/children`, function (data) {
-					const subSubSelect = $('#SubSubCategoryId');
-					subSubSelect.empty().append('<option value="">Seçiniz</option>');
-					data.forEach(subsub => {
-						subSubSelect.append(`<option value="${subsub.categoryId}">${subsub.categoryName}</option>`);
-					});
-				});
-			}
-		});
+                if (subCategoryId) {
+                    $.get(`${apiBaseUrl}/categories/${subCategoryId}/children`, function (data) {
+                        const subSubSelect = $('#SubSubCategoryId');
+                        subSubSelect.empty().append('<option value="">Seçiniz</option>');
+                        data.forEach(subsub => {
+                            subSubSelect.append(`<option value="${subsub.categoryId}">${subsub.categoryName}</option>`);
+                        });
+                    });
+                }
+            });
 
-		// 4. AltAlt kategori → Ürün
-		$('#SubSubCategoryId').change(function () {
-			const subSubCategoryId = $(this).val();
-			$('#ProductId').empty().append('<option value="">Yükleniyor...</option>');
+            $('#SubSubCategoryId').change(function () {
+                const subSubCategoryId = $(this).val();
+                $('#ProductId').empty().append('<option value="">Yükleniyor...</option>');
 
-			if (subSubCategoryId) {
-				$.get(`${apiBaseUrl}/categories/${subSubCategoryId}/products`, function (data) {
-					const productSelect = $('#ProductId');
-					productSelect.empty().append('<option value="">Seçiniz</option>');
-					data.forEach(p => {
-						productSelect.append(`<option value="${p.productId}">${p.productName}</option>`);
-					});
-				});
-			}
-		});
+                if (subSubCategoryId) {
+                    $.get(`${apiBaseUrl}/categories/${subSubCategoryId}/products`, function (data) {
+                        const productSelect = $('#ProductId');
+                        productSelect.empty().append('<option value="">Seçiniz</option>');
+                        data.forEach(p => {
+                            productSelect.append(`<option value="${p.productId}">${p.productName}</option>`);
+                        });
+                    });
+                }
+            });
+
+            $('#KanalId').change(function () {
+                const kanalId = $(this).val();
+                $('#DistributorId, #PointGroupTypeId, #PointId').empty().append('<option value="">Seçiniz</option>');
+
+                if (kanalId === "4") {
+                    $('#distributorDiv').show();
+                    $('#pointGroupDiv').hide();
+
+                    $.get(`${apiBaseUrl}/distributors/by-kanal/${kanalId}`)
+                        .done(data => {
+                            const select = $('#DistributorId');
+                            data.forEach(d => {
+                                select.append(`<option value="${d.distributorId}">${d.distributorName}</option>`);
+                            });
+                        })
+                        .fail(() => alert("❌ Distributor verisi alınamadı."));
+                } else if (kanalId === "5" || kanalId === "6") {
+                    $('#distributorDiv, #pointGroupDiv').hide();
+
+                    $.get(`${apiBaseUrl}/points/by-kanal/${kanalId}`)
+                        .done(data => {
+                            const select = $('#PointId');
+                            select.empty().append('<option value="">Seçiniz</option>');
+                            data.forEach(p => {
+                                select.append(`<option value="${p.pointId}">${p.pointName}</option>`);
+                            });
+                        })
+                        .fail(() => alert("❌ Nokta verisi alınamadı."));
+                } else {
+                    $('#distributorDiv, #pointGroupDiv').hide();
+                }
+            });
+
+            $('#DistributorId').change(function () {
+                const distributorId = $(this).val();
+                $('#PointGroupTypeId, #PointId').empty().append('<option value="">Seçiniz</option>');
+
+                if (distributorId) {
+                    $.get(`${apiBaseUrl}/pointgrouptypes/by-distributor/${distributorId}`)
+                        .done(data => {
+                            const select = $('#PointGroupTypeId');
+                            data.forEach(g => {
+                                select.append(`<option value="${g.pointGroupTypeId}">${g.pointGroupTypeName}</option>`);
+                            });
+                            $('#pointGroupDiv').show();
+                        })
+                        .fail(() => alert("❌ Nokta grubu verisi alınamadı."));
+                } else {
+                    $('#pointGroupDiv').hide();
+                }
+            });
+
+            $('#PointGroupTypeId').change(function () {
+                const groupId = $(this).val();
+                const distributorId = $('#DistributorId').val();
+                $('#PointId').empty().append('<option value="">Seçiniz</option>');
+
+                if (groupId && distributorId) {
+                    $.get(`${apiBaseUrl}/points/by-group/${groupId}/distributor/${distributorId}`)
+                        .done(data => {
+                            const select = $('#PointId');
+                            data.forEach(p => {
+                                select.append(`<option value="${p.pointId}">${p.pointName}</option>`);
+                            });
+                        })
+                        .fail(() => alert("❌ Nokta verisi alınamadı."));
+                }
+            });
+
+            $('#ProductId').change(function () {
+                const productId = $(this).val();
+                if (productId) {
+                    $.get(`${apiBaseUrl}/products/get-product-info/${productId}`)
+                        .done(data => {
+                            $('#Price').val(data.price || '');
+                            $('#KoliIciAdet').val(data.koliIciAdet || '');
+                            $('#ApproximateWeightKg').val(data.approximateWeightKg || '');
+                            $('#ErpCode').val(data.erpCode || '');
+                            $('#Quantity').val(1);
+                            hesaplaIskonto();
+                        })
+                        .fail(() => alert("❌ Ürün bilgisi alınamadı."));
+                }
+            });
 
 
-			// -------------------------- Kanal → Nokta zinciri --------------------------
+            // ------------------ İskonto Hesaplama ------------------
 
-			$('#KanalId').change(function () {
-				const kanalId = $(this).val();
-				$('#DistributorId, #PointGroupTypeId, #PointId').empty().append('<option value="">Seçiniz</option>');
+            $('#Iskonto1, #Iskonto2, #Iskonto3, #Iskonto4').on('input', function () {
+                const cleaned = $(this).val().replace(",", ".");
+                $(this).val(cleaned);
+            });
 
-				if (kanalId === "4") { // DIST
-					$('#distributorDiv').show();
-					$('#pointGroupDiv').hide();
+            $('#Price, #Quantity, #Iskonto1, #Iskonto2, #Iskonto3, #Iskonto4, #AdetFarkDonusuTL').on('input', hesaplaIskonto);
 
-					$.get(`${apiBaseUrl}/distributors/by-kanal/${kanalId}`)
-						.done(data => {
-							const select = $('#DistributorId');
-							data.forEach(d => {
-								select.append(`<option value="${d.distributorId}">${d.distributorName}</option>`);
-							});
-						})
-						.fail(() => alert("❌ Distributor verisi alınamadı."));
-				} else if (kanalId === "5" || kanalId === "6") {
-					$('#distributorDiv, #pointGroupDiv').hide();
+            function hesaplaIskonto() {
+                const safeParse = sel => parseFloat($(sel).val()?.toString().replace(",", ".")) || 0;
+                const price = safeParse('#Price');
+                let quantity = safeParse('#Quantity');
+                const isk1 = safeParse('#Iskonto1');
+                const isk2 = safeParse('#Iskonto2');
+                const isk3 = safeParse('#Iskonto3');
+                const isk4 = safeParse('#Iskonto4');
+                const adetFarkTL = safeParse('#AdetFarkDonusuTL');
+                const approxKg = safeParse('#ApproximateWeightKg');
+                const koliIci = parseInt($('#KoliIciAdet').val()) || 0;
 
-					$.get(`${apiBaseUrl}/points/by-kanal/${kanalId}`)
-						.done(data => {
-							const select = $('#PointId');
-							select.empty().append('<option value="">Seçiniz</option>');
-							data.forEach(p => {
-								select.append(`<option value="${p.pointId}">${p.pointName}</option>`);
-							});
-						})
-						.fail(() => alert("❌ Nokta verisi alınamadı."));
-				} else {
-					$('#distributorDiv, #pointGroupDiv').hide();
-				}
-			});
+                if (quantity < 1) {
+                    quantity = 1;
+                    $('#Quantity').val(1);
+                }
 
-			$('#DistributorId').change(function () {
-				const distributorId = $(this).val();
-				$('#PointGroupTypeId, #PointId').empty().append('<option value="">Seçiniz</option>');
+                let toplam = price * quantity;
+                [isk1, isk2, isk3, isk4].forEach(isk => {
+                    if (isk > 0) toplam *= (100 - isk) / 100;
+                });
 
-				if (distributorId) {
-					$.get(`${apiBaseUrl}/pointgrouptypes/by-distributor/${distributorId}`)
-						.done(data => {
-							const select = $('#PointGroupTypeId');
-							data.forEach(g => {
-								select.append(`<option value="${g.pointGroupTypeId}">${g.pointGroupTypeName}</option>`);
-							});
-							$('#pointGroupDiv').show();
-						})
-						.fail(() => alert("❌ Nokta grubu verisi alınamadı."));
-				} else {
-					$('#pointGroupDiv').hide();
-				}
-			});
+                const koliIciToplamAdet = quantity * koliIci;
+                const koliToplamAgirligi = (quantity * approxKg).toFixed(2);
+                const listeFiyat = koliIci > 0 ? (price / koliIci).toFixed(2) : "0.00";
+                let sonAdetFiyat = koliIciToplamAdet > 0 ? toplam / koliIciToplamAdet : 0;
 
-			$('#PointGroupTypeId').change(function () {
-				const groupId = $(this).val();
-				const distributorId = $('#DistributorId').val();
-				$('#PointId').empty().append('<option value="">Seçiniz</option>');
+                if (adetFarkTL > 0) {
+                    sonAdetFiyat -= adetFarkTL;
+                    toplam = sonAdetFiyat * koliIciToplamAdet;
+                }
 
-				if (groupId && distributorId) {
-					$.get(`${apiBaseUrl}/points/by-group/${groupId}/distributor/${distributorId}`)
-						.done(data => {
-							const select = $('#PointId');
-							data.forEach(p => {
-								select.append(`<option value="${p.pointId}">${p.pointName}</option>`);
-							});
-						})
-						.fail(() => alert("❌ Nokta verisi alınamadı."));
-				}
-			});
+                $('#Total').val(toplam.toFixed(2));
+                $('#KoliToplamAgirligiKg').val(koliToplamAgirligi);
+                $('#KoliIciToplamAdet').val(koliIciToplamAdet);
+                $('#ListeFiyat').val(listeFiyat);
+                $('#SonAdetFiyati').val(sonAdetFiyat.toFixed(2));
 
-			// -------------------------- Ürün detaylarını doldur --------------------------
+                $('#TotalDisplay').val(toplam.toFixed(2));
+                $('#KoliToplamAgirligiKgDisplay').val(koliToplamAgirligi);
+                $('#KoliIciToplamAdetDisplay').val(koliIciToplamAdet);
+                $('#ListeFiyatDisplay').val(listeFiyat);
+                $('#SonAdetFiyatiDisplay').val(sonAdetFiyat.toFixed(2));
+            }
 
-			$('#ProductId').change(function () {
-				const productId = $(this).val();
-				if (productId) {
-					$.get(`${apiBaseUrl}/products/get-product-info/${productId}`)
-						.done(data => {
-							$('#Price').val(data.price || '');
-							$('#KoliIciAdet').val(data.koliIciAdet || '');
-							$('#ApproximateWeightKg').val(data.approximateWeightKg || '');
-							$('#ErpCode').val(data.erpCode || '');
-							$('#Quantity').val(1);
-							hesaplaIskonto();
-						})
-						.fail(() => alert("❌ Ürün bilgisi alınamadı."));
-				}
-			});
-
-			// -------------------------- Hesaplama --------------------------
-					$('#Iskonto1, #Iskonto2, #Iskonto3, #Iskonto4').on('input', function () {
-			const cleaned = $(this).val().replace(",", ".");
-			$(this).val(cleaned);
-		});
-			$('#Price, #Quantity, #Iskonto1, #Iskonto2, #Iskonto3, #Iskonto4, #AdetFarkDonusuTL').on('input', hesaplaIskonto);
-
-			function hesaplaIskonto() {
-				const safeParse = sel => parseFloat($(sel).val()?.toString().replace(",", ".")) || 0;
-				const price = safeParse('#Price');
-				let quantity = safeParse('#Quantity');
-				const isk1 = safeParse('#Iskonto1');
-				const isk2 = safeParse('#Iskonto2');
-				const isk3 = safeParse('#Iskonto3');
-				const isk4 = safeParse('#Iskonto4');
-				const adetFarkTL = safeParse('#AdetFarkDonusuTL');
-				const approxKg = safeParse('#ApproximateWeightKg');
-				const koliIci = parseInt($('#KoliIciAdet').val()) || 0;
-
-				if (quantity < 1) {
-					quantity = 1;
-					$('#Quantity').val(1);
-				}
-
-				let toplam = price * quantity;
-				[isk1, isk2, isk3, isk4].forEach(isk => {
-					if (isk > 0) toplam *= (100 - isk) / 100;
-				});
-
-				const koliIciToplamAdet = quantity * koliIci;
-				const koliToplamAgirligi = (quantity * approxKg).toFixed(2);
-				const listeFiyat = koliIci > 0 ? (price / koliIci).toFixed(2) : "0.00";
-				let sonAdetFiyat = koliIciToplamAdet > 0 ? toplam / koliIciToplamAdet : 0;
-
-				if (adetFarkTL > 0) {
-					sonAdetFiyat -= adetFarkTL;
-					toplam = sonAdetFiyat * koliIciToplamAdet;
-				}
-
-				const total = toplam.toFixed(2);
-				const sonAdetFiyatFormatted = sonAdetFiyat.toFixed(2);
-
-				$('#Total').val(total);
-				$('#KoliToplamAgirligiKg').val(koliToplamAgirligi);
-				$('#KoliIciToplamAdet').val(koliIciToplamAdet);
-				$('#ListeFiyat').val(listeFiyat);
-				$('#SonAdetFiyati').val(sonAdetFiyatFormatted);
-
-				$('#TotalDisplay').val(total);
-				$('#KoliToplamAgirligiKgDisplay').val(koliToplamAgirligi);
-				$('#KoliIciToplamAdetDisplay').val(koliIciToplamAdet);
-				$('#ListeFiyatDisplay').val(listeFiyat);
-				$('#SonAdetFiyatiDisplay').val(sonAdetFiyatFormatted);
-			}
-
-			// -------------------------- Tarihler --------------------------
-
-			const today = new Date().toISOString().split('T')[0];
-			const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-			$('#ValidFrom').val(today);
-			$('#ValidTo').val(nextWeek);
-
+            // ------------------ Tarihler ------------------
+            const today = new Date().toISOString().split('T')[0];
+            const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            $('#ValidFrom').val(today);
+            $('#ValidTo').val(nextWeek);
 			// -------------------------- Form Submit (fetch) --------------------------
 
 			$('#talepForm').on('submit', async function (e) {
@@ -515,7 +501,9 @@
 					alert("Bir hata oluştu: " + (err.message || "Bilinmeyen hata"));
 				}
 			});
-		});
-	</script>
+
+        });
+
+    </script>
 }
 

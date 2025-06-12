@@ -1,4 +1,4 @@
-﻿using DogusCay.WebUI.DTOs.TalepFormDtos;
+﻿using DogusCay.WebUI.DTOs.TalepDtos;
 using DogusCay.WebUI.DTOs.KanalDtos;
 using DogusCay.WebUI.DTOs.DistributorDtos;
 using DogusCay.WebUI.DTOs.PointDtos;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net.Http.Json;
 using DogusCay.WebUI.DTOs.PointGroupTypeDtos;
-using DogusCay.WebUI.DTOs.TalepDtos;
+//using DogusCay.WebUI.DTOs.TalepDtos;
 
 namespace DogusCay.WebUI.Areas.Admin.Controllers
 {

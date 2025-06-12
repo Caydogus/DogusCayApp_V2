@@ -53,31 +53,5 @@ namespace DogusCay.WebUI.Controllers
             return RedirectToAction("SignIn", "Login");
         }
 
-
-        //[HttpPost]
-        //public async Task<IActionResult> Signup(UserRegisterDto userRegisterDto)
-        //{
-        //    var result = await _client.PostAsJsonAsync("users/register", userRegisterDto);
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(userRegisterDto);
-        //    }
-
-        //    if (!result.IsSuccessStatusCode)
-        //    {
-        //        var errors = await result.Content.ReadFromJsonAsync<List<RegisterResponseDto>>();
-
-        //        foreach (var item in errors)
-        //        {
-        //            ModelState.AddModelError("", item.Description);
-        //        }
-        //        return View(userRegisterDto);
-        //    }
-
-        //    return RedirectToAction("SignIn", "Login");
-        //}
-
-
     }
 }
