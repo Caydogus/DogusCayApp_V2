@@ -45,7 +45,7 @@
 		</div>
 		<!-- Ana Kategori -->
 		<div class="form-group col-md-4">
-			<label for="CategoryId">Ana Kategori</label>
+			<label for="CategoryId">Kategori</label>
 			<select asp-for="CategoryId" class="form-control" id="CategoryId">
 				<option value="">Seçiniz</option>
 			</select>
@@ -55,13 +55,13 @@
 		<div class="form-group col-md-4">
 			<label for="SubCategoryId">Alt Kategori</label>
 			<select asp-for="SubCategoryId" class="form-control" id="SubCategoryId">
-				<option value="">Önce ana kategori seçiniz</option>
+				<option value="">Önce kategori seçiniz</option>
 			</select>
 		</div>
 
 		<!-- Alt Alt Kategori -->
 		<div class="form-group col-md-4">
-			<label for="SubSubCategoryId">Alt Alt Kategori</label>
+			<label for="SubSubCategoryId">Marka</label>
 			<select asp-for="SubSubCategoryId" class="form-control" id="SubSubCategoryId">
 				<option value="">Önce alt kategori seçiniz</option>
 			</select>
@@ -72,14 +72,14 @@
 		<div class="form-group col-md-4">
 			<label for="ProductId">Ürün</label>
 			<select asp-for="ProductId" class="form-control" id="ProductId">
-				<option value="">Önce alt kategori seçiniz</option>
+				<option value="">Önce marka seçiniz</option>
 			</select>
 		</div>
 
 
 		<!-- Erp Kodu -->
 		<div class="form-group col-md-3">
-			<label for="ErpCode">ERP</label>
+			<label for="ErpCode">Logo Kodu</label>
 			<input asp-for="ErpCode" class="form-control" id="ErpCode" readonly />
 		</div>
 
@@ -92,7 +92,7 @@
 
 		<!-- Adet -->
 		<div class="form-group col-md-3">
-			<label for="Quantity">Adet</label>
+			<label for="Quantity">Planlanan Miktar(koli)</label>
 			<input asp-for="Quantity" class="form-control" id="Quantity" />
 		</div>
 
@@ -100,7 +100,7 @@
 
 		<div class="col-md-12">
 			<div class="border rounded p-3 bg-light">
-				<h6 class="mb-3">İskonto ve Adet Farkı</h6>
+				<h6 class="mb-3">Anlaşma Kondüsyonları</h6>
 				<div class="row">
 					<!-- Sol Göz -->
 					<div class="col-md-6">
@@ -129,6 +129,11 @@
 								<label for="AdetFarkDonusuTL">Adet Farkı (₺)</label>
 								<input asp-for="AdetFarkDonusuTL" class="form-control" />
 							</div>
+							<!-- Sabit Bedel ve Adet Farkı -->
+							<div class="form-group col-md-3">
+								<label for="SabitBedelTL">Sabit Bedel (₺)</label>
+								<input asp-for="SabitBedelTL" class="form-control" />
+							</div>
 						</div>
 					</div>
 				</div>
@@ -137,10 +142,11 @@
 
 
 		<!-- Hesaplanan Alanlar -->
+
 		<!-- 🔁 Toplam Tutar -->
 		<input asp-for="Total" type="hidden" id="Total" />
 		<div class="form-group col-md-3">
-			<label>Toplam Tutar (₺)</label>
+			<label>Toplam Net Tutar (₺)</label>
 			<input class="form-control" id="TotalDisplay" readonly />
 		</div>
 
@@ -174,11 +180,7 @@
 
 
 
-		<!-- Sabit Bedel ve Adet Farkı -->
-		<div class="form-group col-md-3">
-			<label for="SabitBedelTL">Sabit Bedel (₺)</label>
-			<input asp-for="SabitBedelTL" class="form-control" />
-		</div>
+		
 
 		<!-- Tarihler -->
 		<div class="form-group col-md-3">

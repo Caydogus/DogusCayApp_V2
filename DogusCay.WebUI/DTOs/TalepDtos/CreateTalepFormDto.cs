@@ -49,5 +49,7 @@ namespace DogusCay.WebUI.DTOs.TalepDtos
 
         // Hesaplanan alanlar
         public decimal Total { get; set; }
+       // public decimal TotalNet { get; set; }
+
     }
 }
