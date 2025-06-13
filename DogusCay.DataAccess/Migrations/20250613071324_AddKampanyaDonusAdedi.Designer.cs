@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DogusCay.DataAccess.Migrations
 {
     [DbContext(typeof(DogusCayContext))]
-    [Migration("20250612115917_AddBrutTotalReally")]
-    partial class AddBrutTotalReally
+    [Migration("20250613071324_AddKampanyaDonusAdedi")]
+    partial class AddKampanyaDonusAdedi
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -665,6 +665,9 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.Property<decimal?>("Iskonto4")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("KampanyaDonusAdedi")
+                        .HasColumnType("int");
 
                     b.Property<int>("KanalId")
                         .HasColumnType("int");

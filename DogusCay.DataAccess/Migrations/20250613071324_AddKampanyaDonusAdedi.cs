@@ -5,31 +5,24 @@
 namespace DogusCay.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddBrutTotalReally : Migration
+    public partial class AddKampanyaDonusAdedi : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<decimal>(
-                name: "BrutTotal",
+            migrationBuilder.AddColumn<int>(
+                name: "KampanyaDonusAdedi",
                 table: "TalepForms",
-                type: "decimal(18,2)",
-                precision: 18,
-                scale: 2,
-                nullable: false,
-                defaultValue: 0m);
-
-          
+                type: "int",
+                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "BrutTotal",
+                name: "KampanyaDonusAdedi",
                 table: "TalepForms");
-
-       
         }
     }
 }

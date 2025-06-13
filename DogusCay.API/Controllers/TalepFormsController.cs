@@ -212,31 +212,31 @@ namespace DogusCay.API.Controllers
             return Ok("Talep güncellendi.");
         }
 
-        /// <summary>
-        /// Bölge Müdürü sadece ürün miktarı ve tarihleri günceller.
-        /// </summary>
-        [HttpPatch("update-items")]
-        [Authorize(Roles = "BolgeMuduru")] // Sadece Bölge Müdürü rolündekiler erişebilir
-        public IActionResult UpdateItemFields([FromBody] UpdateTalepFormDto dto) // Eğer DTO içinde Items varsa
-        {
-            int userId = GetUserId(); // Güncelleyen kullanıcının ID'si
-            if (userId == 0)
-            {
-                return Unauthorized("Kullanıcı ID'si alınamadı.");
-            }
-            // Her bir TalepFormItemId için güncelleme
-            foreach (var item in dto.Items)
-            {
-                _talepFormService.TUpdateItemFields(
-                    item.TalepFormItemId,
-                    item.Quantity,
-                    item.ValidFrom,
-                    item.ValidTo
-                // Güncelleyen kullanıcı ID'si de burada parametre olarak gönderilebilir
-                );
-            }
-            return Ok("Ürün bilgileri güncellendi.");
-        }
+        ///// <summary>
+        ///// Bölge Müdürü sadece ürün miktarı ve tarihleri günceller.
+        ///// </summary>
+        //[HttpPatch("update-items")]
+        //[Authorize(Roles = "BolgeMuduru")] // Sadece Bölge Müdürü rolündekiler erişebilir
+        //public IActionResult UpdateItemFields([FromBody] UpdateTalepFormDto dto) // Eğer DTO içinde Items varsa
+        //{
+        //    int userId = GetUserId(); // Güncelleyen kullanıcının ID'si
+        //    if (userId == 0)
+        //    {
+        //        return Unauthorized("Kullanıcı ID'si alınamadı.");
+        //    }
+        //    // Her bir TalepFormItemId için güncelleme
+        //    foreach (var item in dto.Items)
+        //    {
+        //        _talepFormService.TUpdateItemFields(
+        //            item.TalepFormItemId,
+        //            item.Quantity,
+        //            item.ValidFrom,
+        //            item.ValidTo
+        //        // Güncelleyen kullanıcı ID'si de burada parametre olarak gönderilebilir
+        //        );
+        //    }
+        //    return Ok("Ürün bilgileri güncellendi.");
+        //}
 
         /// <summary>
         /// Kullanıcının kendi onaylanmamış formunu silebilir.
@@ -260,5 +260,34 @@ namespace DogusCay.API.Controllers
             var count = _talepFormService.TCount();
             return Ok(count);
         }
+
+        // Bölge Müdürü kampanya sonrası kaç adet ürün satıldığını girer.
+        [HttpPatch("update-donus/{id}")]
+        [Authorize(Roles = "BolgeMuduru")] // Sadece Bölge Müdürü erişebilir
+        public IActionResult UpdateKampanyaDonus(int id, [FromBody] int kampanyaDonusAdedi)
+        {
+            int userId = GetUserId();
+            if (userId == 0)
+                return Unauthorized("Kullanıcı ID'si alınamadı.");
+
+            var form = _talepFormService.TGetById(id);
+            if (form == null)
+                return NotFound("Talep formu bulunamadı.");
+
+            // Sadece kendi formunu ve onaylanmış olanı güncelleyebilsin
+            if (form.AppUserId != userId)
+                return Forbid("Bu forma erişim yetkiniz yok.");
+
+            if (form.TalepDurumu != TalepDurumu.Onaylandi)
+                return BadRequest("Sadece onaylanmış talepler için kampanya dönüşü girilebilir.");
+
+            form.KampanyaDonusAdedi = kampanyaDonusAdedi;
+
+            _talepFormService.TUpdate(form);
+
+            return Ok("Kampanya dönüşü başarıyla kaydedildi.");
+        }
+
+
     }
 }

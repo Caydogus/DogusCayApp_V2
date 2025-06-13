@@ -44,5 +44,7 @@
 
         public string Note { get; set; }
         public TalepDurumu TalepDurumu { get; set; }
+        public int? KampanyaDonusAdedi { get; set; }
+
     }
 }

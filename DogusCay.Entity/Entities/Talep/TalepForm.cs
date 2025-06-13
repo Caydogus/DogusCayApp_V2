@@ -52,5 +52,6 @@ public class TalepForm
     public TalepDurumu TalepDurumu { get; set; } = TalepDurumu.Bekliyor;
     public int? OnaylayanAdminId { get; set; }
     public AppUser? OnaylayanAdmin { get; set; }
+    public int? KampanyaDonusAdedi { get; set; }
 
 }
