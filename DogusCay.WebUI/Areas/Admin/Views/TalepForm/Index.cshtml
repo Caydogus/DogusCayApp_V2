@@ -31,10 +31,11 @@ else
                     <th>Adet Farkı (₺)</th>
                     <th>Son Adet Fiyatı</th>
                     <th>Toplam (₺)</th>
-                    <th>Durum</th>
-                    <th>İşlemler</th>
                     <th>Kampanya Dönüşü Miktarı</th>
+                    <th>Durum</th>
+                    @if (User.IsInRole("Admin")) { <th>İşlemler</th>}
                     <th>Kampanya Dönüşü</th>
+                    <th>Kampanya Görseli</th>
                     
 
                 </tr>
@@ -57,7 +58,7 @@ else
                         <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
                         <td>@item.SonAdetFiyati.ToString("C2")</td>
                         <td class="fw-bold">@item.Total.ToString("C2")</td>
-
+						<td>@item.KampanyaDonusAdedi</td>
                         <!-- Durum Gösterimi -->
                         <td>
                             @if (item.TalepDurumu == 0)
@@ -74,17 +75,21 @@ else
                             }
                         </td>
                         <!-- İşlem Butonları -->
-                        <td>
-                            @if (item.TalepDurumu == 0 && User.IsInRole("Admin"))
-                            {
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                @if (item.TalepDurumu == 0)
+                                {
                                     <button class="btn btn-success btn-sm" onclick="approveTalep(@item.TalepFormId)">Onayla</button>
                                     <button class="btn btn-danger btn-sm" onclick="rejectTalep(@item.TalepFormId)">Reddet</button>
-                            }
-                            else
-                            {
-                                <span>-</span>
-                            }
-                        </td>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                        }
+   
                         <!-- Kampanya donuş adedi -->
                         <td>
                             @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
@@ -101,7 +106,44 @@ else
                                 <span class="text-muted">-</span>
                             }
                         </td>
-                        <td>@item.KampanyaDonusAdedi</td>
+                        <!-- Kampanya resmi ekleme -->
+                        <td style="white-space: nowrap;">
+                            @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
+                            {
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="flex-shrink: 0;">
+                                        <input type="file"
+                                               id="imageInput_@item.TalepFormId"
+                                               accept="image/*"
+                                               style="width: 140px; padding: 3px;" />
+                                    </div>
+
+                                    <button class="btn btn-sm btn-info" onclick="uploadImage(@item.TalepFormId)">Yükle</button>
+
+                                    @if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
+                                    {
+                                        <a href="@item.KampanyaResimYolu"
+                                           target="_blank"
+                                           class="text-decoration-underline"
+                                           style="color: #1a73e8; font-size: 0.9rem;"
+                                           title="Yüklenmiş resmi görüntüle">
+                                            📷 Resmi Aç
+                                        </a>
+                                    }
+                                </div>
+                            }
+                            else if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
+                            {
+                                <a href="@item.KampanyaResimYolu"
+                                   target="_blank"
+                                   class="text-decoration-underline"
+                                   style="color: #d62828; font-size: 0.9rem;"
+                                   title="Yüklenmiş resmi görüntüle">
+                                    📷 Resmi Aç
+                                </a>
+                            }
+                        </td>
+
                     </tr>
                 }
             </tbody>
@@ -110,7 +152,7 @@ else
 }
 
 <script>
-    const apiBaseUrl = "https://localhost:7076/api";
+        const apiBaseUrl = "https://localhost:7076/api";
     const token = document.getElementById("jwtToken")?.value;
 
     async function deleteTalep(id) {
@@ -124,9 +166,7 @@ else
         try {
             const response = await fetch(`${apiBaseUrl}/talepforms/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
@@ -158,9 +198,7 @@ else
         try {
             const response = await fetch(`${apiBaseUrl}/talepforms/${action}/${id}`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
@@ -174,7 +212,7 @@ else
             alert("Sunucu hatası: " + err);
         }
     }
-    // ✅ Kampanya dönüş adedi gönderme
+
     async function gonderKampanyaDonusu(formId) {
         const input = document.getElementById(`kampanyaInput_${formId}`);
         const value = parseInt(input.value);
@@ -210,40 +248,45 @@ else
             alert("Sunucu hatası: " + err);
         }
     }
-    // ✅ Kampanya dönüş adedi gönderme
-    async function gonderKampanyaDonusu(formId) {
-        const input = document.getElementById(`kampanyaInput_${formId}`);
-        const value = parseInt(input.value);
+    async function uploadImage(formId) {
+        const token = document.getElementById("jwtToken")?.value; // 🔁 token eksikti, eklendi
+        const input = document.getElementById(`imageInput_${formId}`);
 
         if (!token) {
             alert("Oturum süresi dolmuş olabilir.");
             return;
         }
 
-        if (isNaN(value) || value < 0) {
-            alert("Lütfen geçerli bir sayı girin.");
+        if (!input || !input.files || input.files.length === 0) {
+            alert("Lütfen bir görsel seçin.");
             return;
         }
 
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append("image", file);
+
         try {
-            const response = await fetch(`${apiBaseUrl}/talepforms/update-donus/${formId}`, {
-                method: "PATCH",
+            const response = await fetch(`${apiBaseUrl}/talepforms/upload-image/${formId}`, {
+                method: 'POST',
                 headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
+                    'Authorization': `Bearer ${token}`
+                    // ❗ Content-Type belirtme! FormData ile fetch otomatik ayarlar.
                 },
-                body: JSON.stringify(value)
+                body: formData
             });
 
             if (response.ok) {
-                alert("Kampanya dönüş adedi kaydedildi.");
+                alert("Resim başarıyla yüklendi.");
                 location.reload();
             } else {
                 const error = await response.text();
-                alert("Hata: " + error);
+                alert("Yükleme başarısız: " + error);
             }
         } catch (err) {
             alert("Sunucu hatası: " + err);
         }
     }
+
+
 </script>

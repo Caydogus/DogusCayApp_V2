@@ -53,5 +53,7 @@ public class TalepForm
     public int? OnaylayanAdminId { get; set; }
     public AppUser? OnaylayanAdmin { get; set; }
     public int? KampanyaDonusAdedi { get; set; }
+    public string? KampanyaResimYolu { get; set; }
+
 
 }

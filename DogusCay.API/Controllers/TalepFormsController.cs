@@ -212,35 +212,7 @@ namespace DogusCay.API.Controllers
             return Ok("Talep güncellendi.");
         }
 
-        ///// <summary>
-        ///// Bölge Müdürü sadece ürün miktarı ve tarihleri günceller.
-        ///// </summary>
-        //[HttpPatch("update-items")]
-        //[Authorize(Roles = "BolgeMuduru")] // Sadece Bölge Müdürü rolündekiler erişebilir
-        //public IActionResult UpdateItemFields([FromBody] UpdateTalepFormDto dto) // Eğer DTO içinde Items varsa
-        //{
-        //    int userId = GetUserId(); // Güncelleyen kullanıcının ID'si
-        //    if (userId == 0)
-        //    {
-        //        return Unauthorized("Kullanıcı ID'si alınamadı.");
-        //    }
-        //    // Her bir TalepFormItemId için güncelleme
-        //    foreach (var item in dto.Items)
-        //    {
-        //        _talepFormService.TUpdateItemFields(
-        //            item.TalepFormItemId,
-        //            item.Quantity,
-        //            item.ValidFrom,
-        //            item.ValidTo
-        //        // Güncelleyen kullanıcı ID'si de burada parametre olarak gönderilebilir
-        //        );
-        //    }
-        //    return Ok("Ürün bilgileri güncellendi.");
-        //}
-
-        /// <summary>
-        /// Kullanıcının kendi onaylanmamış formunu silebilir.
-        /// </summary>
+        // Kullanıcının kendi onaylanmamış formunu silebilir.
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
@@ -287,6 +259,55 @@ namespace DogusCay.API.Controllers
 
             return Ok("Kampanya dönüşü başarıyla kaydedildi.");
         }
+
+
+        // Bölge Müdürü kampanyanın resmini girer.
+        [HttpPost("upload-image/{id}")]
+        [Authorize(Roles = "BolgeMuduru")]
+        public async Task<IActionResult> UploadImage(int id, IFormFile image)
+        {
+            if (image == null || image.Length == 0)
+                return BadRequest("Dosya seçilmedi.");
+
+            var form = _talepFormService.TGetById(id);
+            if (form == null)
+                return NotFound("Talep bulunamadı.");
+
+            // 🔥 Eski resmi sil
+            if (!string.IsNullOrEmpty(form.KampanyaResimYolu))
+            {
+                var existingPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "DogusCay.WebUI", "wwwroot", form.KampanyaResimYolu.TrimStart('/'));
+                if (System.IO.File.Exists(existingPath))
+                {
+                    System.IO.File.Delete(existingPath);
+                }
+            }
+
+            // 📂 WebUI projesinin wwwroot'u
+            var webUiRoot = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "DogusCay.WebUI", "wwwroot");
+            var folderPath = Path.Combine(webUiRoot, "uploads", "kampanyalar");
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            var fileName = $"form_{id}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
+            var savePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(savePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            // 🌐 Web tarafında kullanılacak yol
+            var webPath = $"/uploads/kampanyalar/{fileName}";
+            form.KampanyaResimYolu = webPath;
+
+            _talepFormService.TUpdate(form);
+
+            return Ok("Resim başarıyla yüklendi.");
+        }
+
+
 
 
     }

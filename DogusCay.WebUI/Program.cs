@@ -88,7 +88,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
 // 🔥 CookiePolicy mutlaka burada olmalı!

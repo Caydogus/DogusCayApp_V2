@@ -50,7 +50,6 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         // Hesaplanan alanlar
         public decimal Total { get; set; }
         public decimal BrutTotal { get; set; }
-
         public decimal Maliyet { get; set; }
 
     }
