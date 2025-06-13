@@ -58,10 +58,7 @@ namespace DogusCay.API.Controllers
             return Ok(dtoList);
         }
 
-        /// <summary>
-        /// Yeni bir talep formu oluşturur.
-        /// </summary>
-       
+       // Yeni bir talep formu oluşturur.
         [Authorize] // Sadece giriş yapmış kullanıcılar talep oluşturabilir
         [HttpPost]
         public IActionResult Create([FromBody] CreateTalepFormDto dto)
@@ -161,9 +158,7 @@ namespace DogusCay.API.Controllers
             return Ok("Talep başarıyla oluşturuldu.");
         }
 
-        /// <summary>
-        /// Belirli bir talep formunun detaylarını getirir.
-        /// </summary>
+        // Belirli bir talep formunun detaylarını getirir.
         [HttpGet("{id}")]
         [Authorize] // Giriş yapmış herkes erişebilir
         public IActionResult GetDetails(int id)
@@ -174,9 +169,7 @@ namespace DogusCay.API.Controllers
             return Ok(dto);
         }
 
-        /// <summary>
-        /// Talep formunu onaylar (Admin rolü için).
-        /// </summary>
+        // Talep formunu onaylar (Admin rolü için).
         [HttpPost("approve/{id}")]
         [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
         public IActionResult Approve(int id)
@@ -191,9 +184,8 @@ namespace DogusCay.API.Controllers
             return Ok("Talep onaylandı.");
         }
 
-        /// <summary>
-        /// Talep formunu reddeder (Admin rolü için).
-        /// </summary>
+       
+        // Talep formunu reddeder (Admin rolü için).
         [HttpPost("reject/{id}")]
         [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
         public IActionResult Reject(int id)
@@ -208,9 +200,8 @@ namespace DogusCay.API.Controllers
             return Ok("Talep reddedildi.");
         }
 
-        /// <summary>
-        /// Admin tüm talep formunu günceller.
-        /// </summary>
+
+        // Admin tüm talep formunu günceller.
         [HttpPut]
         [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
         public IActionResult Update([FromBody] UpdateTalepFormDto dto)

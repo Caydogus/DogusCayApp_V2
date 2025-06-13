@@ -43,5 +43,6 @@
         public DateTime ValidTo { get; set; }
 
         public string Note { get; set; }
+        public TalepDurumu TalepDurumu { get; set; }
     }
 }

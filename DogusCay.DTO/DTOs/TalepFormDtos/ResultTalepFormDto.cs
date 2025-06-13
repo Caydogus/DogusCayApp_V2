@@ -50,33 +50,6 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public DateTime ValidTo { get; set; }
 
         public string Note { get; set; }
+        public TalepDurumu TalepDurumu { get; set; }
     }
 }
-  //public class ResultTalepFormDto
-    //{
-    //    public int TalepFormId { get; set; }
-    //    public int AppUserId { get; set; }
-    //    public string UserFullName { get; set; }
-    //    public TalepTip TalepTip { get; set; }
-
-    //    public int KanalId { get; set; }
-    //    public string KanalName { get; set; }
-
-    //    public int? DistributorId { get; set; }
-    //    public string? DistributorName { get; set; }
-
-    //    public int? PointGroupTypeId { get; set; }
-    //    public string? PointGroupTypeName { get; set; }
-
-    //    public int PointId { get; set; }
-    //    public string PointName { get; set; }
-
-    //    public string? Note { get; set; }
-
-    //    public DateTime ValidFrom { get; set; }
-    //    public DateTime ValidTo { get; set; }
-
-    //    public TalepDurumu TalepDurumu { get; set; }
-
-    //    public List<ResultTalepFormItemDto> Items { get; set; } = new();
-    //}
