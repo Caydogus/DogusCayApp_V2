@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using DogusCay.DTO.DTOs.CategoryDtos;
-using DogusCay.DTO.DTOs.ChannelDtos;
 using DogusCay.DTO.DTOs.DistributorDtos;
+using DogusCay.DTO.DTOs.KanalDtos;
+using DogusCay.DTO.DTOs.MalYuklemeDtos;
 using DogusCay.DTO.DTOs.PaymentTypeDtos;
 using DogusCay.DTO.DTOs.PointDtos;
 using DogusCay.DTO.DTOs.PointGrupDtos;
 using DogusCay.DTO.DTOs.ProductDtos;
-using DogusCay.DTO.DTOs.RegionDtos;
 using DogusCay.DTO.DTOs.TalepFormDtos;
 using DogusCay.DTOs.ProductDtos;
 using DogusCay.Entity.Entities;
-using DogusCay.Entity.Entities.Talep;
+using DogusCay.Entity.Entities.MalYuklemeTalep;
 
 namespace DogusCay.API.Mapping
 {
@@ -65,11 +65,9 @@ namespace DogusCay.API.Mapping
 
             // Create DTO -> Entity
             CreateMap<CreateTalepFormDto, TalepForm>().ReverseMap();
-            CreateMap<CreateTalepFormItemDto, TalepFormItem>().ReverseMap();
 
             // UPDATE
             CreateMap<UpdateTalepFormDto, TalepForm>().ReverseMap();
-            CreateMap<UpdateTalepFormItemDto, TalepFormItem>().ReverseMap();
 
             CreateMap<TalepForm, ResultTalepFormDto>()
               .ForMember(dest => dest.KanalName, opt => opt.MapFrom(src => src.Kanal.KanalName))
@@ -84,18 +82,16 @@ namespace DogusCay.API.Mapping
               .ForMember(dest => dest.SubSubCategoryName, opt => opt.MapFrom(src => src.SubSubCategory.CategoryName));
 
             // TalepFormItem → ResultTalepFormItemDto
-            CreateMap<TalepForm, ResultTalepFormItemDto>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
 
             CreateMap<CreateTalepFormDto, TalepForm>().ReverseMap();
-            CreateMap<CreateTalepFormItemDto, TalepForm>().ReverseMap();
-            CreateMap<TalepForm, ResultTalepFormListDto>()
-            .ForMember(dest => dest.KullaniciAdi, opt => opt.MapFrom(src => src.AppUser.LastName + " " + src.AppUser.FirstName))
-            .ForMember(dest => dest.KanalAdi, opt => opt.MapFrom(src => src.Kanal.KanalName))
-            .ForMember(dest => dest.NoktaAdi, opt => opt.MapFrom(src => src.Point.PointName))
-            .ForMember(dest => dest.TalepTip, opt => opt.MapFrom(src => src.TalepTip.ToString()))
-            .ForMember(dest => dest.TalepDurumu, opt => opt.MapFrom(src => src.TalepDurumu.ToString()));
-           
+
+            // Create DTO -> Entity
+            CreateMap<CreateMalYuklemeTalepFormDto, MalYuklemeTalepForm>().ReverseMap();
+            CreateMap<CreateMalYuklemeTalepFormDetailDto, MalYuklemeTalepFormDetail>().ReverseMap();
+
+            CreateMap<MalYuklemeTalepForm, ResultMalYuklemeTalepFormDto>().ReverseMap(); 
+            CreateMap<MalYuklemeTalepFormDetail, ResultMalYuklemeTalepFormDetailDto>().ReverseMap(); 
+
         }
     }
 }

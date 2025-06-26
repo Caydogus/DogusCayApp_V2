@@ -21,5 +21,6 @@ namespace DogusCay.Business.Abstract
         List<ResultProductDto> TGetAllProductsWithCategoryDetails(); //kategorileri ve tum alt kategorileride getirsin:09.05.2025
         List<Product> TGetProductsBySubCategoryId(int subCategoryId);
         Product TGetProductWithCategory(int productId);
+        Product? TGetProductDetailsById(int productId);
     }
 }

@@ -20,17 +20,18 @@ else
             <thead class="bg-dark text-white">
                 <tr>
                     <th></th>
-                    <th>Geçerlilik</th>
+                    <th>Kampaya Tarihi</th>
                     <th>Müşteri</th>
                     <th>Ürün Adı</th>
-                    <th>Ana Kategori</th>
+                    <th>Kategori</th>
                     <th>Alt Kategori</th>
-                    <th>Alt Alt Kategori</th>
+                    <th>Marka</th>
                     <th>ERP Kodu</th>
                     <th>Ağırlık (kg)</th>
                     <th>Adet Farkı (₺)</th>
                     <th>Son Adet Fiyatı</th>
                     <th>Toplam (₺)</th>
+                    <th>Maliyet</th>
                     <th>Kampanya Dönüşü Miktarı</th>
                     <th>Durum</th>
                     @if (User.IsInRole("Admin")) { <th>İşlemler</th>}
@@ -58,6 +59,7 @@ else
                         <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
                         <td>@item.SonAdetFiyati.ToString("C2")</td>
                         <td class="fw-bold">@item.Total.ToString("C2")</td>
+                        <td>@item.Maliyet</td>
 						<td>@item.KampanyaDonusAdedi</td>
                         <!-- Durum Gösterimi -->
                         <td>
@@ -94,6 +96,7 @@ else
                         <td>
                             @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
                             {
+                                <input type="hidden" id="koliIciToplamAdet_@item.TalepFormId" value="@item.KoliIciToplamAdet" />
                                 <input type="number" id="kampanyaInput_@item.TalepFormId" class="form-control form-control-sm d-inline-block" style="width: 80px;" min="0" placeholder="Adet" />
                                 <button class="btn btn-primary btn-sm" onclick="gonderKampanyaDonusu(@item.TalepFormId)">Kaydet</button>
                             }
@@ -149,144 +152,22 @@ else
             </tbody>
         </table>
     </div>
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav class="mt-4 d-flex justify-content-center">
+            <ul class="pagination pagination-sm">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="?page=@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
 }
 
-<script>
-        const apiBaseUrl = "https://localhost:7076/api";
-    const token = document.getElementById("jwtToken")?.value;
-
-    async function deleteTalep(id) {
-        if (!confirm("Bu talep formunu silmek istediğinize emin misiniz?")) return;
-
-        if (!token) {
-            alert("Oturum süresi dolmuş olabilir. Lütfen tekrar giriş yapın.");
-            return;
-        }
-
-        try {
-            const response = await fetch(`${apiBaseUrl}/talepforms/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                alert("Talep başarıyla silindi.");
-                location.reload();
-            } else {
-                const error = await response.text();
-                alert("Silme başarısız: " + error);
-            }
-        } catch (err) {
-            alert("Hata oluştu: " + err);
-        }
-    }
-
-    async function approveTalep(id) {
-        await updateStatus(id, 'approve', "Talep onaylandı.");
-    }
-
-    async function rejectTalep(id) {
-        await updateStatus(id, 'reject', "Talep reddedildi.");
-    }
-
-    async function updateStatus(id, action, successMessage) {
-        if (!token) {
-            alert("Oturum süresi dolmuş olabilir. Lütfen tekrar giriş yapın.");
-            return;
-        }
-
-        try {
-            const response = await fetch(`${apiBaseUrl}/talepforms/${action}/${id}`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                alert(successMessage);
-                location.reload();
-            } else {
-                const error = await response.text();
-                alert("İşlem başarısız: " + error);
-            }
-        } catch (err) {
-            alert("Sunucu hatası: " + err);
-        }
-    }
-
-    async function gonderKampanyaDonusu(formId) {
-        const input = document.getElementById(`kampanyaInput_${formId}`);
-        const value = parseInt(input.value);
-
-        if (!token) {
-            alert("Oturum süresi dolmuş olabilir.");
-            return;
-        }
-
-        if (isNaN(value) || value < 0) {
-            alert("Lütfen geçerli bir sayı girin.");
-            return;
-        }
-
-        try {
-            const response = await fetch(`${apiBaseUrl}/talepforms/update-donus/${formId}`, {
-                method: "PATCH",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(value)
-            });
-
-            if (response.ok) {
-                alert("Kampanya dönüş adedi kaydedildi.");
-                location.reload();
-            } else {
-                const error = await response.text();
-                alert("Hata: " + error);
-            }
-        } catch (err) {
-            alert("Sunucu hatası: " + err);
-        }
-    }
-    async function uploadImage(formId) {
-        const token = document.getElementById("jwtToken")?.value; // 🔁 token eksikti, eklendi
-        const input = document.getElementById(`imageInput_${formId}`);
-
-        if (!token) {
-            alert("Oturum süresi dolmuş olabilir.");
-            return;
-        }
-
-        if (!input || !input.files || input.files.length === 0) {
-            alert("Lütfen bir görsel seçin.");
-            return;
-        }
-
-        const file = input.files[0];
-        const formData = new FormData();
-        formData.append("image", file);
-
-        try {
-            const response = await fetch(`${apiBaseUrl}/talepforms/upload-image/${formId}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                    // ❗ Content-Type belirtme! FormData ile fetch otomatik ayarlar.
-                },
-                body: formData
-            });
-
-            if (response.ok) {
-                alert("Resim başarıyla yüklendi.");
-                location.reload();
-            } else {
-                const error = await response.text();
-                alert("Yükleme başarısız: " + error);
-            }
-        } catch (err) {
-            alert("Sunucu hatası: " + err);
-        }
-    }
-
-
-</script>
+@section Scripts {
+    <script src="~/js/talepFormuIndex.js" asp-append-version="true"></script>
+}

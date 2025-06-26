@@ -48,8 +48,10 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         // Tarihler
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
-
+          
         public string Note { get; set; }
+        public decimal Maliyet { get; set; }
+
         public TalepDurumu TalepDurumu { get; set; }
         public int? KampanyaDonusAdedi { get; set; }
         public string? KampanyaResimYolu { get; set; }

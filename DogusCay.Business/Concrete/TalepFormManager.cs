@@ -29,12 +29,6 @@ namespace DogusCay.Business.Concrete
         {
             return _talepFormRepository.GetDetailsForForm(formId);
         }
-
-        public TalepFormItem TGetItemById(int itemId)
-        {
-            return _talepFormRepository.GetItemById(itemId);
-        }
-
         public void TUpdateItemFields(int TalepFormitemId, int quantity, DateTime validFrom, DateTime validTo)
         {
             _talepFormRepository.UpdateItemFields(TalepFormitemId, quantity, validFrom, validTo);

@@ -85,7 +85,7 @@ namespace DogusCay.API.Controllers
         [HttpGet("by-kanal/{kanalId}")]
         public IActionResult GetByKanal(int kanalId)
         {
-            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
+            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var list = _distributorService.TGetDistributorsByKanalId(kanalId);
             var result = list.Select(x => new
             {

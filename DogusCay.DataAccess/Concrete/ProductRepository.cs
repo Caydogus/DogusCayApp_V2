@@ -89,6 +89,15 @@ namespace DogusCay.DataAccess.Concrete
                                  .FirstOrDefault(p => p.ProductId == productId);
         }
 
+        public Product? GetProductWithDetails(int productId)
+        {
+            return _context.Products
+                .Include(p => p.Category) // Ürünün kendi kategorisini dahil et
+                    .ThenInclude(c => c.ParentCategory) // Kategorinin üst kategorisini dahil et
+                        .ThenInclude(pc => pc.ParentCategory) // Üst kategorinin üst kategorisini dahil et
+                .Include(p => p.UnitType) // Ürünün birim tipini dahil et
+                .FirstOrDefault(p => p.ProductId == productId); // Belirtilen ID'ye göre ürünü bul (Senkron)
+        }
     }
 
 }   

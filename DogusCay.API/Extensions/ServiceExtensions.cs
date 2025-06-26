@@ -47,6 +47,10 @@ namespace DogusCay.API.Extensions
 
             services.AddScoped<IDistributorRepository, DistributorRepository>();
             services.AddScoped<IDistributorService, DistributorManager>();
+
+            services.AddScoped<IMalYuklemeTalepFormRepository, MalYuklemeTalepFormRepository>();
+            services.AddScoped<IMalYuklemeTalepFormService, MalYuklemeTalepFormManager>();
+
         }
     }
 }

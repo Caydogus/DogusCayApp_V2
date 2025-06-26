@@ -153,7 +153,7 @@ namespace DogusCay.API.Controllers
         [HttpGet("get-product-info/{id}")]
         public IActionResult GetProductInfo(int id)
         {
-            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
+            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var product = _productService.TGetById(id);
             if (product == null)
                 return NotFound();

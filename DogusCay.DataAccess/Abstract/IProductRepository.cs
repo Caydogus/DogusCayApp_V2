@@ -21,5 +21,6 @@ namespace DogusCay.DataAccess.Abstract
         // ✅ Yeni eklenenler:
         List<Product> GetProductsBySubCategoryId(int subCategoryId);
         Product GetProductWithCategory(int productId);
+        Product? GetProductWithDetails(int productId);
     }
 }

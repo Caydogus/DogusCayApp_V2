@@ -46,6 +46,7 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public DateTime ValidFrom { get; set; } = DateTime.Today;
         public DateTime ValidTo { get; set; } = DateTime.Today.AddDays(7);
 
+        public TalepTip TalepTip { get; set; }
         public string Note { get; set; }
         // Hesaplanan alanlar
         public decimal Total { get; set; }

@@ -17,6 +17,7 @@ namespace DogusCay.DataAccess.Concrete
         {
             _context = context;
         }
+
         //admin tum talep formlarını gorur
         public List<TalepForm> GetAllWithUser()
         {
@@ -47,7 +48,6 @@ namespace DogusCay.DataAccess.Concrete
                 .OrderByDescending(tf => tf.TalepFormId)
                 .ToList();
         }
-
         public void UpdateStatus(int formId, TalepDurumu durum, int adminId)
         {
             var form = _context.TalepForms.Find(formId);
@@ -58,19 +58,9 @@ namespace DogusCay.DataAccess.Concrete
                 _context.SaveChanges();
             }
         }
-
-        public TalepFormItem GetItemById(int itemId)
-        {
-            return _context.TalepFormItems
-                .Include(x => x.Product)
-                .Include(x => x.Category)
-                .Include(x => x.SubCategory)
-                .FirstOrDefault(x => x.TalepFormItemId == itemId);
-        }
-
         public void UpdateItemFields(int itemId, int quantity, DateTime validFrom, DateTime validTo)
         {
-            var item = _context.TalepFormItems.Find(itemId);
+            var item = _context.TalepForms.Find(itemId);
             if (item != null)
             {
                 item.Quantity = quantity;

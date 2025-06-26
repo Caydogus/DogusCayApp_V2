@@ -4,11 +4,11 @@ using DogusCay.DTO.DTOs.TalepFormDtos;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims; 
+using System.Security.Claims;
 
 namespace DogusCay.API.Controllers
 {
-    
+
     [Authorize] // Yetkilendirme gerektiren controller
     [Route("api/[controller]")]
     [ApiController]
@@ -27,38 +27,61 @@ namespace DogusCay.API.Controllers
         // Bu metot User nesnesi ClaimTypes.NameIdentifier'dan okuyacaktır.
         private int GetUserId()
         {
-            var idStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;         
+            var idStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return int.TryParse(idStr, out var id) ? id : 0;
         }
 
-        
-        // Kullanıcının kendi taleplerini getirir.
-        [HttpGet("mine")]
-        [Authorize(Roles = "BolgeMuduru")] // Sadece Bölge Müdürü rolündekiler erişebilir
-        public IActionResult GetOwnForms()
+        [HttpGet("mine-paged")]
+        [Authorize(Roles = "BolgeMuduru")]
+        public IActionResult GetOwnFormsPaged(int page = 1, int pageSize = 10)
         {
-            int userId = GetUserId(); // JWT token'dan gelen kullanıcı ID'si
+            int userId = GetUserId();
             if (userId == 0)
-            {
                 return Unauthorized("Kullanıcı ID'si alınamadı.");
-            }
-            var result = _talepFormService.TGetAllByUserId(userId);
-            var dtoList = _mapper.Map<List<ResultTalepFormDto>>(result);
-            return Ok(dtoList);
+
+            var userForms = _talepFormService.TGetAllByUserId(userId).AsQueryable();
+
+            var totalCount = userForms.Count();
+            var pagedData = userForms
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var dtoList = _mapper.Map<List<ResultTalepFormDto>>(pagedData);
+
+            return Ok(new
+            {
+                Data = dtoList,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            });
         }
 
-       
-        // Tüm talepleri getirir (Admin rolü için).
-        [HttpGet]
-        [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
-        public IActionResult GetAllForms()
+        [HttpGet("paged")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetAllFormsPaged(int page = 1, int pageSize = 10)
         {
-            var result = _talepFormService.TGetAllWithUser();
-            var dtoList = _mapper.Map<List<ResultTalepFormDto>>(result);
-            return Ok(dtoList);
+            var allForms = _talepFormService.TGetAllWithUser().AsQueryable();
+
+            var totalCount = allForms.Count();
+            var pagedData = allForms
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var dtoList = _mapper.Map<List<ResultTalepFormDto>>(pagedData);
+
+            return Ok(new
+            {
+                Data = dtoList,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            });
         }
 
-       // Yeni bir talep formu oluşturur.
+        // Yeni bir talep formu oluşturur.
         [Authorize] // Sadece giriş yapmış kullanıcılar talep oluşturabilir
         [HttpPost]
         public IActionResult Create([FromBody] CreateTalepFormDto dto)
@@ -105,7 +128,7 @@ namespace DogusCay.API.Controllers
 
             // Hesaplamalar
             entity.BrutTotal = entity.Quantity * dto.Price;//yeni eklendi
-           
+
 
             entity.KoliIciToplamAdet = entity.Quantity * dto.KoliIciAdet;
             entity.KoliToplamAgirligiKg = entity.Quantity * dto.ApproximateWeightKg;
@@ -184,7 +207,7 @@ namespace DogusCay.API.Controllers
             return Ok("Talep onaylandı.");
         }
 
-       
+
         // Talep formunu reddeder (Admin rolü için).
         [HttpPost("reject/{id}")]
         [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
@@ -224,6 +247,7 @@ namespace DogusCay.API.Controllers
             _talepFormService.TDelete(id);
             return Ok("Talep silindi.");
         }
+
         //Toplam form sayısını getirir.
         [HttpGet("count")]
         [Authorize] // Giriş yapmış herkes erişebilir

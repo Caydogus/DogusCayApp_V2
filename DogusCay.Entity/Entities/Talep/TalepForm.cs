@@ -25,7 +25,7 @@ public class TalepForm
     public Category SubCategory { get; set; }
     public Category SubSubCategory { get; set; }
 
-    public int ProductId { get; set; } // Insert tipi için zorunlu
+    public int? ProductId { get; set; } // Insert tipi için zorunlu
     public Product Product { get; set; }
     public string ProductName { get; set; }
     public string ErpCode { get; set; }

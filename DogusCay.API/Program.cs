@@ -9,6 +9,7 @@ using DogusCay.Business.Configurations;
 using DogusCay.Business.Validators;
 using DogusCay.DataAccess.Context;
 using DogusCay.Entity.Entities;
+using DogusCay.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddServiceExtensions(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 // Identity & Authentication
 builder.Services.AddIdentity<AppUser, AppRole>()
@@ -54,11 +56,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost", policy =>
     {
-        policy.WithOrigins(
-                           "http://localhost:5055",    // HTTP
-                           "https://localhost:5055")   // HTTPS
+        //policy.WithOrigins(
+        //    "https://localhost:7192",  // <-- Bu kesin olmalý!
+        //    "http://localhost:7192")
+        policy.SetIsOriginAllowed(origin => true)
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials(); ;
     });
 });
 

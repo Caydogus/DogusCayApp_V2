@@ -1,4 +1,5 @@
 ﻿using DogusCay.Entity.Entities;
+using DogusCay.Entity.Entities.MalYuklemeTalep;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,9 @@ namespace DogusCay.DataAccess.Context
         public DbSet<SaleType> SaleTypes { get; set; }
         public DbSet<UnitType> UnitTypes { get; set; }
         public DbSet<TalepForm> TalepForms { get; set; }
-        public DbSet<TalepFormItem> TalepFormItems { get; set; }
         public DbSet<Distributor> Distributors { get; set; }
+        public DbSet<MalYuklemeTalepForm> MalYuklemeTalepForms { get; set; }
+        public DbSet<MalYuklemeTalepFormDetail> MalYuklemeTalepFormDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -133,29 +135,52 @@ namespace DogusCay.DataAccess.Context
                 .HasForeignKey(tf => tf.DistributorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-       
-            modelBuilder.Entity<TalepFormItem>()
-                .HasOne(tfi => tfi.Product)
+            modelBuilder.Entity<TalepForm>()
+                .Property(p => p.BrutTotal)
+                .HasPrecision(18, 2);
+
+            // MalYuklemeTalepForm FK ilişkileri (Cascade çakışmasını önlemek için Restrict kullandık)
+
+            modelBuilder.Entity<MalYuklemeTalepForm>()
+                .HasOne(x => x.AppUser)
                 .WithMany()
-                .HasForeignKey(tfi => tfi.ProductId)
+                .HasForeignKey(x => x.AppUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TalepFormItem>()
-                .HasOne(tfi => tfi.Category)
+            modelBuilder.Entity<MalYuklemeTalepForm>()
+                .HasOne(x => x.Kanal)
                 .WithMany()
-                .HasForeignKey(tfi => tfi.CategoryId)
+                .HasForeignKey(x => x.KanalId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TalepFormItem>()
-                .HasOne(tfi => tfi.SubCategory)
+            modelBuilder.Entity<MalYuklemeTalepForm>()
+                .HasOne(x => x.Distributor)
                 .WithMany()
-                .HasForeignKey(tfi => tfi.SubCategoryId)
+                .HasForeignKey(x => x.DistributorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.Price).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.ApproximateWeightKg).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<TalepFormItem>().Property(x => x.BrutTotal).HasColumnType("decimal(5,2)");
-            modelBuilder.Entity<TalepForm>().Property(p => p.BrutTotal).HasPrecision(18, 2);
+            modelBuilder.Entity<MalYuklemeTalepForm>()
+                .HasOne(x => x.PointGroupType)
+                .WithMany()
+                .HasForeignKey(x => x.PointGroupTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MalYuklemeTalepForm>()
+                .HasOne(x => x.Point)
+                .WithMany()
+                .HasForeignKey(x => x.PointId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Detail ilişkileri
+            modelBuilder.Entity<MalYuklemeTalepFormDetail>()
+                .HasOne(d => d.MalYuklemeTalepForm)
+                .WithMany(f => f.MalYuklemeTalepFormDetails)
+                .HasForeignKey(d => d.MalYuklemeTalepFormId)
+                .OnDelete(DeleteBehavior.Cascade); // Ana form silinirse detayları da sil
+
         }
+
+
     }
 }
+

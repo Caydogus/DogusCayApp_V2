@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
-using DogusCay.DTO.DTOs.ChannelDtos;
 using DogusCay.DTO.DTOs.KanalDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -38,7 +37,6 @@ namespace DogusCay.API.Controllers
         }
         
         [HttpGet("{id}")]
-
         public IActionResult GetById(int id)
         {
             var value = _kanalService.TGetById(id);

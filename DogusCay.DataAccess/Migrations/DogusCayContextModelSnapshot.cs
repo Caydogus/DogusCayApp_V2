@@ -205,6 +205,142 @@ namespace DogusCay.DataAccess.Migrations
                     b.ToTable("Kanals");
                 });
 
+            modelBuilder.Entity("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepForm", b =>
+                {
+                    b.Property<int>("MalYuklemeTalepFormId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MalYuklemeTalepFormId"));
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("BrutTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DistributorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KanalId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Maliyet")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("OnaylayanAdminId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PointGroupTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PointId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TalepDurumu")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TalepTip")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("ToplamAgirlikKg")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("MalYuklemeTalepFormId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DistributorId");
+
+                    b.HasIndex("KanalId");
+
+                    b.HasIndex("OnaylayanAdminId");
+
+                    b.HasIndex("PointGroupTypeId");
+
+                    b.HasIndex("PointId");
+
+                    b.ToTable("MalYuklemeTalepForms");
+                });
+
+            modelBuilder.Entity("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepFormDetail", b =>
+                {
+                    b.Property<int>("MalYuklemeTalepFormDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MalYuklemeTalepFormDetailId"));
+
+                    b.Property<decimal>("ApproximateWeightKg")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("BrutTutar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Discount1")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Discount2")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ErpCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("FixedPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("KoliIciAdet")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MalYuklemeTalepFormId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Maliyet")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("NetAdetFiyat")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("NetTutar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SubCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SubSubCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MalYuklemeTalepFormDetailId");
+
+                    b.HasIndex("MalYuklemeTalepFormId");
+
+                    b.ToTable("MalYuklemeTalepFormDetails");
+                });
+
             modelBuilder.Entity("DogusCay.Entity.Entities.PaymentType", b =>
                 {
                     b.Property<int>("PaymentTypeId")
@@ -406,97 +542,6 @@ namespace DogusCay.DataAccess.Migrations
                     b.HasKey("SaleTypeId");
 
                     b.ToTable("SaleTypes");
-                });
-
-            modelBuilder.Entity("DogusCay.Entity.Entities.Talep.TalepFormItem", b =>
-                {
-                    b.Property<int>("TalepFormItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TalepFormItemId"));
-
-                    b.Property<decimal>("AdetFarkDonusuTL")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ApproximateWeightKg")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("BrutTotal")
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ErpCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("Iskonto1")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Iskonto2")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Iskonto3")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Iskonto4")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("KoliIciAdet")
-                        .HasColumnType("int");
-
-                    b.Property<int>("KoliIciToplamAdet")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("KoliToplamAgirligiKg")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ListeFiyat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("SabitBedelTL")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("SonAdetFiyati")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("SubCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TalepFormId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("ValidFrom")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ValidTo")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("TalepFormItemId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SubCategoryId");
-
-                    b.HasIndex("TalepFormId");
-
-                    b.ToTable("TalepFormItems");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.UnitType", b =>
@@ -702,7 +747,7 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductName")
@@ -792,6 +837,64 @@ namespace DogusCay.DataAccess.Migrations
                     b.Navigation("Kanal");
                 });
 
+            modelBuilder.Entity("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepForm", b =>
+                {
+                    b.HasOne("DogusCay.Entity.Entities.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DogusCay.Entity.Entities.Distributor", "Distributor")
+                        .WithMany()
+                        .HasForeignKey("DistributorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DogusCay.Entity.Entities.Kanal", "Kanal")
+                        .WithMany()
+                        .HasForeignKey("KanalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DogusCay.Entity.Entities.AppUser", "OnaylayanAdmin")
+                        .WithMany()
+                        .HasForeignKey("OnaylayanAdminId");
+
+                    b.HasOne("DogusCay.Entity.Entities.PointGroupType", "PointGroupType")
+                        .WithMany()
+                        .HasForeignKey("PointGroupTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DogusCay.Entity.Entities.Point", "Point")
+                        .WithMany()
+                        .HasForeignKey("PointId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Distributor");
+
+                    b.Navigation("Kanal");
+
+                    b.Navigation("OnaylayanAdmin");
+
+                    b.Navigation("Point");
+
+                    b.Navigation("PointGroupType");
+                });
+
+            modelBuilder.Entity("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepFormDetail", b =>
+                {
+                    b.HasOne("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepForm", "MalYuklemeTalepForm")
+                        .WithMany("MalYuklemeTalepFormDetails")
+                        .HasForeignKey("MalYuklemeTalepFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MalYuklemeTalepForm");
+                });
+
             modelBuilder.Entity("DogusCay.Entity.Entities.Point", b =>
                 {
                     b.HasOne("DogusCay.Entity.Entities.AppUser", "AppUser")
@@ -878,40 +981,6 @@ namespace DogusCay.DataAccess.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DogusCay.Entity.Entities.Talep.TalepFormItem", b =>
-                {
-                    b.HasOne("DogusCay.Entity.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DogusCay.Entity.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DogusCay.Entity.Entities.Category", "SubCategory")
-                        .WithMany()
-                        .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("TalepForm", "TalepForm")
-                        .WithMany()
-                        .HasForeignKey("TalepFormId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("SubCategory");
-
-                    b.Navigation("TalepForm");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1008,9 +1077,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasOne("DogusCay.Entity.Entities.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("DogusCay.Entity.Entities.Category", "SubCategory")
                         .WithMany()
@@ -1065,6 +1132,11 @@ namespace DogusCay.DataAccess.Migrations
                     b.Navigation("Distributors");
 
                     b.Navigation("Points");
+                });
+
+            modelBuilder.Entity("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepForm", b =>
+                {
+                    b.Navigation("MalYuklemeTalepFormDetails");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.PaymentType", b =>

@@ -49,6 +49,11 @@ namespace DogusCay.Business.Concrete
         {
             _productRepository.ShowOnHome(id);
         }
+
+        public Product? TGetProductDetailsById(int productId)
+        {
+            return _productRepository.GetProductWithDetails(productId);
+        }
     }
 
 }

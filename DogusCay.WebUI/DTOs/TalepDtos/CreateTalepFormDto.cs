@@ -44,7 +44,7 @@ namespace DogusCay.WebUI.DTOs.TalepDtos
         public DateTime ValidTo { get; set; } = DateTime.Today.AddDays(7);
 
         public string Note { get; set; }
-
+        public TalepTip TalepTip { get; set; }
         public int? AppUserId { get; set; }
 
         // Hesaplanan alanlar

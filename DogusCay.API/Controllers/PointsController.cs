@@ -29,7 +29,7 @@ namespace DogusCay.API.Controllers
         }
 
         [HttpGet]
-       // [Authorize] // Sadece giriş yapan kullanıcılar
+        [Authorize] // Sadece giriş yapan kullanıcılar
         public IActionResult Get()
         {
 
@@ -51,7 +51,7 @@ namespace DogusCay.API.Controllers
         }
 
         [HttpGet("{id}")]
-       //[Authorize]
+        [Authorize]
         public IActionResult GetById(int id)
         {
             //Giriş yapan kullanıcı sadece kendi noktasını görebilsin
@@ -66,7 +66,7 @@ namespace DogusCay.API.Controllers
         }
 
         [HttpDelete("{id}")]
-      //  [Authorize]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             //Silme yetkisi sadece kendi noktasına olmalı
@@ -81,8 +81,7 @@ namespace DogusCay.API.Controllers
         }
 
         [HttpPost]
-        //  [Authorize]
-        [HttpPost]
+        [Authorize]
         public IActionResult Create(CreatePointDto createPointDto)
         {
             if (createPointDto == null)
@@ -120,7 +119,7 @@ namespace DogusCay.API.Controllers
         }
 
         [HttpPut]
-       // [Authorize]
+        [Authorize]
         public IActionResult Update(UpdatePointDto updatePointDto)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -139,7 +138,7 @@ namespace DogusCay.API.Controllers
         }
 
         [HttpGet("GetPointCount")]
-       // [Authorize]
+        [Authorize]
         public IActionResult GetPointCount()
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -150,18 +149,20 @@ namespace DogusCay.API.Controllers
         }
 
 
-        [AllowAnonymous]
+      
         //NA / LC gibi distributor olmayan kanallar için.KanalId ile doğrudan noktaları getirir.
         [HttpGet("by-kanal/{kanalId}")]
+        [Authorize]
         public IActionResult GetByKanal(int kanalId)
         {
-            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
+            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var list = _pointService.TGetByKanalId(kanalId);
             var result = _mapper.Map<List<ResultPointDto>>(list);
             return Ok(result);
         }
-        [AllowAnonymous]
+       
         [HttpGet("dropdown")]
+        [Authorize]
         public IActionResult GetDropdown()
         {
            
@@ -176,9 +177,10 @@ namespace DogusCay.API.Controllers
         }
     
         [HttpGet("by-group/{pointGroupTypeId}/distributor/{distributorId}")]
+        [Authorize]
         public IActionResult GetByGroupAndDistributor(int distributorId, int pointGroupTypeId)
         {
-            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
+            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var list = _pointService.TGetByDistributorAndGroup(distributorId, pointGroupTypeId);
             var result = _mapper.Map<List<ResultPointDto>>(list);
             return Ok(result);
