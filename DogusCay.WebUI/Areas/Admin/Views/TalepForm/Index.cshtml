@@ -3,171 +3,329 @@
     ViewData["Title"] = "";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var jwt = Context.Session.GetString("JwtToken");
-}
-<input type="hidden" id="jwtToken" value="@jwt" />
-<h3 class="mb-4 d-flex justify-content-between align-items-center">
-    <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni Talep Oluştur</a>
-</h3>
 
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-warning">Hiç talep formu bulunamadı.</div>
-}
-else
-{
-    <div class="table-responsive" style="overflow-x:auto; max-width:100%;">
-        <table class="table table-striped table-hover text-nowrap" style="min-width: 1300px;">
-            <thead class="bg-dark text-white">
-                <tr>
-                    <th></th>
-                    <th>Kampaya Tarihi</th>
-                    <th>Müşteri</th>
-                    <th>Ürün Adı</th>
-                    <th>Kategori</th>
-                    <th>Alt Kategori</th>
-                    <th>Marka</th>
-                    <th>ERP Kodu</th>
-                    <th>Ağırlık (kg)</th>
-                    <th>Adet Farkı (₺)</th>
-                    <th>Son Adet Fiyatı</th>
-                    <th>Toplam (₺)</th>
-                    <th>Maliyet</th>
-                    <th>Kampanya Dönüşü Miktarı</th>
-                    <th>Durum</th>
-                    @if (User.IsInRole("Admin")) { <th>İşlemler</th>}
-                    <th>Kampanya Dönüşü</th>
-                    <th>Kampanya Görseli</th>
-                    
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
 
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+    var displayRange = 2; // Aktif sayfanın etrafında gösterilecek sayfa sayısı
+    var firstLastPagesToShow = 1; // İlk ve son kısımlarda gösterilecek sayfa sayısı
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/talepform.css" asp-append-version="true" />
+</head>
+<body>
+    <input type="hidden" id="jwtToken" value="@jwt" />
+
+    <h3 class="mb-4 d-flex justify-content-between align-items-center">
+        <span>Talep Formu Listesi</span>
+        <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni Talep Oluştur</a>
+    </h3>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning text-center">Hiç talep formu bulunamadı.</div>
+    }
+    else
+    {
+        @* --- Tablo Görünümü (Büyük ekranlar için) --- *@
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="bg-dark text-white">
                     <tr>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="deleteTalep(@item.TalepFormId)">Sil</button>
-                        </td>
-                        <td>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</td>
-                        <td>@item.PointName</td>
-                        <td>@item.ProductName</td>
-                        <td>@item.CategoryName</td>
-                        <td>@item.SubCategoryName</td>
-                        <td>@item.SubSubCategoryName</td>
-                        <td>@item.ErpCode</td>
-                        <td>@item.ApproximateWeightKg.ToString("0.00")</td>
-                        <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
-                        <td>@item.SonAdetFiyati.ToString("C2")</td>
-                        <td class="fw-bold">@item.Total.ToString("C2")</td>
-                        <td>@item.Maliyet</td>
-						<td>@item.KampanyaDonusAdedi</td>
-                        <!-- Durum Gösterimi -->
-                        <td>
-                            @if (item.TalepDurumu == 0)
-                            {
-                                <span class="badge bg-warning text-dark">Bekliyor</span>
-                            }
-                            else if (item.TalepDurumu == TalepDurumu.Onaylandi)
-                            {
-                                <span class="badge bg-success">Onaylandı</span>
-                            }
-                            else if (item.TalepDurumu == TalepDurumu.Reddedildi)
-                            {
-                                <span class="badge bg-danger">Reddedildi</span>
-                            }
-                        </td>
-                        <!-- İşlem Butonları -->
-                        @if (User.IsInRole("Admin"))
-                        {
+                        <th>#</th>
+                        <th>Kampanya Tarihi</th>
+                        <th>Müşteri</th>
+                        <th>Ürün Adı</th>
+                        <th>Alt Kategori</th>
+                        <th>Marka</th>
+                        <th>ERP Kodu</th>
+                        <th>Ağırlık (kg)</th>
+                        <th>Adet Farkı (₺)</th>
+                        <th>Son Fiyatı</th>
+                        <th>Toplam (₺)</th>
+                        <th>Maliyet</th>
+                        <th>Dönüş Adet</th>
+                        <th>Durum</th>
+                        @if (User.IsInRole("Admin")) {<th>İşlemler</th> }
+                        <th>Kampanya Dönüşü</th>
+                        <th>Görsel</th>
+                        <th class="text-center">Sil</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int startIndex = ((currentPage - 1) * pageSize) + 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@(startIndex++)</td>
+                            <td>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</td>
+                            <td>@item.PointName</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.ErpCode</td>
+                            <td>@item.SubCategoryName</td> @* Bu sırayı kontrol edin, önceki listemde 5. sıradaydı *@
+                            <td>@item.SubSubCategoryName</td> @* Bu sırayı kontrol edin, önceki listemde 6. sıradaydı *@
+                            <td>@item.ApproximateWeightKg.ToString("0.00")</td>
+                            <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
+                            <td>@item.SonAdetFiyati.ToString("C2")</td>
+                            <td class="fw-bold">@item.Total.ToString("C2")</td>
+                            <td>@item.Maliyet</td>
+                            <td>@item.KampanyaDonusAdedi</td>
                             <td>
-                                @if (item.TalepDurumu == 0)
+                                @if (item.TalepDurumu == 0) { <span class="badge bg-warning text-dark">Bekliyor</span> }
+                                else if (item.TalepDurumu == TalepDurumu.Onaylandi) {<span class="badge bg-success">Onaylandı</span> }
+                                else if (item.TalepDurumu == TalepDurumu.Reddedildi) { <span class="badge bg-danger">Reddedildi</span> }
+                            </td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td>
+                                    @if (item.TalepDurumu == 0)
+                                    {
+                                        <div class="d-flex flex-column gap-1">
+                                            <button class="btn btn-success btn-sm" onclick="approveTalep(@item.TalepFormId)">Onayla</button>
+                                            <button class="btn btn-danger btn-sm" onclick="rejectTalep(@item.TalepFormId)">Reddet</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>
+                            }
+
+                            <td>
+                                @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
                                 {
-                                    <button class="btn btn-success btn-sm" onclick="approveTalep(@item.TalepFormId)">Onayla</button>
-                                    <button class="btn btn-danger btn-sm" onclick="rejectTalep(@item.TalepFormId)">Reddet</button>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="hidden" id="koliIciToplamAdetTable_@item.TalepFormId" value="@item.KoliIciToplamAdet" />
+                                        <input type="number" id="kampanyaInputTable_@item.TalepFormId"
+                                               class="form-control form-control-sm"
+                                               style="width: 70px;"
+                                               min="0" placeholder="Adet" />
+                                        <button class="btn btn-primary btn-sm" onclick="gonderKampanyaDonusu(@item.TalepFormId, 'Table')">Kaydet</button>
+
+                                    </div>
+                                }
+                                else if (item.KampanyaDonusAdedi.HasValue)
+                                {
+                                    <span>@item.KampanyaDonusAdedi.Value adet</span>
                                 }
                                 else
                                 {
-                                    <span>-</span>
+                                    <span class="text-muted">-</span>
                                 }
                             </td>
-                        }
-   
-                        <!-- Kampanya donuş adedi -->
-                        <td>
-                            @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
-                            {
-                                <input type="hidden" id="koliIciToplamAdet_@item.TalepFormId" value="@item.KoliIciToplamAdet" />
-                                <input type="number" id="kampanyaInput_@item.TalepFormId" class="form-control form-control-sm d-inline-block" style="width: 80px;" min="0" placeholder="Adet" />
-                                <button class="btn btn-primary btn-sm" onclick="gonderKampanyaDonusu(@item.TalepFormId)">Kaydet</button>
-                            }
-                            else if (item.KampanyaDonusAdedi.HasValue)
-                            {
-                                <span>@item.KampanyaDonusAdedi.Value adet</span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">-</span>
-                            }
-                        </td>
-                        <!-- Kampanya resmi ekleme -->
-                        <td style="white-space: nowrap;">
-                            @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
-                            {
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="flex-shrink: 0;">
-                                        <input type="file"
-                                               id="imageInput_@item.TalepFormId"
-                                               accept="image/*"
-                                               style="width: 140px; padding: 3px;" />
+                            <td>
+                                @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
+                                {
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="file" id="imageInputTable_@item.TalepFormId" accept="image/*" class="form-control-file form-control-sm" />
+                                        <button class="btn btn-info btn-sm" onclick="uploadImage(@item.TalepFormId, 'Table')">Yükle</button>
+                                        @if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
+                                        {
+                                            <a href="@item.KampanyaResimYolu" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
+                                                <i class="bi bi-camera"></i> Resmi Aç
+                                            </a>
+                                        }
                                     </div>
+                                }
+                                else if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
+                                {
+                                    <a href="@item.KampanyaResimYolu" target="_blank" class="text-decoration-underline text-info fw-semibold">
+                                        <i class="bi bi-camera"></i> Resmi Aç
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-danger btn-sm" onclick="deleteTalep(@item.TalepFormId)">Sil</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-                                    <button class="btn btn-sm btn-info" onclick="uploadImage(@item.TalepFormId)">Yükle</button>
-
-                                    @if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
+        @* --- Kart Görünümü (Küçük ekranlar için) --- *@
+        <div class="card-view">
+            @{
+                int cardIndex = ((currentPage - 1) * pageSize) + 1;
+            }
+            @foreach (var item in Model)
+            {
+                <div class="card mb-4 shadow-sm border-0 rounded-4 px-0 card-talep" style="background: #f8fafc;">
+                    <div class="card-header rounded-top-4 bg-white d-flex justify-content-between align-items-center border-bottom-0" style="padding: 20px 24px;">
+                        <div>
+                            <span class="fw-bold text-dark-emphasis fs-6">#@cardIndex</span>
+                            <span class="text-muted ms-2">@item.ProductName <span class="badge bg-secondary ms-2">@item.ErpCode</span></span>
+                        </div>
+                        <span>
+                            @if (item.TalepDurumu == 0)
+                            {
+                                <span class="badge bg-warning text-dark px-3 py-2">Bekliyor</span>
+                            }
+                            else if (item.TalepDurumu == TalepDurumu.Onaylandi)
+                            {
+                                <span class="badge bg-success px-3 py-2">Onaylandı</span>
+                            }
+                            else if (item.TalepDurumu == TalepDurumu.Reddedildi)
+                            {
+                                <span class="badge bg-danger px-3 py-2">Reddedildi</span>
+                            }
+                        </span>
+                    </div>
+                    <div class="card-body py-4 px-4" style="background: #f8fafc;">
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-2">
+                                <div class="mb-2"><strong>Müşteri:</strong> <span>@item.PointName</span></div>
+                                <div class="mb-2"><strong>Kampanya Tarihi:</strong> <span>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</span></div>
+                                <div class="mb-2"><strong>Alt Kategori:</strong> <span>@item.SubCategoryName</span></div>
+                                <div class="mb-2"><strong>Marka:</strong> <span>@item.SubSubCategoryName</span></div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="mb-2"><strong>Ağırlık (kg):</strong> <span>@item.ApproximateWeightKg.ToString("0.00")</span></div>
+                                <div class="mb-2"><strong>Adet Farkı (₺):</strong> <span>@item.AdetFarkDonusuTL.ToString("C2")</span></div>
+                                <div class="mb-2"><strong>Son Fiyatı:</strong> <span>@item.SonAdetFiyati.ToString("C2")</span></div>
+                                <div class="mb-2"><strong>Toplam (₺):</strong> <span class="fw-bold text-success">@item.Total.ToString("C2")</span></div>
+                                <div class="mb-2"><strong>Maliyet:</strong> <span>@item.Maliyet</span></div>
+                                <div class="mb-2"><strong>Dönüş Adet:</strong> <span>@item.KampanyaDonusAdedi</span></div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center gy-2 gx-4">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="col-md-auto mb-1">
+                                    <strong>Admin İşlemleri:</strong>
+                                    @if (item.TalepDurumu == 0)
                                     {
-                                        <a href="@item.KampanyaResimYolu"
-                                           target="_blank"
-                                           class="text-decoration-underline"
-                                           style="color: #1a73e8; font-size: 0.9rem;"
-                                           title="Yüklenmiş resmi görüntüle">
-                                            📷 Resmi Aç
-                                        </a>
+                                        <div class="d-flex flex-row gap-2 mt-1">
+                                            <button class="btn btn-success btn-sm" onclick="approveTalep(@item.TalepFormId)">Onayla</button>
+                                            <button class="btn btn-danger btn-sm" onclick="rejectTalep(@item.TalepFormId)">Reddet</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
                                     }
                                 </div>
                             }
-                            else if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
-                            {
-                                <a href="@item.KampanyaResimYolu"
-                                   target="_blank"
-                                   class="text-decoration-underline"
-                                   style="color: #d62828; font-size: 0.9rem;"
-                                   title="Yüklenmiş resmi görüntüle">
-                                    📷 Resmi Aç
-                                </a>
-                            }
-                        </td>
+                            <div class="col-md mb-1">
+                                <strong>Kampanya Dönüşü:</strong>
+                                @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
+                                {
+                                    <div class="d-flex flex-nowrap align-items-center gap-2 mt-1">
+                                        <input type="hidden" id="koliIciToplamAdet_@item.TalepFormId" value="@item.KoliIciToplamAdet" />
+                                        <input type="number" id="kampanyaInput_@item.TalepFormId" class="form-control form-control-sm flex-shrink-0" style="width: 80px;" min="0" placeholder="Adet" />
+                                        <button class="btn btn-primary btn-sm" onclick="gonderKampanyaDonusu(@item.TalepFormId)">Kaydet</button>
 
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    @if (ViewBag.TotalPages > 1)
-    {
-        <nav class="mt-4 d-flex justify-content-center">
-            <ul class="pagination pagination-sm">
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" href="?page=@i">@i</a>
+                                    </div>
+                                }
+                                else if (item.KampanyaDonusAdedi.HasValue)
+                                {
+                                    <span class="ms-1">@item.KampanyaDonusAdedi.Value adet</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </div>
+                            <div class="col-md mb-1">
+                                <strong>Görsel:</strong>
+                                @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
+                                {
+                                    <div class="d-flex flex-nowrap align-items-center w-100 gap-2 mt-1">
+                                        <input type="file" id="imageInputCard_@item.TalepFormId" accept="image/*" class="form-control-file form-control-sm flex-grow-1 flex-shrink-1" />
+                                        <button class="btn btn-sm btn-info flex-shrink-0" onclick="uploadImage(@item.TalepFormId, 'Card')">Yükle</button>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
+                                    {
+                                        <a href="@item.KampanyaResimYolu" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
+                                            <i class="bi bi-camera me-1"></i>Resmi Aç
+                                        </a>
+
+                                    }
+                                }
+                                else if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
+                                {
+                                    <a href="@item.KampanyaResimYolu" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
+                                        <i class="bi bi-camera me-1"></i>Resmi Aç
+                                    </a>
+
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </div>
+                            <div class="col-md-auto text-end">
+                                <button class="btn btn-danger btn-sm" onclick="deleteTalep(@item.TalepFormId)">
+                                    <i class="bi bi-trash3 me-1"></i>Sil
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                { cardIndex++; }
+            }
+        </div>
+
+        @if(totalPages > 1)
+        {
+            <nav class="mt-4 d-flex justify-content-center">
+                <ul class="pagination pagination-sm">
+                    @* Önceki Sayfa *@
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">« Önceki</a>
                     </li>
-                }
-            </ul>
-        </nav>
+
+                    @{
+                        var pageNumbers = new List<int>();
+                        for (int i = 1; i <= firstLastPagesToShow && i <= totalPages; i++) { if (!pageNumbers.Contains(i)) { pageNumbers.Add(i); } }
+                        for (int i = Math.Max(1, currentPage - displayRange); i <= Math.Min(totalPages, currentPage + displayRange); i++) { if (!pageNumbers.Contains(i)) { pageNumbers.Add(i); } }
+                        for (int i = totalPages - firstLastPagesToShow + 1; i <= totalPages; i++) { if (i > 0 && !pageNumbers.Contains(i)) { pageNumbers.Add(i); } }
+                        pageNumbers = pageNumbers.OrderBy(p => p).ToList();
+
+                        int? lastPageNumber = null;
+                        foreach (var pageNum in pageNumbers)
+                        {
+                            if (lastPageNumber.HasValue && pageNum > lastPageNumber + 1)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+                            <li class="page-item @(pageNum == currentPage ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@pageNum">@pageNum</a>
+                            </li>
+                            lastPageNumber = pageNum;
+                        }
+                    }
+
+                    @* Sonraki Sayfa *@
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Sonraki »</a>
+                    </li>
+                </ul>
+            </nav>
+            <p class="text-center mt-3">Toplam Kayıt: **@totalCount** | Sayfa @currentPage / @totalPages</p>
+        }
     }
-
-}
-
+</body>
 @section Scripts {
     <script src="~/js/talepFormuIndex.js" asp-append-version="true"></script>
 }

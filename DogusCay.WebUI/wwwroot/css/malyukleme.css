@@ -1,0 +1,34 @@
+﻿
+.table th, .table td {
+    white-space: nowrap; /* Metni tek satırda tut */
+    overflow: hidden; /* Taşan içeriği gizle */
+    text-overflow: ellipsis; /* Taşan metni "..." ile göster */
+    padding: 0.5rem 0.75rem; /* Daha kompakt hücreler */
+    vertical-align: middle; /* İçeriği dikey ortala */
+}
+
+    /* Sütun genişliklerini ayarla */
+    .table th:nth-child(1), .table td:nth-child(1) { /* # (Sıra Numarası/ID) */
+        width: 50px;
+        max-width: 50px;
+        text-align: center;
+    }
+
+    .table th:nth-child(2), .table td:nth-child(2) { /* Kullanıcı (Ad Soyad) */
+        width: 150px;
+        max-width: 150px;
+    }
+
+
+
+    .table th:nth-child(4), .table td:nth-child(4) { /* Point (Nokta Adı) */
+        width: 200px; /* Point Name için daha fazla alan */
+        max-width: 200px;
+    }
+
+    .table th:nth-child(5), .table td:nth-child(5) { /* Tarih */
+        width: 100px;
+        max-width: 100px;
+    }
+
+

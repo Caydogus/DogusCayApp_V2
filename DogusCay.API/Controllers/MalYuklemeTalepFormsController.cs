@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DogusCay.API.Controllers
 {
-    [Authorize] // Yetkilendirme gerektiren controller
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MalYuklemeTalepFormsController : ControllerBase
@@ -63,15 +63,15 @@ namespace DogusCay.API.Controllers
                 });
 
             }
+
             catch (InvalidOperationException ex)
             {
-                // Product bulunamadığında fırlatılan özel hatayı yakala
                 Console.Error.WriteLine($"❌ API Hatası (Geçersiz İşlem - Servis): {ex.Message}");
-                return BadRequest(ex.Message); // İstemciye daha anlamlı bir hata mesajı döndür
+                return BadRequest(new { success = false, message = ex.Message });
+                //return BadRequest(ex.Message); 
             }
             catch (Exception ex)
             {
-                // Diğer genel hataları yakala
                 Console.Error.WriteLine($"❌ API Hatası (Genel - Controller): Form oluşturulurken beklenmeyen bir hata oluştu: {ex.Message}");
                 return StatusCode(500, "Form oluşturulurken beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
             }

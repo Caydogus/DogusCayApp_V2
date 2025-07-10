@@ -21,4 +21,8 @@
     <ProjectReference Include="..\DogusCay.DTO\DogusCay.DTO.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

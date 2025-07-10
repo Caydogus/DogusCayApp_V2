@@ -49,7 +49,7 @@ namespace DogusCay.API.Controllers
                 {
                     return BadRequest(result.Errors);
                 }
-                await _userManager.AddToRoleAsync(user, "SatisTemsilcisi");
+                await _userManager.AddToRoleAsync(user, "BolgeMuduru");//kayıt yaparken otomatik olarak bolge mudur olarak kaydediyor
                 return Ok("Kullanıcı Kaydı Başarılı");
             }
 

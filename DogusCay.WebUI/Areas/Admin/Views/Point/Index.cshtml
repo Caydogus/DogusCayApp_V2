@@ -1,36 +1,152 @@
 ﻿@model List<ResultPointDto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    int count = 0;
+
+    var currentPage = (int)ViewBag.CurrentPage;
+    var totalPages = (int)ViewBag.TotalPages;
+    var totalCount = (int)ViewBag.TotalCount;
+    var pageSize = (int)ViewBag.PageSize;
+
+    // Akıllı sayfalama için görünür sayfa numarası aralığını belirleyelim.
+    // Genellikle mevcut sayfanın sağında ve solunda kaç sayfa gösterileceğini belirler.
+    // Örneğin, displayRange = 2 ise, CurrentPage=10 iken 8, 9, 10, 11, 12 gösterilir.
+    // Başlangıç ve bitişteki sayfa sayısı da önemlidir (örn: ilk 2, son 2).
+    var displayRange = 2; // Mevcut sayfanın her iki tarafında gösterilecek sayfa sayısı
+    var firstLastPagesToShow = 1; // Başlangıçta ve sonda gösterilecek sabit sayfa sayısı
 }
 
-<table class="table table-bordered table-striped table-hover">
-    <thead class="thead-dark">
-        <tr>
-            <th>#</th>
-            <th>Nokta ERC</th>PointErc
-            <th>Nokta Adı</th>
-            <th>Nokta Grubu</th>
-            <th>Kanal Adı</th>
-            <th>Bölge Müdürü</th>
-            <th>Distributor Adı</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            count++;
-            <tr>
-                <th scope="row">@count</th>
-                <td>@(!string.IsNullOrWhiteSpace(item.PointErc) ? item.PointErc : "—")</td>
-                <td>@(!string.IsNullOrWhiteSpace(item.PointName) ? item.PointName : "—")</td>
-                <td>@(!string.IsNullOrWhiteSpace(item.PointGroupTypeName) ? item.PointGroupTypeName : "—")</td>
-                <td>@(!string.IsNullOrWhiteSpace(item.KanalName) ? item.KanalName : "—")</td>
-                <td>@(!string.IsNullOrWhiteSpace(item.AppUserFullName) ? item.AppUserFullName : "—")</td>
-                <td>@(!string.IsNullOrWhiteSpace(item.DistributorName) ? item.DistributorName : "—")</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<h1 class="mb-4">Nokta Listesi</h1>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center">Hiç nokta bulunamadı.</div>
+}
+else
+{
+    <div class="table-responsive" style="overflow-x:auto; max-width:100%;">
+        <table class="table table-bordered table-striped table-hover text-nowrap" style="min-width: 1000px;">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>#</th>
+                    <th>Nokta ERC</th>
+                    <th>Nokta Adı</th>
+                    <th>Nokta Grubu</th>
+                    <th>Kanal Adı</th>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <th>Bölge Müdürü</th>
+                    }
+                    <th>Distribütör Adı</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int startIndex = ((currentPage - 1) * pageSize) + 1;
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@(startIndex++)</th>
+                        <td>@(!string.IsNullOrWhiteSpace(item.PointErc) ? item.PointErc : "—")</td>
+                        <td>@(!string.IsNullOrWhiteSpace(item.PointName) ? item.PointName : "—")</td>
+                        <td>@(!string.IsNullOrWhiteSpace(item.PointGroupTypeName) ? item.PointGroupTypeName : "—")</td>
+                        <td>@(!string.IsNullOrWhiteSpace(item.KanalName) ? item.KanalName : "—")</td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>@(!string.IsNullOrWhiteSpace(item.AppUserFullName) ? item.AppUserFullName : "—")</td>
+                        }
+                        <td>@(!string.IsNullOrWhiteSpace(item.DistributorName) ? item.DistributorName : "—")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Nokta Sayfalaması" class="mt-4">
+            <ul class="pagination justify-content-center">
+                @* Önceki Sayfa Butonu *@
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1 })" aria-label="Önceki">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Önceki</span>
+                    </a>
+                </li>
+
+                @{
+                    // Sayfa numaralarını oluşturmak için liste
+                    var pageNumbers = new List<int>();
+
+                    // Başlangıçtaki sabit sayfalar
+                    for (int i = 1; i <= firstLastPagesToShow && i <= totalPages; i++)
+                    {
+                        if (!pageNumbers.Contains(i))
+                        {
+                            pageNumbers.Add(i);
+                        }
+                    }
+
+                    // Mevcut sayfa etrafındaki sayfalar
+                    for (int i = Math.Max(1, currentPage - displayRange); i <= Math.Min(totalPages, currentPage + displayRange); i++)
+                    {
+                        if (!pageNumbers.Contains(i))
+                        {
+                            pageNumbers.Add(i);
+                        }
+                    }
+
+                    // Sondaki sabit sayfalar
+                    for (int i = totalPages - firstLastPagesToShow + 1; i <= totalPages; i++)
+                    {
+                        if (i > 0 && !pageNumbers.Contains(i)) // i > 0 kontrolü totalPages küçükse hatalı değerleri engeller
+                        {
+                            pageNumbers.Add(i);
+                        }
+                    }
+
+                    // Sayfa numaralarını sırala
+                    pageNumbers = pageNumbers.OrderBy(p => p).ToList();
+
+                    int? lastPageNumber = null; // En son eklenen sayfa numarasını takip etmek için
+
+                    // Oluşturulan sayfa numaralarını ve '...' kısımlarını ekle
+                    foreach (var pageNum in pageNumbers)
+                    {
+                        if (lastPageNumber.HasValue && pageNum > lastPageNumber + 1)
+                        {
+                            // Arada atlama varsa '...' ekle
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+
+                        <li class="page-item @(pageNum == currentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = pageNum })">@pageNum</a>
+                        </li>
+                        lastPageNumber = pageNum;
+                    }
+                }
+
+                @* Sonraki Sayfa Butonu *@
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1 })" aria-label="Sonraki">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Sonraki</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+
+    <p class="text-center mt-3">Toplam Kayıt: **@totalCount** | Sayfa @currentPage / @totalPages</p>
+}

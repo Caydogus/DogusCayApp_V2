@@ -26,7 +26,6 @@ namespace DogusCay.API.Controllers
         }
 
         // Tüm kategorileri getirir
-        
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -120,7 +119,6 @@ namespace DogusCay.API.Controllers
         [HttpGet("{id}/children")]
         public IActionResult GetSubCategories(int id)
         {
-            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var subCategories = _categoryService.TGetFilteredList(c => c.ParentCategoryId == id);
             var dto = _mapper.Map<List<ResultCategoryDto>>(subCategories);
             return Ok(dto);
@@ -130,7 +128,6 @@ namespace DogusCay.API.Controllers
         [HttpGet("MainCategories")]
         public IActionResult GetMainCategories()
         {
-            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var mainCategories = _categoryService.TGetFilteredList(c => c.ParentCategoryId == null);
             var dto = _mapper.Map<List<ResultCategoryDto>>(mainCategories);
             return Ok(dto);
@@ -140,7 +137,6 @@ namespace DogusCay.API.Controllers
         [HttpGet("{subCategoryId}/products")]
         public IActionResult GetProductsBySubCategory(int subCategoryId)
         {
-            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var products = _productService.TGetFilteredList(p => p.CategoryId == subCategoryId);
             var dto = _mapper.Map<List<ResultProductDto>>(products);
             return Ok(dto);

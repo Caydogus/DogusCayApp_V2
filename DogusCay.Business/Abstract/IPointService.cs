@@ -13,5 +13,6 @@ namespace DogusCay.Business.Abstract
         List<Point> TGetByDistributorAndGroup(int distributorId, int groupTypeId);
         List<Point> TGetByKanalId(int KanalId);
         List<Point> TGetListWithIncludes();
+        Point TGetDetailsById(int id);
     }
 }

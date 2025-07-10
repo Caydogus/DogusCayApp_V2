@@ -38,7 +38,6 @@ namespace DogusCay.WebUI.DTOs.TalepDtos
         public decimal ListeFiyat { get; set; }
         public decimal SonAdetFiyati { get; set; }
         public decimal AdetFarkDonusuTL { get; set; }
-        // public decimal AdetFarkDonusuYuzde { get; set; }
 
         public DateTime ValidFrom { get; set; } = DateTime.Today;
         public DateTime ValidTo { get; set; } = DateTime.Today.AddDays(7);

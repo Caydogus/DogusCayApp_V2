@@ -18,6 +18,11 @@ namespace DogusCay.Business.Concrete
             _distributorRepository = distributorRepository;
         }
 
+        public List<Distributor> TGetDistributorsByAppUserId(int appUserId)
+        {
+            return _distributorRepository.GetDistributorsByAppUserId(appUserId);
+        }
+
         public List<Distributor> TGetDistributorsByKanalId(int KanalId)
         {
             return _distributorRepository.GetDistributorsByKanalId(KanalId);

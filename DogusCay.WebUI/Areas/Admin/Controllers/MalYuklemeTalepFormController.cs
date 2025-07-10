@@ -19,24 +19,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             _client = httpClientFactory.CreateClient("EduClient"); 
         }
 
-        //private async Task SetDropdownsAsync()
-        //{
-        //    try
-        //    {
-        //        var kanallar = await _client.GetFromJsonAsync<List<KanalDropdownDto>>("api/kanals/dropdown");
-        //        ViewBag.Kanallar = new SelectList(kanallar, "KanalId", "KanalName");
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error fetching dropdown data: {ex.Message}");
-        //        ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-        //        TempData["Error"] = "Dropdown verileri yüklenirken bir hata oluştu.";
-        //    }
-        //}
-
-        // Mal Yükleme Talep Formu oluşturma sayfasını görüntüler (GET isteği)
-        // TalepFormController ve MalYuklemeTalepFormController içindeki SetDropdownsAsync
+       
         private async Task SetDropdownsAsync()
         {
             var jwtToken = HttpContext.Session.GetString("JwtToken");
@@ -51,11 +34,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 return;
             }
 
-            // Authorization başlığını ekleyin. Eğer _client.DefaultRequestHeaders.Contains("Authorization") kontrolü yapılıyorsa, onu koruyun.
-            // HttpClientsFactory kullandığınız için her istekte yeni client geliyorsa bu satır her seferinde çalışır ve sorun olmaz.
-            // Yine de, eğer bir DelegatingHandler kullanmıyorsanız ve _client bir singleton ise, aşağıdaki kontrol faydalıdır.
-            // Ancak IHttpClientFactory kullanıldığında genellikle her seferinde yeni bir client geldiği varsayılır.
-            // Bu yüzden direkt eklemek en basiti.
             _client.DefaultRequestHeaders.Clear(); // Önceki başlıkları temizle (Eğer client yeniden oluşturulmuyorsa)
             _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + jwtToken);
 

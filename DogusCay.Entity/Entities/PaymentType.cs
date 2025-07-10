@@ -14,8 +14,6 @@ namespace DogusCay.Entity.Entities
         [Required]
         [MaxLength(50)]
         public string PaymentTypeName { get; set; } // Örn: Nakit, Vadeli, Çek
-
-        // Navigasyon: Bu ödeme tipiyle yapılan satışlar
         public ICollection<Sale> Sales { get; set; }
     }
 

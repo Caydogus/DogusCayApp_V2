@@ -1,5 +1,6 @@
 ﻿
 using DogusCay.Business.Abstract;
+using DogusCay.DTO.DTOs.TalepFormDtos;
 using DogusCay.Entity.Entities.Talep;
 
 public interface ITalepFormService : IGenericService<TalepForm>

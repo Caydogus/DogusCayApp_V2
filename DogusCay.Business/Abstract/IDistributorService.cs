@@ -19,5 +19,8 @@ namespace DogusCay.Business.Abstract
 
 
         public List<Distributor> TGetDistributorsWithPoints();//bir distributor’a bağlı noktaları da çekme
+
+        public List<Distributor> TGetDistributorsByAppUserId(int appUserId);
+
     }
 }

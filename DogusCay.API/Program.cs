@@ -56,10 +56,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost", policy =>
     {
-        //policy.WithOrigins(
-        //    "https://localhost:7192",  // <-- Bu kesin olmalý!
-        //    "http://localhost:7192")
-        policy.SetIsOriginAllowed(origin => true)
+        policy.WithOrigins(
+            "https://localhost:7192")
+        //policy.SetIsOriginAllowed(origin => true)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); ;

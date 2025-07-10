@@ -1,13 +1,29 @@
 ﻿@model List<ResultMalYuklemeTalepFormDto>
+
 @{
-    ViewData["Title"] = "";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Mal Yükleme Talepleri"; // Daha anlamlı bir başlık
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // Layout yolunuzu kontrol edin!
     var jwt = Context.Session.GetString("JwtToken");
+
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10); // Varsayılan bir değer verilebilir
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+
+
+    var displayRange = 2; // Mevcut sayfanın her iki tarafında gösterilecek sayfa sayısı
+    var firstLastPagesToShow = 1; // Başlangıçta ve sonda gösterilecek sabit sayfa sayısı
 }
+
+
+<head>
+    <link rel="stylesheet" href="~/css/malyukleme.css" asp-append-version="true" />
+</head>
 <input type="hidden" id="jwtToken" value="@jwt" />
 
 <h3 class="mb-4 d-flex justify-content-between align-items-center">
-    <a class="btn btn-success" asp-area="Admin" asp-controller="MalYuklemeTalepForm" asp-action="CreateMalYuklemeTalepForm">+ Yeni Talep Oluştur</a>
+    <span>Mal Yükleme Talepleri</span>
+    <a class="btn btn-success" asp-area="Admin" asp-controller="MalYuklemeTalepForm" asp-action="CreateMalYuklemeTalepForm">+ Mal Talebi Oluştur</a>
 </h3>
 
 @if (TempData["Success"] != null)
@@ -19,9 +35,9 @@
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
 
-@if (!Model.Any())
+@if (Model == null || !Model.Any())
 {
-    <div class="alert alert-warning">Gösterilecek mal yükleme talebi bulunamadı.</div>
+    <div class="alert alert-warning text-center">Gösterilecek mal yükleme talebi bulunamadı.</div>
 }
 else
 {
@@ -32,29 +48,33 @@ else
                     <th>#</th>
                     <th>Kullanıcı</th>
                     <th>Kanal</th>
-                    <th>Point</th>
+                    <th>Nokta</th>
                     <th>Tarih</th>
-                    <th>Net (₺)</th>
-                    <th>Brüt (₺)</th>
+                    <th>Brüt(₺)</th>
+                    <th>Net(₺)</th>
                     <th>Kg</th>
-                    <th>Maliyet (%)</th>
+                    <th>Maliyet(%)</th>
                     <th>Durum</th>
                     <th>İşlemler</th>
                 </tr>
             </thead>
             <tbody>
+                @{
+                    // Eğer sayfalama kullanılıyorsa, ID yerine sıra numarası için
+                    int startIndex = ((currentPage - 1) * pageSize) + 1;
+                }
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.MalYuklemeTalepFormId</td>
-                        <td>@item.AppUser?.FirstName</td>
+                        <td>@(startIndex++)</td> @* Her satır için artan sıra numarası *@
+                        <td>@item.AppUser?.FirstName @item.AppUser?.LastName</td>
                         <td>@item.Kanal?.KanalName</td>
                         <td>@item.Point?.PointName</td>
                         <td>@item.CreateDate.ToShortDateString()</td>
-                        <td>@item.Total?.ToString("N2")</td>
                         <td>@item.BrutTotal?.ToString("N2")</td>
+                        <td>@item.Total?.ToString("N2")</td>
                         <td>@item.ToplamAgirlikKg?.ToString("N2")</td>
-                        <td>@item.Maliyet?.ToString("N2")</td>
+                        <td>@(item.Maliyet?.ToString("N2") + " %")</td>
                         <td>
                             <span class="badge
                                 @(item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
@@ -63,8 +83,7 @@ else
                                 @item.TalepDurumu
                             </span>
                         </td>
-
-                        <td class="d-flex gap-1">
+                        <td class="d-flex gap-1 justify-content-center">
                             <a asp-action="Detail" asp-route-id="@item.MalYuklemeTalepFormId" class="btn btn-sm btn-outline-primary">Detay</a>
 
                             @if (User.IsInRole("Admin") || (User.IsInRole("BolgeMuduru") && item.TalepDurumu == TalepDurumu.Bekliyor))
@@ -73,7 +92,6 @@ else
                                     <button type="submit" class="btn btn-sm btn-danger">Sil</button>
                                 </form>
                             }
-
                             @if (User.IsInRole("Admin") && item.TalepDurumu == TalepDurumu.Bekliyor)
                             {
                                 <form method="post" asp-action="Approve" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
@@ -90,31 +108,75 @@ else
         </table>
     </div>
 
-    @if (ViewBag.TotalPages > 1)
+    @if (totalPages > 1)
     {
         <nav class="mt-4 d-flex justify-content-center">
             <ul class="pagination pagination-sm">
-                @if (ViewBag.CurrentPage > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-pageSize="@ViewBag.PageSize">« Önceki</a>
-                    </li>
+                @* Önceki Sayfa *@
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-pageSize="@pageSize">« Önceki</a>
+                </li>
+
+                @{
+                    // Sayfa numaralarını oluşturmak için liste
+                    var pageNumbers = new List<int>();
+
+                    // Başlangıçtaki sabit sayfalar
+                    for (int i = 1; i <= firstLastPagesToShow && i <= totalPages; i++)
+                    {
+                        if (!pageNumbers.Contains(i))
+                        {
+                            pageNumbers.Add(i);
+                        }
+                    }
+
+                    // Mevcut sayfa etrafındaki sayfalar
+                    for (int i = Math.Max(1, currentPage - displayRange); i <= Math.Min(totalPages, currentPage + displayRange); i++)
+                    {
+                        if (!pageNumbers.Contains(i))
+                        {
+                            pageNumbers.Add(i);
+                        }
+                    }
+
+                    // Sondaki sabit sayfalar
+                    for (int i = totalPages - firstLastPagesToShow + 1; i <= totalPages; i++)
+                    {
+                        if (i > 0 && !pageNumbers.Contains(i)) // i > 0 kontrolü totalPages küçükse hatalı değerleri engeller
+                        {
+                            pageNumbers.Add(i);
+                        }
+                    }
+
+                    // Sayfa numaralarını sırala
+                    pageNumbers = pageNumbers.OrderBy(p => p).ToList();
+
+                    int? lastPageNumber = null; // En son eklenen sayfa numarasını takip etmek için
+
+                    // Oluşturulan sayfa numaralarını ve '...' kısımlarını ekle
+                    foreach (var pageNum in pageNumbers)
+                    {
+                        if (lastPageNumber.HasValue && pageNum > lastPageNumber + 1)
+                        {
+                            // Arada atlama varsa '...' ekle
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+
+                        <li class="page-item @(pageNum == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@pageNum" asp-route-pageSize="@pageSize">@pageNum</a>
+                        </li>
+                        lastPageNumber = pageNum;
+                    }
                 }
 
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@ViewBag.PageSize">@i</a>
-                    </li>
-                }
-
-                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-pageSize="@ViewBag.PageSize">Sonraki »</a>
-                    </li>
-                }
+                @* Sonraki Sayfa *@
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-pageSize="@pageSize">Sonraki »</a>
+                </li>
             </ul>
         </nav>
+        <p class="text-center mt-3">Toplam Kayıt: **@totalCount** | Sayfa @currentPage / @totalPages</p>
     }
 }

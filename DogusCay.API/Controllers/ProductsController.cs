@@ -103,7 +103,7 @@ namespace DogusCay.API.Controllers
             return Ok(values);
         }
 
-        // ✅ TÜM ÜRÜNLER + KATEGORİ DETAYLARI
+        //TÜM ÜRÜNLER + KATEGORİ DETAYLARI
         [AllowAnonymous]
         [HttpGet("GetProductsWithCategoryDetails")]
         public IActionResult GetProductsWithCategoryDetails()
@@ -113,9 +113,9 @@ namespace DogusCay.API.Controllers
         }
 
         
-        // ✨ YENİ EKLENENLER (KATEGORİ ZİNCİRİNE UYUMLU)
+        //YENİ EKLENENLER (KATEGORİ ZİNCİRİNE UYUMLU)
 
-        // ✅ ALT KATEGORİYE GÖRE ÜRÜNLERİ GETİR
+        // ALT KATEGORİYE GÖRE ÜRÜNLERİ GETİR
         [AllowAnonymous]
         [HttpGet("by-subcategory/{subCategoryId}")]
         public IActionResult GetProductsBySubCategory(int subCategoryId)
@@ -153,7 +153,6 @@ namespace DogusCay.API.Controllers
         [HttpGet("get-product-info/{id}")]
         public IActionResult GetProductInfo(int id)
         {
-            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var product = _productService.TGetById(id);
             if (product == null)
                 return NotFound();
@@ -163,9 +162,12 @@ namespace DogusCay.API.Controllers
                 Price = product.Price,
                 KoliIciAdet = product.KoliIciAdet,
                 ApproximateWeightKg = product.ApproximateWeightKg,
-                ErpCode=product.ErpCode
+                ErpCode = product.ErpCode,
+                
             });
         }
+
+
     }
 
 

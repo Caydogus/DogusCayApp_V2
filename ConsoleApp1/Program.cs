@@ -1,0 +1,38 @@
+﻿//using DogusCay.Business.Importer;
+//using DogusCay.DataAccess.Context;
+//using Microsoft.EntityFrameworkCore;
+
+//var optionsBuilder = new DbContextOptionsBuilder<DogusCayContext>();
+//optionsBuilder.UseSqlServer("server=localhost\\SQLEXPRESS01;database=DbDogusCay;integrated security=true;TrustServerCertificate=True;");
+
+//var context = new DogusCayContext(optionsBuilder.Options);
+//var importer = new DistributorExcelImporter(context);
+
+//string excelPath = @"C:\Users\recepuce\Desktop\DistPointSql.xlsx";
+//string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+//string logFolder = Path.Combine(desktop, "DogusCayImportLogs");
+//Directory.CreateDirectory(logFolder);
+//string logFile = Path.Combine(logFolder, $"ConsoleImportLog_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+
+//try
+//{
+//    var logs = importer.ImportDistributorsFromExcel(excelPath);
+
+//    if (logs.Any())
+//    {
+//        File.WriteAllLines(logFile, logs);
+//        Console.WriteLine($"Log dosyası: {logFile}");
+//    }
+//    else
+//    {
+//        Console.WriteLine("Hiçbir işlem yapılmadı veya log oluşmadı.");
+//    }
+//}
+//catch (Exception ex)
+//{
+//    File.AppendAllText(logFile, $"Genel hata: {ex}\n");
+//    Console.WriteLine($"Bir hata oluştu: {ex.Message}");
+//}
+
+//Console.WriteLine("Import tamamlandı!");
+

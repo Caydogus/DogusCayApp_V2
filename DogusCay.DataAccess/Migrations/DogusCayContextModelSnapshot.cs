@@ -217,6 +217,7 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("BrutTotal")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreateDate")
@@ -229,6 +230,7 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Maliyet")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("OnaylayanAdminId")
@@ -247,9 +249,11 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("ToplamAgirlikKg")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("Total")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("MalYuklemeTalepFormId");
@@ -278,24 +282,29 @@ namespace DogusCay.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MalYuklemeTalepFormDetailId"));
 
                     b.Property<decimal>("ApproximateWeightKg")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("BrutTutar")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Discount1")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("Discount2")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ErpCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("FixedPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("KoliIciAdet")
@@ -305,15 +314,19 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Maliyet")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("NetAdetFiyat")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("NetTutar")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductId")
@@ -336,7 +349,15 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasKey("MalYuklemeTalepFormDetailId");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("MalYuklemeTalepFormId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SubCategoryId");
+
+                    b.HasIndex("SubSubCategoryId");
 
                     b.ToTable("MalYuklemeTalepFormDetails");
                 });
@@ -426,6 +447,7 @@ namespace DogusCay.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
                     b.Property<decimal>("ApproximateWeightKg")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("CategoryId")
@@ -470,15 +492,18 @@ namespace DogusCay.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleId"));
 
                     b.Property<decimal>("DiscountPercentage")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("IskontoAltiPercentage")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("NetPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Note")
@@ -493,8 +518,8 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("SaleDate")
                         .HasColumnType("datetime2");
@@ -674,16 +699,17 @@ namespace DogusCay.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TalepFormId"));
 
                     b.Property<decimal>("AdetFarkDonusuTL")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("ApproximateWeightKg")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BrutTotal")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("CategoryId")
@@ -697,15 +723,19 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("Iskonto1")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("Iskonto2")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("Iskonto3")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("Iskonto4")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("KampanyaDonusAdedi")
@@ -724,12 +754,15 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("KoliToplamAgirligiKg")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ListeFiyat")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Maliyet")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Note")
@@ -745,6 +778,7 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ProductId")
@@ -758,9 +792,11 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("SabitBedelTL")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("SonAdetFiyati")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("SubCategoryId")
@@ -776,6 +812,7 @@ namespace DogusCay.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("ValidFrom")
@@ -886,13 +923,43 @@ namespace DogusCay.DataAccess.Migrations
 
             modelBuilder.Entity("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepFormDetail", b =>
                 {
+                    b.HasOne("DogusCay.Entity.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepForm", "MalYuklemeTalepForm")
                         .WithMany("MalYuklemeTalepFormDetails")
                         .HasForeignKey("MalYuklemeTalepFormId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DogusCay.Entity.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DogusCay.Entity.Entities.Category", "SubCategory")
+                        .WithMany()
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("DogusCay.Entity.Entities.Category", "SubSubCategory")
+                        .WithMany()
+                        .HasForeignKey("SubSubCategoryId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Category");
+
                     b.Navigation("MalYuklemeTalepForm");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("SubCategory");
+
+                    b.Navigation("SubSubCategory");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Point", b =>
@@ -1050,8 +1117,7 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.HasOne("DogusCay.Entity.Entities.Distributor", "Distributor")
                         .WithMany()
-                        .HasForeignKey("DistributorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("DistributorId");
 
                     b.HasOne("DogusCay.Entity.Entities.Kanal", "Kanal")
                         .WithMany()

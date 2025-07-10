@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using DogusCay.DTOs.ProductDtos;
 using DogusCay.Entity.Entities;
 
@@ -18,7 +13,7 @@ namespace DogusCay.DataAccess.Abstract
         List<Product> GetAllProductsWithCategories(Expression<Func<Product, bool>> filter = null);
         void ShowOnHome(int id);
         void DontShowOnHome(int id);
-        // ✅ Yeni eklenenler:
+        // Yeni eklenenler:
         List<Product> GetProductsBySubCategoryId(int subCategoryId);
         Product GetProductWithCategory(int productId);
         Product? GetProductWithDetails(int productId);

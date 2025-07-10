@@ -1,10 +1,12 @@
-﻿using DogusCay.Business.Abstract;
+﻿//using DogusCay.API.Background;
+using DogusCay.Business.Abstract;
 using DogusCay.Business.Concrete;
 using DogusCay.Business.Configurations;
+//using DogusCay.Business.Importer;
 using DogusCay.DataAccess.Abstract;
 using DogusCay.DataAccess.Concrete;
 using DogusCay.DataAccess.Repositories;
-using Microsoft.Extensions.Configuration;
+//using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DogusCay.API.Extensions
@@ -13,15 +15,12 @@ namespace DogusCay.API.Extensions
     {
         public static void AddServiceExtensions(this IServiceCollection services, IConfiguration configuration)
         {
-            // Generic repository/service
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IGenericService<>), typeof(GenericManager<>));
 
-            // Token ayarları ve JWT servisi
             services.Configure<JwtTokenOptions>(configuration.GetSection("TokenOptions"));
             services.AddScoped<IJwtService, JwtService>();
 
-            // Uygulama özel servisleri
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -50,6 +49,12 @@ namespace DogusCay.API.Extensions
 
             services.AddScoped<IMalYuklemeTalepFormRepository, MalYuklemeTalepFormRepository>();
             services.AddScoped<IMalYuklemeTalepFormService, MalYuklemeTalepFormManager>();
+
+            //services.AddScoped<IDistributorExcelImporter, DistributorExcelImporter>();
+            //services.AddHostedService<DogusCay.API.Background.DistributorImportBackgroundService>(); // Distributor otomatik import servisi.
+
+            //services.AddScoped<IPointExcelImporter, PointExcelImporter>();
+            //services.AddHostedService<PointImportBackgroundService>();//nokta otomatik import servisi.
 
         }
     }

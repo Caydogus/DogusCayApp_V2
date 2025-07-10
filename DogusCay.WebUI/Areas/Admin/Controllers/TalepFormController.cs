@@ -22,19 +22,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             _client = httpClientFactory.CreateClient("EduClient");
         }
 
-        //private async Task SetDropdownsAsync()
-        //{
-        //    var kanallar = await _client.GetFromJsonAsync<List<KanalDropdownDto>>("kanals/dropdown");
-        //    var urunler = await _client.GetFromJsonAsync<List<ProductDropdownDto>>("products/dropdown");
 
-        //    ViewBag.Kanallar = new SelectList(kanallar, "KanalId", "KanalName");
-        //    ViewBag.Products = new SelectList(urunler, "ProductId", "ProductName");
-
-        //    // Diğer dropdown'lar başlangıçta boş olacak, JavaScript ile doldurulacak
-        //}
-
-        //sayfalama yaparak verileri getir
-        // TalepFormController ve MalYuklemeTalepFormController içindeki SetDropdownsAsync
         private async Task SetDropdownsAsync()
         {
             var jwtToken = HttpContext.Session.GetString("JwtToken");
@@ -49,11 +37,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 return;
             }
 
-            // Authorization başlığını ekleyin. Eğer _client.DefaultRequestHeaders.Contains("Authorization") kontrolü yapılıyorsa, onu koruyun.
-            // HttpClientsFactory kullandığınız için her istekte yeni client geliyorsa bu satır her seferinde çalışır ve sorun olmaz.
-            // Yine de, eğer bir DelegatingHandler kullanmıyorsanız ve _client bir singleton ise, aşağıdaki kontrol faydalıdır.
-            // Ancak IHttpClientFactory kullanıldığında genellikle her seferinde yeni bir client geldiği varsayılır.
-            // Bu yüzden direkt eklemek en basiti.
             _client.DefaultRequestHeaders.Clear(); // Önceki başlıkları temizle (Eğer client yeniden oluşturulmuyorsa)
             _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + jwtToken);
 
@@ -82,22 +65,27 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 TempData["Error"] = "Dropdown verileri yüklenirken beklenmeyen bir hata oluştu: " + ex.Message;
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> Index(int page = 1)
         {
             try
             {
                 string endpoint;
+                int pageSize = 10; // pageSize'ı burada tanımlayalım ki ViewBag'e aktarabilelim
 
                 if (User.IsInRole("Admin"))
-                    endpoint = $"talepforms/paged?page={page}&pageSize=10";       // tüm talepler
+                    endpoint = $"talepforms/paged?page={page}&pageSize={pageSize}";    // tüm talepler
                 else
-                    endpoint = $"talepforms/mine-paged?page={page}&pageSize=10";  // sadece kendi talepleri
+                    endpoint = $"talepforms/mine-paged?page={page}&pageSize={pageSize}";  // sadece kendi talepleri
 
                 var response = await _client.GetFromJsonAsync<PagedTalepFormResponse>(endpoint);
 
                 ViewBag.CurrentPage = response.Page;
                 ViewBag.TotalPages = (int)Math.Ceiling((double)response.TotalCount / response.PageSize);
+                // Yeni Eklenen Satırlar:
+                ViewBag.TotalCount = response.TotalCount;
+                ViewBag.PageSize = response.PageSize;
 
                 return View(response.Data); // Model olarak sadece liste gönderiyoruz
             }
@@ -108,7 +96,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             }
         }
 
-     
 
         [HttpGet]
         public async Task<IActionResult> CreateTalepForm()
@@ -116,6 +103,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             await SetDropdownsAsync();
             return View(new CreateTalepFormDto());
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateTalepForm(CreateTalepFormDto createTalepFormDto)
         {
@@ -159,7 +147,9 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
         {
             try
             {
-                var response = await _client.DeleteAsync($"https://localhost:7076/api/talepforms/{id}");
+                // _client'ın base URL'sini kullanarak daha iyi bir yaklaşım:
+                var response = await _client.DeleteAsync($"talepforms/{id}");
+
                 if (response.IsSuccessStatusCode)
                 {
                     TempData["Success"] = "Talep başarıyla silindi.";

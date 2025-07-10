@@ -145,26 +145,29 @@ function goToStep2() {
                     <button type="button" class="btn btn-danger" onclick="clearAllProducts()">Tümünü Temizle</button>
                 </div>
             </div>
-            <table class="table mt-3" id="productTable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Ürün</th>
-                        <th>Liste Fiyatı</th>
-                        <th>Tonaj</th>
-                        <th>Miktar(Koli)</th>
-                        <th>Brüt Tutar</th>
-                        <th>Net Adet Fiyatı</th>
-                        <th>Net Tutar</th>
-                        <th>Maliyet</th>
-                        <th>Sabit Fiyat</th>
-                        <th>İskonto (%)</th>
-                        <th>İskonto 2 (%)</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="table-responsive mt-3">
+    <table class="table" id="productTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Ürün</th>
+                <th>Liste Fiyatı</th>
+                <th>Tonaj</th>
+                <th>Miktar(Koli)</th>
+                <th>Net Adet Fiyatı</th>
+                <th>Brüt Tutar</th>
+                <th>Net Tutar</th>
+                <th>Maliyet</th>
+                <th>Sabit Fiyat</th>
+                <th>İskonto(%)</th>
+                <th>İskonto2(%)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
             <div class="text-right mt-3">
                 <button type="button" class="btn btn-secondary" onclick="$('#step2').hide(); $('#step1').show();">Geri</button>
                 <button type="button" class="btn btn-primary" onclick="goToStep3()">Devam</button>
@@ -260,31 +263,41 @@ function goToStep2() {
         }
     });
 }
-
 async function addProduct() {
     const productId = $('#ProductId').val();
     const productName = $('#ProductId option:selected').text();
     let quantity = parseInt($('#Quantity').val());
+
     if (!productId || isNaN(quantity) || quantity < 1) {
         alert("Lütfen geçerli bir ürün ve miktar seçiniz.");
         return;
     }
+
     let price = null;
     let weight = null;
     let koliIciAdet = 1;
+    let categoryName = null;
+    let subCategoryName = null;
+    let subSubCategoryName = null;
+
     try {
         const res = await fetch(`${apiBaseUrl}/products/get-product-info/${productId}`, {
             headers: { "Authorization": "Bearer " + globalJwtToken }
         });
+
         if (res.ok) {
             const data = await res.json();
             price = data.price ?? null;
             weight = data.approximateWeightKg ?? null;
-            koliIciAdet = data.koliIciAdet ?? 1; // <-- burada ekleniyor
+            koliIciAdet = data.koliIciAdet ?? 1;
+            categoryName = data.categoryName ?? null;
+            subCategoryName = data.subCategoryName ?? null;
+            subSubCategoryName = data.subSubCategoryName ?? null;
         }
     } catch (err) {
         console.warn("Ürün detayları alınamadı:", err);
     }
+
     const existingProductIndex = addedProducts.findIndex(p => p.productId == productId);
     if (existingProductIndex !== -1) {
         addedProducts[existingProductIndex].quantity += quantity;
@@ -296,12 +309,15 @@ async function addProduct() {
             price: price,
             weight: weight,
             koliIciAdet: koliIciAdet,
-            discount: 0, // varsayılan iskonto
-            discount2: 0,// 2. iskonto
-            fixedPrice: null // Sabit Fiyat   
-
+            discount: 0,
+            discount2: 0,
+            fixedPrice: null,
+            categoryName: categoryName,
+            subCategoryName: subCategoryName,
+            subSubCategoryName: subSubCategoryName
         });
     }
+
     renderProductTable();
 }
 
@@ -333,10 +349,13 @@ async function addAllProductsFromCategory() {
         for (const product of products) {
             const existingProductIndex = addedProducts.findIndex(p => p.productId == product.productId);
             if (existingProductIndex === -1) {
-                // Her ürün için detay çek
+                // Her ürün için detay çek ve kategori zincirini de ekle
                 let price = null;
                 let weight = null;
                 let koliIciAdet = 1;
+                let categoryName = null;
+                let subCategoryName = null;
+                let subSubCategoryName = null;
                 try {
                     const res = await fetch(`${apiBaseUrl}/products/get-product-info/${product.productId}`, {
                         headers: { "Authorization": "Bearer " + globalJwtToken }
@@ -345,6 +364,10 @@ async function addAllProductsFromCategory() {
                         const data = await res.json();
                         price = data.price ?? null;
                         weight = data.approximateWeightKg ?? null;
+                        koliIciAdet = data.koliIciAdet ?? 1;
+                        categoryName = data.categoryName ?? null;
+                        subCategoryName = data.subCategoryName ?? null;
+                        subSubCategoryName = data.subSubCategoryName ?? null;
                     }
                 } catch { }
                 addedProducts.push({
@@ -353,8 +376,10 @@ async function addAllProductsFromCategory() {
                     quantity: 1,
                     price: price,
                     weight: weight,
-                    koliIciAdet: koliIciAdet // <-- burada ekleniyor
-
+                    koliIciAdet: koliIciAdet,
+                    categoryName: categoryName,
+                    subCategoryName: subCategoryName,
+                    subSubCategoryName: subSubCategoryName
                 });
                 addedCount++;
             }
@@ -367,6 +392,133 @@ async function addAllProductsFromCategory() {
         toggleProductSelectionControls(true, true, false, false);
     }
 }
+
+//async function addProduct() {
+//    const productId = $('#ProductId').val();
+//    const productName = $('#ProductId option:selected').text();
+//    let quantity = parseInt($('#Quantity').val());
+
+//    if (!productId || isNaN(quantity) || quantity < 1) {
+//        alert("Lütfen geçerli bir ürün ve miktar seçiniz.");
+//        return;
+//    }
+
+//    let price = null;
+//    let weight = null;
+//    let koliIciAdet = 1;
+
+//    // ✅ Kategori bilgilerini tanımlıyoruz
+//    let categoryName = null;
+//    let subCategoryName = null;
+//    let subSubCategoryName = null;
+
+//    try {
+//        const res = await fetch(`${apiBaseUrl}/products/get-product-info/${productId}`, {
+//            headers: { "Authorization": "Bearer " + globalJwtToken }
+//        });
+
+//        if (res.ok) {
+//            const data = await res.json();
+//            price = data.price ?? null;
+//            weight = data.approximateWeightKg ?? null;
+//            koliIciAdet = data.koliIciAdet ?? 1;
+
+//            // ✅ Kategori zinciri API'den geliyor olmalı
+//            categoryName = data.categoryName ?? null;
+//            subCategoryName = data.subCategoryName ?? null;
+//            subSubCategoryName = data.subSubCategoryName ?? null;
+//        }
+//    } catch (err) {
+//        console.warn("Ürün detayları alınamadı:", err);
+//    }
+
+//    const existingProductIndex = addedProducts.findIndex(p => p.productId == productId);
+//    if (existingProductIndex !== -1) {
+//        addedProducts[existingProductIndex].quantity += quantity;
+//    } else {
+//        addedProducts.push({
+//            productId: parseInt(productId),
+//            productName: productName,
+//            quantity: quantity,
+//            price: price,
+//            weight: weight,
+//            koliIciAdet: koliIciAdet,
+//            discount: 0,
+//            discount2: 0,
+//            fixedPrice: null,
+
+//            // ✅ Bu 3 alan artık JS'de tutuluyor
+//            categoryName: categoryName,
+//            subCategoryName: subCategoryName,
+//            subSubCategoryName: subSubCategoryName
+//        });
+//    }
+
+//    renderProductTable();
+//}
+
+//async function addAllProductsFromCategory() {
+//    const selectedSubCategoryId = $('#SubCategoryId').val();
+//    if (!selectedSubCategoryId) {
+//        alert("Toplu ürün eklemek için lütfen önce bir Alt Kategori seçiniz.");
+//        $('#addAllProductsCheckbox').prop('checked', false);
+//        toggleProductSelectionControls(true, true, false, false);
+//        return;
+//    }
+//    try {
+//        if (!globalJwtToken) throw new Error("JWT token bulunamadı. Lütfen giriş yapın.");
+//        const response = await fetch(`${apiBaseUrl}/categories/${selectedSubCategoryId}/products-recursive`, {
+//            headers: { "Authorization": "Bearer " + globalJwtToken }
+//        });
+//        if (!response.ok) {
+//            const errorText = await response.text();
+//            throw new Error(`API hatası: ${response.status} - ${errorText}`);
+//        }
+//        const products = await response.json();
+//        if (products.length === 0) {
+//            alert("Bu kategori altında eklenecek ürün bulunamadı.");
+//            $('#addAllProductsCheckbox').prop('checked', false);
+//            toggleProductSelectionControls(true, true, false, false);
+//            return;
+//        }
+//        let addedCount = 0;
+//        for (const product of products) {
+//            const existingProductIndex = addedProducts.findIndex(p => p.productId == product.productId);
+//            if (existingProductIndex === -1) {
+//                // Her ürün için detay çek
+//                let price = null;
+//                let weight = null;
+//                let koliIciAdet = 1;
+//                try {
+//                    const res = await fetch(`${apiBaseUrl}/products/get-product-info/${product.productId}`, {
+//                        headers: { "Authorization": "Bearer " + globalJwtToken }
+//                    });
+//                    if (res.ok) {
+//                        const data = await res.json();
+//                        price = data.price ?? null;
+//                        weight = data.approximateWeightKg ?? null;
+//                    }
+//                } catch { }
+//                addedProducts.push({
+//                    productId: product.productId,
+//                    productName: product.productName,
+//                    quantity: 1,
+//                    price: price,
+//                    weight: weight,
+//                    koliIciAdet: koliIciAdet // <-- burada ekleniyor
+
+//                });
+//                addedCount++;
+//            }
+//        }
+//        renderProductTable();
+//        alert(`${addedCount} ürün sepete eklendi.`);
+//    } catch (error) {
+//        alert("Tüm ürünleri çekerken bir hata oluştu: " + error.message);
+//        $('#addAllProductsCheckbox').prop('checked', false);
+//        toggleProductSelectionControls(true, true, false, false);
+//    }
+//}
 function renderProductTable() {
     const tbody = $('#productTable tbody');
     tbody.empty();
@@ -409,8 +561,8 @@ function renderProductTable() {
             }
 
             // Maliyet kontrolü
-            const maliyet = (brutTutar > 0) ? (1 - (netTutar / brutTutar)) : 0;
-            if (maliyet >= 1) {
+            const maliyet = (brutTutar > 0) ? Number(((1 - (netTutar / brutTutar)) * 100).toFixed(2)) : 0;
+            if (maliyet >= 100) {
                 errorMsg = "Maliyet %100 veya daha fazla olamaz!";
             }
 
@@ -426,10 +578,10 @@ function renderProductTable() {
                             onchange="setProductQuantity(${p.productId}, this.value)" />
                         <button class="btn btn-sm btn-outline-secondary" onclick="updateProductQuantity(${p.productId}, 1)">+</button>
                     </td>
+                     <td>${formatTL(netAdetFiyat)}</td>
                     <td>${formatTL(brutTutar)}</td>
-                    <td>${formatTL(netAdetFiyat)}</td>
                     <td>${formatTL(netTutar)}</td>
-                    <td>${brutTutar > 0 ? (maliyet * 100).toFixed(2) + ' %' : '-'}</td>
+                    <td>${brutTutar > 0 ? maliyet.toFixed(2) + ' %' : '-'}</td>
                     <td>
                         <input type="number" min="0" placeholder="Sabit Fiyat" value="${p.fixedPrice !== null && p.fixedPrice !== undefined ? p.fixedPrice : ''}" 
                             style="width:90px;display:inline-block;text-align:center;"
@@ -437,11 +589,11 @@ function renderProductTable() {
                     </td>
                     <td>
                         <input type="number" min="0" max="100" value="${discount1}" style="width:60px;display:inline-block;text-align:center;"
-                            onchange="setProductDiscount(${p.productId}, this.value)" /> %
+                            onchange="setProductDiscount(${p.productId}, this.value)" /> 
                     </td>
                     <td>
                         <input type="number" min="0" max="100" value="${discount2}" style="width:60px;display:inline-block;text-align:center;"
-                            onchange="setProductDiscount2(${p.productId}, this.value)" /> %
+                            onchange="setProductDiscount2(${p.productId}, this.value)" /> 
                     </td>
                     <td>
                         <button class='btn btn-sm btn-danger' onclick='removeProduct(${p.productId})'>Sil</button>
@@ -453,60 +605,6 @@ function renderProductTable() {
     }
 }
 
-//function renderProductTable() {
-//    const tbody = $('#productTable tbody');
-//    tbody.empty();
-//    if (addedProducts.length === 0) {
-//        tbody.append('<tr><td colspan="12" class="text-center">Henüz ürün eklenmedi.</td></tr>');
-//    } else {
-//        addedProducts.forEach((p, index) => {
-//            const discount1 = p.discount || 0;
-//            const discount2 = p.discount2 || 0;
-//            const quantity = p.quantity || 0;
-//            const price = p.price || 0;
-
-//            // Hesaplamalar
-//            const discountedPrice1 = price * (1 - discount1 / 100);
-//            const discountedPrice2 = discountedPrice1 * (1 - discount2 / 100);
-
-//            const totalWeight = (p.weight && quantity) ? (p.weight * quantity).toFixed(2) : '-';
-//            const brutTutar = price * quantity;
-//            const netTutar = discountedPrice2 * quantity;
-//            const maliyet = (brutTutar > 0) ? (1 - (netTutar / brutTutar)) : 0;
-
-//            tbody.append(`
-//                <tr>
-//                    <td>${index + 1}</td>
-//                    <td>${p.productName}</td>
-//                    <td>${p.price !== undefined && p.price !== null ? formatTL(price) : '-'}</td>
-//                    <td>${totalWeight}</td>
-//                    <td>
-//                        <button class="btn btn-sm btn-outline-secondary" onclick="updateProductQuantity(${p.productId}, -1)">-</button>
-//                        <input type="number" min="1" style="width:60px;display:inline-block;text-align:center;" value="${quantity}"
-//                            onchange="setProductQuantity(${p.productId}, this.value)" />
-//                        <button class="btn btn-sm btn-outline-secondary" onclick="updateProductQuantity(${p.productId}, 1)">+</button>
-//                    </td>
-//                    <td>${formatTL(brutTutar)}</td>
-//                    <td>${formatTL(discountedPrice2)}</td>
-//                    <td>${formatTL(netTutar)}</td>
-//                    <td>${brutTutar > 0 ? (maliyet * 100).toFixed(2) + ' %' : '-'}</td>
-//                    <td>
-//                        <input type="number" min="0" max="100" value="${discount1}" style="width:60px;display:inline-block;text-align:center;"
-//                            onchange="setProductDiscount(${p.productId}, this.value)" /> %
-//                    </td>
-//                    <td>
-//                        <input type="number" min="0" max="100" value="${discount2}" style="width:60px;display:inline-block;text-align:center;"
-//                            onchange="setProductDiscount2(${p.productId}, this.value)" /> %
-//                    </td>
-//                    <td><button class='btn btn-sm btn-danger' onclick='removeProduct(${p.productId})'>Sil</button></td>
-//                </tr>
-//            `);
-//        });
-//    }
-//}
-
-//iskonto1 fonksiyonu
-//
 function setProductDiscount(productId, value) {
     let discount = parseFloat(value);
     if (isNaN(discount) || discount < 0) discount = 0;
@@ -613,7 +711,8 @@ async function submitTalep() {
                 if (netTutar < 0) netTutar = 0;
             }
             const netAdetFiyat = (quantity > 0 && koliIciAdet > 0) ? (netTutar / (quantity * koliIciAdet)) : 0;
-            const maliyet = (brutTutar > 0) ? 1 - (netTutar / brutTutar) : 0;
+            const maliyet = (brutTutar > 0) ? Number(((1 - (netTutar / brutTutar)) * 100).toFixed(2)) : 0;
+            //const maliyet = (brutTutar > 0) ? 1 - (netTutar / brutTutar) : 0;
             // Toplam adet (koli içi * koli sayısı)
             const totalQuantity = quantity * koliIciAdet;
             return {
@@ -626,7 +725,8 @@ async function submitTalep() {
                 netTutar: netTutar,
                 netAdetFiyat: netAdetFiyat,
                 maliyet: maliyet,
-                totalQuantity: totalQuantity // <-- EKLENDİ
+                totalQuantity: totalQuantity, // <-- EKLENDİ
+                categoryName: p.categoryName // ← API’ye gönder
             };
         })
     };

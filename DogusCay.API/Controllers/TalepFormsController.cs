@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DogusCay.Business.Abstract;
 using DogusCay.DTO.DTOs.TalepFormDtos;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Authorization;
@@ -127,7 +126,7 @@ namespace DogusCay.API.Controllers
             Console.WriteLine(" INSERT için kullanılacak AppUserId (Entity içinde): " + entity.AppUserId);
 
             // Hesaplamalar
-            entity.BrutTotal = entity.Quantity * dto.Price;//yeni eklendi
+            entity.BrutTotal = entity.Quantity * dto.Price;
 
 
             entity.KoliIciToplamAdet = entity.Quantity * dto.KoliIciAdet;
@@ -297,7 +296,7 @@ namespace DogusCay.API.Controllers
             if (form == null)
                 return NotFound("Talep bulunamadı.");
 
-            // 🔥 Eski resmi sil
+            //Eski resmi sil
             if (!string.IsNullOrEmpty(form.KampanyaResimYolu))
             {
                 var existingPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "DogusCay.WebUI", "wwwroot", form.KampanyaResimYolu.TrimStart('/'));
@@ -307,7 +306,7 @@ namespace DogusCay.API.Controllers
                 }
             }
 
-            // 📂 WebUI projesinin wwwroot'u
+            //WebUI projesinin wwwroot'u
             var webUiRoot = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "DogusCay.WebUI", "wwwroot");
             var folderPath = Path.Combine(webUiRoot, "uploads", "kampanyalar");
 
@@ -322,7 +321,7 @@ namespace DogusCay.API.Controllers
                 await image.CopyToAsync(stream);
             }
 
-            // 🌐 Web tarafında kullanılacak yol
+            //Web tarafında kullanılacak yol
             var webPath = $"/uploads/kampanyalar/{fileName}";
             form.KampanyaResimYolu = webPath;
 

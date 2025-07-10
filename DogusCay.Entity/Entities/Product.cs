@@ -11,28 +11,15 @@ namespace DogusCay.Entity.Entities
         [Required]
         [MaxLength(150)]
         public string ProductName { get; set; }
-
         public string ErpCode { get; set; }
-
-        // Kategori bilgisi (alt kategori olabilir)
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-
-        // Birim tipi: Koli mi, Kilo mu?
         public int UnitTypeId { get; set; }
         public UnitType UnitType { get; set; }
-
-        // Her bir ürün için yaklaşık kilo karşılığı (koli ise tonaj hesabı için)
         public decimal ApproximateWeightKg { get; set; }
-
-        // Aktif/pasif ürün durumu
         public bool IsShown { get; set; } = true;
-
-        // Fiyat bilgileri
-        public decimal Price { get; set; }             // Birim fiyat
-        public int KoliIciAdet { get; set; }           // 1 kolideki adet sayısı     
-
-        // Satışlar ile ilişki
+        public decimal Price { get; set; }            
+        public int KoliIciAdet { get; set; }             
         public ICollection<Sale> Sales { get; set; }
     }
 }

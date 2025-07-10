@@ -1,7 +1,14 @@
 ﻿@model ResultMalYuklemeTalepFormDto
+
 @{
-    ViewData["Title"] = "";
+    ViewData["Title"] = "Talep Detayı"; // Daha anlamlı bir başlık
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    // Hesaplamalar
+    var toplamTonaj = Model.MalYuklemeTalepFormDetails?.Sum(x => x.ApproximateWeightKg * x.Quantity) ?? 0;
+    var toplamBrutTutar = Model.MalYuklemeTalepFormDetails?.Sum(x => x.BrutTutar ?? 0) ?? 0;
+    var toplamNetTutar = Model.MalYuklemeTalepFormDetails?.Sum(x => x.NetTutar ?? 0) ?? 0;
+    var ortalamaMaliyet = (toplamBrutTutar > 0) ? (1 - (toplamNetTutar / toplamBrutTutar)) * 100 : 0;
 }
 
 <h3 class="mb-4">Talep Detayı - #@Model.MalYuklemeTalepFormId</h3>
@@ -20,7 +27,7 @@
     <div class="card-body row">
         <div class="col-md-4"><strong>Kullanıcı:</strong> @Model.AppUser?.FirstName @Model.AppUser?.LastName</div>
         <div class="col-md-4"><strong>Kanal:</strong> @Model.Kanal?.KanalName</div>
-        <div class="col-md-4"><strong>Point:</strong> @Model.Point?.PointName</div>
+        <div class="col-md-4"><strong>Nokta:</strong> @Model.Point?.PointName</div>
         <div class="col-md-4 mt-2"><strong>Tarih:</strong> @Model.CreateDate.ToShortDateString()</div>
         <div class="col-md-4 mt-2">
             <strong>Durum:</strong>
@@ -31,10 +38,11 @@
                 @Model.TalepDurumu
             </span>
         </div>
-        <div class="col-md-4 mt-2"><strong>Net Tutar:</strong> @Model.Total?.ToString("C2")</div>
-        <div class="col-md-4 mt-2"><strong>Brüt Tutar:</strong> @Model.BrutTotal?.ToString("C2")</div>
-        <div class="col-md-4 mt-2"><strong>Toplam Ağırlık:</strong> @Model.ToplamAgirlikKg?.ToString("N2") kg</div>
-        <div class="col-md-4 mt-2"><strong>Maliyet:</strong> @Model.Maliyet?.ToString("N2") %</div>
+        <div class="col-md-4 mt-2"><strong>Toplam Tonaj:</strong> @toplamTonaj.ToString("N2") kg</div>
+        <div class="col-md-4 mt-2"><strong>Toplam Brüt Tutar:</strong> @toplamBrutTutar.ToString("C2")</div>
+        <div class="col-md-4 mt-2"><strong>Toplam Net Tutar:</strong> @toplamNetTutar.ToString("C2")</div>
+        <div class="col-md-4 mt-2"><strong>Ortalama Maliyet:</strong> @ortalamaMaliyet.ToString("N2") %</div>
+
     </div>
 </div>
 
@@ -52,31 +60,30 @@
                         <th>Tonaj(kg)</th>
                         <th>Toplam Adet</th>
                         <th>Brüt Tutar</th>
-                        <th>İskonto 1 (%)</th>
-                        <th>İskonto 2 (%)</th>
-                        <th>Sabit Bedel</th>
                         <th>Net Tutar</th>
+                        <th>İskonto1</th>
+                        <th>İskonto2</th>
+                        <th>Sabit Bedel</th>
                         <th>Net Adet Fiyatı</th>
-                        <th>Maliyet (%)</th>
+                        <th>Maliyet(%)</th>
                     </tr>
                 </thead>
-               
                 <tbody>
                     @foreach (var d in Model.MalYuklemeTalepFormDetails)
                     {
                         <tr>
                             <td>@d.ResultMalYuklemeTalepFormDetailId</td>
-                            <td>@d.ProductName</td>
-                            <td>@d.ErpCode</td>
-                            <td>@((d.ApproximateWeightKg * d.Quantity).ToString("N2"))</td> <!-- Toplam Ağırlık -->
-                            <td>@(d.Quantity * d.KoliIciAdet)</td> <!-- EKLENDİ -->
+                            <td>@(d.ProductName ?? "N/A")</td>
+                            <td>@(d.ErpCode ?? "N/A")</td>
+                            <td>@((d.ApproximateWeightKg * d.Quantity).ToString("N2"))</td>
+                            <td>@(d.Quantity * d.KoliIciAdet)</td>
                             <td>@d.BrutTutar?.ToString("C2")</td>
+                            <td>@d.NetTutar?.ToString("C2")</td>
                             <td>@d.Discount1?.ToString("N2")</td>
                             <td>@d.Discount2?.ToString("N2")</td>
                             <td>@d.FixedPrice?.ToString("C2")</td>
-                            <td>@d.NetTutar?.ToString("C2")</td>
                             <td>@d.NetAdetFiyat?.ToString("C2")</td>
-                            <td>@(d.Maliyet.HasValue ? (d.Maliyet.Value * 100).ToString("N2") + " %" : "-")</td>
+                            <td>@(d.Maliyet?.ToString("N2") + " %")</td>
                         </tr>
                     }
                 </tbody>

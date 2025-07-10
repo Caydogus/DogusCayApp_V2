@@ -15,6 +15,7 @@ namespace DogusCay.DataAccess.Abstract
         List<Point> GetByKanalId(int KanalId);//Bu metot, NA veya LC kanalına ait noktaları getirir.
 
         List<Point> GetListWithIncludes();// ındexte ıdlere gore isimleri getiri UI kısmında
-
+                                         
+        Point GetDetailsById(int id); // Bir noktanın detaylarını (ilişkili tablolarla birlikte) ID'ye göre getirir.
     }
 }

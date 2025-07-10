@@ -2,7 +2,6 @@
 using DogusCay.DTO.DTOs.RoleDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

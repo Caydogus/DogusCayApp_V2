@@ -60,12 +60,21 @@ async function updateStatus(id, action, successMessage) {
     }
 }
 
-async function gonderKampanyaDonusu(formId) {
-    const input = document.getElementById(`kampanyaInput_${formId}`);
+async function gonderKampanyaDonusu(formId, type) {
+    // Tip parametresi ile hangi inputtan değer alacağını belirle
+    const inputId = type === "Table"
+        ? `kampanyaInputTable_${formId}`
+        : `kampanyaInput_${formId}`;
+    const koliId = type === "Table"
+        ? `koliIciToplamAdetTable_${formId}`
+        : `koliIciToplamAdet_${formId}`;
+
+    const input = document.getElementById(inputId);
     const value = parseInt(input.value);
-    // Koli içi toplam adedi alınır
-    const koliInput = document.getElementById(`koliIciToplamAdet_${formId}`);
+
+    const koliInput = document.getElementById(koliId);
     const koliIciToplamAdet = koliInput ? parseInt(koliInput.value) : null;
+
     if (!token) {
         alert("Oturum süresi dolmuş olabilir.");
         return;
@@ -75,7 +84,6 @@ async function gonderKampanyaDonusu(formId) {
         alert("Lütfen geçerli bir sayı girin.");
         return;
     }
-    // Kampanya dönüş adedi kontrolü
     if (koliIciToplamAdet !== null && value > koliIciToplamAdet) {
         alert("🛑 Kampanya dönüş adedi, koli içi toplam adetten büyük olamaz!");
         return;
@@ -101,9 +109,11 @@ async function gonderKampanyaDonusu(formId) {
         alert("Sunucu hatası: " + err);
     }
 }
-async function uploadImage(formId) {
-    const token = document.getElementById("jwtToken")?.value; // 🔁 token eksikti, eklendi
-    const input = document.getElementById(`imageInput_${formId}`);
+async function uploadImage(formId, type) {
+    const token = document.getElementById("jwtToken")?.value;
+    // input id’sini tipe göre belirle!
+    const inputId = type === 'Card' ? `imageInputCard_${formId}` : `imageInputTable_${formId}`;
+    const input = document.getElementById(inputId);
 
     if (!token) {
         alert("Oturum süresi dolmuş olabilir.");
@@ -124,7 +134,6 @@ async function uploadImage(formId) {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`
-                // ❗ Content-Type belirtme! FormData ile fetch otomatik ayarlar.
             },
             body: formData
         });
@@ -140,5 +149,46 @@ async function uploadImage(formId) {
         alert("Sunucu hatası: " + err);
     }
 }
+
+
+//async function uploadImage(formId) {
+//    const token = document.getElementById("jwtToken")?.value; // 🔁 token eksikti, eklendi
+//    const input = document.getElementById(`imageInput_${formId}`);
+
+//    if (!token) {
+//        alert("Oturum süresi dolmuş olabilir.");
+//        return;
+//    }
+
+//    if (!input || !input.files || input.files.length === 0) {
+//        alert("Lütfen bir görsel seçin.");
+//        return;
+//    }
+
+//    const file = input.files[0];
+//    const formData = new FormData();
+//    formData.append("image", file);
+
+//    try {
+//        const response = await fetch(`${apiBaseUrl}/talepforms/upload-image/${formId}`, {
+//            method: 'POST',
+//            headers: {
+//                'Authorization': `Bearer ${token}`
+//                // ❗ Content-Type belirtme! FormData ile fetch otomatik ayarlar.
+//            },
+//            body: formData
+//        });
+
+//        if (response.ok) {
+//            alert("Resim başarıyla yüklendi.");
+//            location.reload();
+//        } else {
+//            const error = await response.text();
+//            alert("Yükleme başarısız: " + error);
+//        }
+//    } catch (err) {
+//        alert("Sunucu hatası: " + err);
+//    }
+//}
 
 

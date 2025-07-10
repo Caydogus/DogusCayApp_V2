@@ -1,0 +1,302 @@
+﻿body, .table, .card-talep {
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
+    font-size: 0.98rem;
+    color: #1a212a;
+    background: #f3f6fa;
+}
+
+    /* TABLO & HÜCRE */
+    .table th, .table td {
+        background: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+        padding: 0.44rem 0.72rem;
+        vertical-align: middle;
+        font-size: 0.96rem;
+        font-weight: 450;
+        line-height: 1.26;
+        letter-spacing: 0.01em;
+        transition: background .18s, color .18s;
+    }
+
+    .table th {
+        background: #222a37;
+        color: #fafbfc;
+        font-size: 1.04rem;
+        font-weight: 700;
+        border: none;
+    }
+
+.table-bordered th, .table-bordered td {
+    border-color: #d2d6de !important;
+}
+
+.table td:hover {
+    background: #f6f9fc;
+    color: #183146;
+    font-weight: 500;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: none;
+    z-index: 10;
+}
+
+/* SÜTUN BOYLARI (KISA TUT) */
+.table th:nth-child(1), .table td:nth-child(1) {
+    width: 54px;
+    text-align: center;
+}
+
+.table th:nth-child(2), .table td:nth-child(2) {
+    width: 110px;
+}
+
+.table th:nth-child(3), .table td:nth-child(3) {
+    width: 130px;
+}
+
+.table th:nth-child(4), .table td:nth-child(4) {
+    width: 110px;
+}
+
+/* RESPONSIVE TABLO/KART GÖRÜNÜMÜ */
+.card-view {
+    display: none;
+}
+
+.table-responsive {
+    display: block;
+}
+
+@media (max-width: 767.98px) {
+    .table-responsive {
+        display: none;
+    }
+
+    .card-view {
+        display: block;
+    }
+
+    .card-talep {
+        margin-bottom: 1.1rem;
+    }
+}
+
+/* -- BUTON, DOSYA VE INPUT KÜÇÜLTME ORTAK -- */
+input.form-control-sm,
+input[type="file"].form-control-sm,
+button.btn-sm {
+    font-size: 0.89rem !important;
+    border-radius: 6px !important;
+    height: 26px !important;
+    padding: 0.08em 0.6em !important;
+    min-width: 38px !important;
+    max-width: 105px;
+    box-sizing: border-box;
+    margin-right: 0.13em;
+    vertical-align: middle;
+    line-height: 1.1;
+}
+
+input[type="file"].form-control-sm {
+    max-width: 95px !important;
+    padding: 0.08em 0.32em !important;
+    font-size: 0.86rem !important;
+}
+
+/* ADDET INPUT FİX */
+input[type="number"].form-control-sm {
+    min-width: 38px !important;
+    max-width: 70px !important;
+    padding: 0.07em 0.4em !important;
+}
+
+/* YATAY İÇERİK DÜZENİ */
+.d-flex.align-items-center {
+    gap: 0.36rem !important;
+    flex-wrap: nowrap;
+}
+
+/* LİNK STİL */
+.table td a.text-info, .card-talep a.text-info {
+    display: inline-block;
+    white-space: nowrap;
+    margin-left: 0.19rem;
+    color: #2584c6 !important;
+    font-size: 0.93rem !important;
+    font-weight: 500;
+    vertical-align: middle;
+}
+
+.card-talep {
+    background: #fcfdff;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px #0c143016;
+    overflow: hidden;
+    font-size: 0.99rem;
+    transition: box-shadow .15s;
+}
+
+    .card-talep .card-header {
+        background: #fff;
+        padding: 1rem 1.2rem 0.8rem 1.1rem;
+        border-bottom: 1px solid #e8ecf3;
+        font-size: 1.01rem;
+        font-weight: 700;
+        color: #172039;
+    }
+
+        .card-talep .card-header .badge {
+            font-size: 0.95rem;
+            border-radius: 16px;
+            padding: .22em .8em;
+            font-weight: 600;
+            box-shadow: 0 1px 4px #00000013;
+            border: none;
+        }
+
+    .card-talep .card-body {
+        padding: 0.9rem 1.2rem;
+    }
+
+    .card-talep strong {
+        color: #204070;
+        font-weight: 700;
+        margin-right: .35em;
+        font-size: 1.01rem;
+    }
+
+    .card-talep .fw-bold {
+        font-weight: 700 !important;
+        color: #1d7449 !important;
+    }
+
+    .card-talep .text-success {
+        color: #1d7449 !important;
+        font-weight: 600;
+    }
+
+    .card-talep .text-muted {
+        color: #a1a5ad !important;
+    }
+
+    .card-talep .row.align-items-center > div,
+    .card-talep .card-actions, .card-talep .card-media {
+        margin-top: .6rem;
+        padding: 0;
+        border: none;
+        background: transparent;
+    }
+
+    .card-talep .form-control, .card-talep input[type="file"] {
+        font-size: 0.92rem;
+        border-radius: 6px;
+        padding: .23em .52em;
+        border: 1px solid #dde3ea;
+        margin-right: .13em;
+        background: #f9fafd;
+        transition: border .13s;
+        height: 26px;
+    }
+
+        .card-talep .form-control:focus, .card-talep input[type="file"]:focus {
+            border: 1.2px solid #4d86fd;
+            background: #fff;
+            outline: none;
+        }
+
+    .card-talep .btn {
+        border-radius: 7px;
+        font-weight: 500;
+        font-size: 0.96rem;
+    }
+
+    .card-talep .btn-info {
+        background: linear-gradient(90deg,#48a9ef,#57c6e1);
+        color: #fff;
+        border: none;
+    }
+
+    .card-talep .btn-danger {
+        background: linear-gradient(90deg,#f35a5a,#ee6262);
+        border: none;
+        color: #fff;
+    }
+
+    .card-talep .card-media a {
+        margin-top: .15em;
+        color: #2584c6;
+        font-size: 0.92rem;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+
+    .card-talep .card-media img {
+        max-width: 96px;
+        border-radius: 6px;
+        margin-top: .16em;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+    }
+
+    .card-talep .text-end .btn-danger {
+        margin-top: .15em;
+        min-width: 42px;
+        font-size: 0.97rem;
+    }
+
+/* BADGE MODERNİZASYONU */
+.badge.bg-warning {
+    background: #fffbe7 !important;
+    color: #bf9402 !important;
+    border: 1px solid #f6e27a;
+    font-weight: 600;
+}
+
+.badge.bg-success {
+    background: #e4fbe6 !important;
+    color: #198754 !important;
+    border: 1px solid #a6efb8;
+    font-weight: 600;
+}
+
+.badge.bg-danger {
+    background: #fff1f1 !important;
+    color: #b92020 !important;
+    border: 1px solid #ffb6b6;
+    font-weight: 600;
+}
+
+.badge.bg-secondary {
+    background: #eaeef1 !important;
+    color: #40495b !important;
+    border: 1px solid #ced4da;
+    font-weight: 600;
+}
+
+/* Küçük ekranda kart detayları */
+@media (max-width: 767.98px) {
+    .card-talep .card-body, .card-talep .card-header {
+        padding: 0.77rem 0.7rem;
+        font-size: 0.94rem;
+    }
+
+    .card-talep strong {
+        min-width: 82px;
+    }
+}
+
+/* Scroll güzellikleri */
+.table-responsive::-webkit-scrollbar, .card-view::-webkit-scrollbar {
+    height: 6px;
+    background: #f1f4fa;
+}
+
+.table-responsive::-webkit-scrollbar-thumb, .card-view::-webkit-scrollbar-thumb {
+    background: #c8d2e1;
+    border-radius: 7px;
+}

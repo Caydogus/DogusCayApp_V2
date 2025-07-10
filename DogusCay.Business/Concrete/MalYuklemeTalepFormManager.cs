@@ -1,52 +1,43 @@
-﻿// DogusCay.Business.Concrete.MalYuklemeTalepFormManager.cs
-using DogusCay.Business.Abstract;
+﻿using DogusCay.Business.Abstract;
 using DogusCay.DataAccess.Abstract;
-using DogusCay.Entity.Entities; // Product entity'si için
-using DogusCay.Entity.Entities.MalYuklemeTalep; // MalYuklemeTalepForm entity'si için
-using DogusCay.Entity.Entities.Talep; // TalepTip ve TalepDurumu enumları için
-
-// DTO'larınızın doğru namespace'i. Lütfen kendi projenizdeki gerçek konumu kontrol edin.
+using DogusCay.Entity.Entities.MalYuklemeTalep; 
+using DogusCay.Entity.Entities.Talep; 
 using DogusCay.DTO.DTOs.MalYuklemeDtos;
+using DogusCay.Entity.Entities;
 
 namespace DogusCay.Business.Concrete
 {
     public class MalYuklemeTalepFormManager : GenericManager<MalYuklemeTalepForm>, IMalYuklemeTalepFormService
     {
         private readonly IMalYuklemeTalepFormRepository _malYuklemeTalepFormRepository;
-        private readonly IProductService _productService; // Ürün servisi bağımlılığı
-
-        // Constructor: Gerekli repository ve servisleri Dependency Injection ile alıyoruz
+        private readonly IProductService _productService;
         public MalYuklemeTalepFormManager(
-            IRepository<MalYuklemeTalepForm> repository, // Generic Manager için
-            IMalYuklemeTalepFormRepository malYuklemeTalepFormRepository, // Özel MalYukleme Repository için
-            IProductService productService) // Ürün servisi için
-            : base(repository) // GenericManager'ın constructor'ını çağırıyoruz
+            IRepository<MalYuklemeTalepForm> repository, 
+            IMalYuklemeTalepFormRepository malYuklemeTalepFormRepository,
+            IProductService productService)
+            : base(repository) 
         {
             _malYuklemeTalepFormRepository = malYuklemeTalepFormRepository;
-            _productService = productService; // Ürün servisini atıyoruz
+            _productService = productService; 
         }
-
-        // Mal Yükleme Talep Formu oluşturma metodu (SENKRON hale getirildi)
-        // Bu metot, frontend'den gelen CreateMalYuklemeTalepFormDto'yu işler
-        // ve ürün detaylarını veritabanından çekerek formu oluşturur.
         public MalYuklemeTalepForm TCreateMalYuklemeTalepForm(CreateMalYuklemeTalepFormDto dto, int authenticatedUserId)
         {
-            // Yeni MalYuklemeTalepForm entity'sini oluşturuyoruz
             var formEntity = new MalYuklemeTalepForm
             {
-                AppUserId = authenticatedUserId, // Kimliği doğrulanmış kullanıcının ID'si Controller'dan geliyor
+                AppUserId = authenticatedUserId,
                 KanalId = dto.KanalId,
                 DistributorId = dto.DistributorId,
                 PointGroupTypeId = dto.PointGroupTypeId,
                 PointId = dto.PointId,
-                TalepTip = TalepTip.MalYukleme, // Talep tipi sabit MalYukleme olarak ayarlanır
-                TalepDurumu = TalepDurumu.Bekliyor, // Talep durumu başlangıçta Bekliyor olarak ayarlanır
-                CreateDate = DateTime.Now, // Oluşturulma tarihi otomatik olarak atanır
-                MalYuklemeTalepFormDetails = new List<MalYuklemeTalepFormDetail>() // Detay listesini başlatıyoruz
+                TalepTip = TalepTip.MalYukleme,
+                TalepDurumu = TalepDurumu.Bekliyor,
+                CreateDate = DateTime.Now,
+                MalYuklemeTalepFormDetails = new List<MalYuklemeTalepFormDetail>()
             };
 
             decimal brutTotal = 0;
             decimal toplamAgirlikKg = 0;
+            decimal totalNet = 0;
 
             foreach (var item in dto.MalYuklemeTalepFormDetails)
             {
@@ -54,15 +45,9 @@ namespace DogusCay.Business.Concrete
                 if (product == null)
                     throw new InvalidOperationException($"Mal Yükleme Talep Formu detaylarında ProductId: {item.ProductId} bulunamadı.");
 
-                // Kategori hiyerarşisi
-                int? topCategoryId = product.Category?.ParentCategory?.ParentCategory?.CategoryId;
-                int? middleCategoryId = product.Category?.ParentCategory?.CategoryId;
-                int? lowestCategoryId = product.Category?.CategoryId;
-
-                // Hesaplamalar
-                decimal price = product.Price;
                 int koliIciAdet = product.KoliIciAdet;
                 int quantity = item.Quantity;
+                decimal price = product.Price;
                 decimal brutTutar = price * quantity;
 
                 decimal discount1 = item.Discount1 ?? 0;
@@ -80,23 +65,26 @@ namespace DogusCay.Business.Concrete
                 }
 
                 decimal netAdetFiyat = (quantity > 0 && koliIciAdet > 0) ? netTutar / (quantity * koliIciAdet) : 0;
-                decimal maliyet = (brutTutar > 0) ? 1 - (netTutar / brutTutar) : 0;
+                decimal maliyet = (brutTutar > 0) ? Math.Round((1 - (netTutar / brutTutar)) * 100m, 2) : 0;
+
+                // --- TOPLAM HESAPLAMALAR ---
+                brutTotal += brutTutar;
+                totalNet += netTutar;
+                toplamAgirlikKg += (product.ApproximateWeightKg * quantity);
 
                 var detail = new MalYuklemeTalepFormDetail
                 {
                     ProductId = item.ProductId,
                     ProductName = product.ProductName,
                     ErpCode = product.ErpCode,
-                    CategoryId = topCategoryId ?? 0,
-                    SubCategoryId = middleCategoryId,
-                    SubSubCategoryId = lowestCategoryId,
+                    CategoryId = product.Category?.ParentCategory?.ParentCategory?.CategoryId ?? 0,
+                    SubCategoryId = product.Category?.ParentCategory?.CategoryId,
+                    SubSubCategoryId = product.Category?.CategoryId,
                     UnitTypeId = product.UnitTypeId,
                     ApproximateWeightKg = product.ApproximateWeightKg,
                     Price = price,
                     KoliIciAdet = koliIciAdet,
                     Quantity = quantity,
-
-                    // Hesaplanan ve gelen alanlar
                     Discount1 = item.Discount1,
                     Discount2 = item.Discount2,
                     FixedPrice = item.FixedPrice,
@@ -109,21 +97,15 @@ namespace DogusCay.Business.Concrete
                 formEntity.MalYuklemeTalepFormDetails.Add(detail);
             }
 
-
             formEntity.BrutTotal = Math.Round(brutTotal, 2);
-            // Not: Total ve diğer iskontolar backend'de hesaplanacaksa burada işlenmelidir.
-            // Şu an için Total = BrutTotal olarak atanmıştır.
-            formEntity.Total = formEntity.BrutTotal;
+            formEntity.Total = Math.Round(totalNet, 2);
             formEntity.ToplamAgirlikKg = Math.Round(toplamAgirlikKg, 2);
-            formEntity.Maliyet = 0; // Eğer Product'tan maliyet gelmiyorsa veya burada hesaplanmıyorsa
+            formEntity.Maliyet = (brutTotal > 0) ? Math.Round((1 - (totalNet / brutTotal)) * 100m, 2) : 0;
 
-            // Form entity'sini veritabanına kaydetmek için GenericManager'ın senkron 'Create' metodunu kullanıyoruz
-            base.TCreate(formEntity); // Artık 'await' ve 'Async' yok
+            base.TCreate(formEntity);
 
-            return formEntity; // Oluşturulan formu geri döndürüyoruz
+            return formEntity;
         }
-
-        // IMalYuklemeTalepFormService arayüzündeki diğer metotların implementasyonları:
 
         public List<MalYuklemeTalepForm> TGetAllWithUser()
         {
@@ -142,7 +124,6 @@ namespace DogusCay.Business.Concrete
 
         public void TUpdateStatus(int talepFormId, TalepDurumu newStatus, int userId)
         {
-            // Bu metodun implementasyonunu daha önce yapmıştık.
             var talepForm = _malYuklemeTalepFormRepository.GetById(talepFormId);
             if (talepForm != null)
             {

@@ -12,10 +12,10 @@
             <th>Ana Kategori</th>
             <th>Alt Kategori</th>
             <th>ERP Kodu</th>
-            <th>Birim Tipi</th>
-            <th>Ağırlık (kg)</th>
-            <th>Durum</th>
-            <th>Fiyat</th>
+@*             <th>Birim Tipi</th>
+ *@            <th>Ağırlık (kg)</th>
+@*             <th>Durum</th>
+ *@            <th>Fiyat</th>
         </tr>
     </thead>
     <tbody>
@@ -26,10 +26,10 @@
                 <td>@item.ParentCategoryName</td>
                 <td>@item.CategoryName</td>
                 <td>@item.ErpCode</td>
-                <td>@item.UnitTypeName</td>
-                <td>@(item.ApproximateWeightKg.ToString("N2") ?? "0,00")</td>
-                <td>@(item.IsShown ? "Aktif" : "Pasif")</td>
-                <td>@item.Price</td>
+@*                 <td>@item.UnitTypeName</td>
+ *@                <td>@(item.ApproximateWeightKg.ToString("N2") ?? "0,00")</td>
+@*                 <td>@(item.IsShown ? "Aktif" : "Pasif")</td>
+ *@                <td>@item.Price</td>
       
 @*                 <td>
                     <a asp-action="UpdateProduct" asp-route-id="@item.ProductId" class="btn btn-sm btn-warning">Güncelle</a>
