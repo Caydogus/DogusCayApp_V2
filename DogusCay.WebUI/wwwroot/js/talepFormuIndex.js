@@ -1,5 +1,4 @@
 ﻿
-const apiBaseUrl = "https://localhost:7076/api";
 const token = document.getElementById("jwtToken")?.value;
 
 async function deleteTalep(id) {
@@ -85,7 +84,7 @@ async function gonderKampanyaDonusu(formId, type) {
         return;
     }
     if (koliIciToplamAdet !== null && value > koliIciToplamAdet) {
-        alert("🛑 Kampanya dönüş adedi, koli içi toplam adetten büyük olamaz!");
+        alert("Kampanya dönüş adedi, koli içi toplam adetten büyük olamaz!");
         return;
     }
     try {
@@ -111,7 +110,6 @@ async function gonderKampanyaDonusu(formId, type) {
 }
 async function uploadImage(formId, type) {
     const token = document.getElementById("jwtToken")?.value;
-    // input id’sini tipe göre belirle!
     const inputId = type === 'Card' ? `imageInputCard_${formId}` : `imageInputTable_${formId}`;
     const input = document.getElementById(inputId);
 
@@ -149,46 +147,3 @@ async function uploadImage(formId, type) {
         alert("Sunucu hatası: " + err);
     }
 }
-
-
-//async function uploadImage(formId) {
-//    const token = document.getElementById("jwtToken")?.value; // 🔁 token eksikti, eklendi
-//    const input = document.getElementById(`imageInput_${formId}`);
-
-//    if (!token) {
-//        alert("Oturum süresi dolmuş olabilir.");
-//        return;
-//    }
-
-//    if (!input || !input.files || input.files.length === 0) {
-//        alert("Lütfen bir görsel seçin.");
-//        return;
-//    }
-
-//    const file = input.files[0];
-//    const formData = new FormData();
-//    formData.append("image", file);
-
-//    try {
-//        const response = await fetch(`${apiBaseUrl}/talepforms/upload-image/${formId}`, {
-//            method: 'POST',
-//            headers: {
-//                'Authorization': `Bearer ${token}`
-//                // ❗ Content-Type belirtme! FormData ile fetch otomatik ayarlar.
-//            },
-//            body: formData
-//        });
-
-//        if (response.ok) {
-//            alert("Resim başarıyla yüklendi.");
-//            location.reload();
-//        } else {
-//            const error = await response.text();
-//            alert("Yükleme başarısız: " + error);
-//        }
-//    } catch (err) {
-//        alert("Sunucu hatası: " + err);
-//    }
-//}
-
-

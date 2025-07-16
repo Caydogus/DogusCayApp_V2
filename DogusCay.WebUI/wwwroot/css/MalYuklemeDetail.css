@@ -1,0 +1,247 @@
+﻿/* MAL YÜKLEME DETAY – MODERN MOBİL KART TASARIMI */
+@media (max-width: 767.98px) {
+    .mal-yukleme-card {
+        background: #f8fafc;
+        border: 1.5px solid #dde6f1;
+        border-radius: 16px;
+        box-shadow: 0 3px 20px #24345918;
+        padding: 1.18rem 1.1rem 1.1rem 1.05rem;
+        margin-bottom: 1.35rem;
+        position: relative;
+        font-size: 1.05rem;
+    }
+        /* Hafif renkli sol şerit */
+        .mal-yukleme-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #77a7e9 0%, #79c8b7 100%);
+            border-radius: 10px 0 0 10px;
+            opacity: 0.24;
+        }
+        /* Başlık */
+        .mal-yukleme-card .card-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #24405c;
+            letter-spacing: .01em;
+            margin-bottom: .88em;
+            margin-top: .2em;
+        }
+        /* Alan isimleri */
+        .mal-yukleme-card .field-label {
+            color: #5f7189;
+            font-size: 0.99rem;
+            min-width: 95px;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 0.23em;
+            vertical-align: top;
+        }
+
+        .mal-yukleme-card .field-value {
+            color: #16223a;
+            font-weight: 600;
+            font-size: 1.02rem;
+            display: inline-block;
+        }
+        /* Her satırı yatayda rahat ayır */
+        .mal-yukleme-card .row-detail {
+            margin-bottom: .38em;
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+        /* Durum rozeti */
+        .mal-yukleme-card .badge {
+            font-size: .99rem;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: .23em 1.08em;
+            margin-left: .32em;
+            letter-spacing: .02em;
+            box-shadow: 0 1px 6px #b7b7d410;
+        }
+        /* Mini ürün kartları */
+        .mal-yukleme-card .mini-product-card {
+            border: 1px solid #dbe6ef;
+            background: #f4fafd;
+            border-radius: 11px;
+            padding: .95em .75em .65em .85em;
+            margin-bottom: 1em;
+            font-size: 0.99rem;
+            box-shadow: 0 2px 9px #badcff11;
+        }
+        /* Alt başlık */
+        .mal-yukleme-card .section-title {
+            font-weight: 600;
+            color: #376289;
+            font-size: 1.07rem;
+            margin: 1.12em 0 0.55em 0;
+        }
+        /* "Geri Dön" butonu ve genel aksiyonlar */
+        .mal-yukleme-card .btn,
+        .mal-yukleme-card button,
+        .mal-yukleme-card a.btn {
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.04rem;
+            margin-top: .3em;
+            margin-bottom: .3em;
+            letter-spacing: .01em;
+            padding: .56em 0.7em;
+        }
+        /* Mobilde kart içi son boşluk */
+        .mal-yukleme-card > *:last-child {
+            margin-bottom: 0;
+        }
+}
+/* --- MASAÜSTÜ: DETAY TABLOSU MODERNLEŞTİRME --- */
+@media (min-width: 768px) {
+    /* Genel panel ve tablo kartı */
+    .mal-yukleme-detail-table {
+        background: #fcfdff;
+        border-radius: 17px;
+        box-shadow: 0 2px 16px #2a35580b;
+        border: 1.5px solid #dde6f1;
+        margin-bottom: 1.65rem;
+        overflow: hidden;
+        font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+    }
+
+        .mal-yukleme-detail-table .card-header {
+            background: linear-gradient(90deg,#e9f2fd 0,#f2fcf9 100%);
+            border: none;
+            font-size: 1.16rem;
+            font-weight: 700;
+            color: #24405c;
+            padding: 1.07rem 1.26rem 0.8rem 1.19rem;
+            letter-spacing: .01em;
+        }
+
+        .mal-yukleme-detail-table .card-body {
+            padding: 1.13rem 1.34rem;
+            font-size: 1.05rem;
+        }
+
+        .mal-yukleme-detail-table .row > div {
+            margin-bottom: 0.26rem;
+            color: #243459;
+            font-size: 1.04rem;
+        }
+
+        .mal-yukleme-detail-table strong {
+            color: #31538e;
+            font-weight: 700;
+            margin-right: .27em;
+            font-size: 1.04rem;
+        }
+
+        .mal-yukleme-detail-table .badge {
+            font-size: .99rem;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: .23em 1.08em;
+            margin-left: .26em;
+            box-shadow: 0 1px 6px #b7b7d410;
+            letter-spacing: .01em;
+            background: #f2f5fc;
+            color: #214570;
+            border: 1px solid #b3c6e5;
+        }
+
+        /* Tablo başlık ve hücre */
+        .mal-yukleme-detail-table .table th,
+        .mal-yukleme-detail-table .table td {
+            font-family: inherit;
+            background: #f9fafb;
+            color: #1c2a44;
+            font-size: 0.99rem;
+            padding: 0.49rem 0.84rem;
+            vertical-align: middle;
+            border-color: #e1e6f3 !important;
+            font-weight: 450;
+            letter-spacing: 0.01em;
+        }
+
+        .mal-yukleme-detail-table .table th {
+            background: #eaf1fa;
+            color: #34508b;
+            font-size: 1.03rem;
+            font-weight: 700;
+            border: none;
+        }
+
+        .mal-yukleme-detail-table .table tbody tr {
+            transition: background 0.13s;
+        }
+
+            .mal-yukleme-detail-table .table tbody tr:hover {
+                background: #f3f7fd !important;
+                color: #21426b;
+            }
+        /* Badge renklerini desktopta da devam ettir */
+        .mal-yukleme-detail-table .badge.bg-warning {
+            background: #fffbe7 !important;
+            color: #bf9402 !important;
+            border: 1px solid #f6e27a;
+        }
+
+        .mal-yukleme-detail-table .badge.bg-success {
+            background: #e4fbe6 !important;
+            color: #198754 !important;
+            border: 1px solid #a6efb8;
+        }
+
+        .mal-yukleme-detail-table .badge.bg-danger {
+            background: #fff1f1 !important;
+            color: #b92020 !important;
+            border: 1px solid #ffb6b6;
+        }
+
+        .mal-yukleme-detail-table .badge.bg-secondary {
+            background: #eaeef1 !important;
+            color: #40495b !important;
+            border: 1px solid #ced4da;
+        }
+        /* Modern butonlar (isteğe bağlı) */
+        .mal-yukleme-detail-table .btn,
+        .mal-yukleme-detail-table button {
+            border-radius: 7px;
+            font-weight: 500;
+            font-size: 0.98rem;
+            padding: 0.22em 0.8em;
+            min-width: 60px;
+            margin-right: 0.12em;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .mal-yukleme-detail-table .btn-info {
+            background: linear-gradient(90deg,#48a9ef,#57c6e1);
+            color: #fff;
+            border: none;
+        }
+
+        .mal-yukleme-detail-table .btn-danger {
+            background: linear-gradient(90deg,#f35a5a,#ee6262);
+            border: none;
+            color: #fff;
+        }
+
+        .mal-yukleme-detail-table .btn-success {
+            background: linear-gradient(90deg,#56da89,#38b97d);
+            color: #fff;
+            border: none;
+        }
+
+        .mal-yukleme-detail-table .btn-warning {
+            background: linear-gradient(90deg,#ffeb98,#ffd36b);
+            color: #b68c02;
+            border: none;
+        }
+}

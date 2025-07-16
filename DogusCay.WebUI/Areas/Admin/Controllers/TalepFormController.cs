@@ -1,13 +1,8 @@
 ﻿using DogusCay.WebUI.DTOs.TalepDtos;
 using DogusCay.WebUI.DTOs.KanalDtos;
-using DogusCay.WebUI.DTOs.DistributorDtos;
-using DogusCay.WebUI.DTOs.PointDtos;
 using DogusCay.WebUI.DTOs.ProductDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Net.Http.Json;
-using DogusCay.WebUI.DTOs.PointGroupTypeDtos;
-//using DogusCay.WebUI.DTOs.TalepDtos;
 
 namespace DogusCay.WebUI.Areas.Admin.Controllers
 {
@@ -29,10 +24,9 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             if (string.IsNullOrEmpty(jwtToken))
             {
-                Console.WriteLine("🚨 Uyarı: Session'dan JWT token alınamadı!");
+                Console.WriteLine("Uyarı: Session'dan JWT token alınamadı!");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                // Diğer dropdown'lar için de boş liste atayın
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); // TalepFormController için
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName");
                 TempData["Error"] = "Dropdown verileri yüklenirken bir hata oluştu: Oturum süresi dolmuş veya token bulunamadı.";
                 return;
             }
@@ -42,11 +36,10 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             try
             {
-                // ARTIK 'api/' ÖN EKİ YOK!
                 var kanallar = await _client.GetFromJsonAsync<List<KanalDropdownDto>>("kanals/dropdown");
                 ViewBag.Kanallar = new SelectList(kanallar, "KanalId", "KanalName");
 
-                // TalepFormController için:
+                // TalepFormController için
                 var urunler = await _client.GetFromJsonAsync<List<ProductDropdownDto>>("products/dropdown");
                 ViewBag.Products = new SelectList(urunler, "ProductId", "ProductName");
             }
@@ -54,14 +47,14 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             {
                 Console.WriteLine($"❌ HTTP Request Error (SetDropdownsAsync): {httpEx.Message}");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); // TalepFormController için
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); 
                 TempData["Error"] = $"Dropdown verileri yüklenirken bir HTTP hatası oluştu: {httpEx.Message}";
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error fetching dropdown data (SetDropdownsAsync): {ex.Message}");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); // TalepFormController için
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName");
                 TempData["Error"] = "Dropdown verileri yüklenirken beklenmeyen bir hata oluştu: " + ex.Message;
             }
         }
@@ -72,10 +65,10 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             try
             {
                 string endpoint;
-                int pageSize = 10; // pageSize'ı burada tanımlayalım ki ViewBag'e aktarabilelim
+                int pageSize = 10;
 
                 if (User.IsInRole("Admin"))
-                    endpoint = $"talepforms/paged?page={page}&pageSize={pageSize}";    // tüm talepler
+                    endpoint = $"talepforms/paged?page={page}&pageSize={pageSize}";
                 else
                     endpoint = $"talepforms/mine-paged?page={page}&pageSize={pageSize}";  // sadece kendi talepleri
 
@@ -83,7 +76,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
                 ViewBag.CurrentPage = response.Page;
                 ViewBag.TotalPages = (int)Math.Ceiling((double)response.TotalCount / response.PageSize);
-                // Yeni Eklenen Satırlar:
                 ViewBag.TotalCount = response.TotalCount;
                 ViewBag.PageSize = response.PageSize;
 
@@ -107,7 +99,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTalepForm(CreateTalepFormDto createTalepFormDto)
         {
-            Console.WriteLine("🔥 METODA GELDİ");
+            Console.WriteLine("METODA GELDİ");
 
             if (!ModelState.IsValid)
             {
@@ -118,14 +110,14 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             try
             {
                 var json = System.Text.Json.JsonSerializer.Serialize(createTalepFormDto);
-                Console.WriteLine("📦 Gönderilen JSON:");
+                Console.WriteLine("Gönderilen JSON:");
                 Console.WriteLine(json);
 
                 var response = await _client.PostAsJsonAsync("talepforms", createTalepFormDto);
                 var responseText = await response.Content.ReadAsStringAsync();
 
-                Console.WriteLine("📤 POST Status: " + response.StatusCode);
-                Console.WriteLine("📩 API Yanıtı: " + responseText);
+                Console.WriteLine("POST Status: " + response.StatusCode);
+                Console.WriteLine("API Yanıtı: " + responseText);
 
                 if (response.IsSuccessStatusCode)
                     return RedirectToAction("Index");
@@ -147,7 +139,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
         {
             try
             {
-                // _client'ın base URL'sini kullanarak daha iyi bir yaklaşım:
                 var response = await _client.DeleteAsync($"talepforms/{id}");
 
                 if (response.IsSuccessStatusCode)

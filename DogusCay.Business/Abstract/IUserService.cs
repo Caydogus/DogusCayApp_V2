@@ -17,6 +17,9 @@ namespace DogusCay.Business.Abstract
         Task<bool> AssignRoleAsync(List<AssignRoleDto> assignRoleDto);
         Task<List<AppUser>> GetAllUsersAsync();
         Task<AppUser> GetUserByIdAsync(int id);
+        
+        Task<IdentityResult> ChangePasswordAsync(int userId, AdminChangePasswordDto dto);//şifre değiştirne işlemi için ekledim
+
 
     }
 }

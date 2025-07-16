@@ -4,7 +4,6 @@ function formatTL(value) {
 }
 
 $(document).ready(function () {
-    const apiBaseUrl = "https://localhost:7076/api";
     const token = document.getElementById("jwtToken")?.value;
 
     if (!token) {
@@ -12,7 +11,6 @@ $(document).ready(function () {
         return;
     }
 
-    // Token'ı tüm jQuery isteklerine otomatik ekle
     $.ajaxSetup({
         headers: {
             "Authorization": "Bearer " + token
@@ -21,7 +19,6 @@ $(document).ready(function () {
 
     $('#distributorDiv, #pointGroupDiv').hide();
 
-    // Ana kategori yükle
     $.get(`${apiBaseUrl}/categories/MainCategories`, function (data) {
         const catSelect = $('#CategoryId');
         catSelect.empty().append('<option value="">Seçiniz</option>');
@@ -182,27 +179,27 @@ $(document).ready(function () {
         const isk3 = safeParse('#Iskonto3');
         const isk4 = safeParse('#Iskonto4');
         const adetFarkTL = safeParse('#AdetFarkDonusuTL');
-        const sabitBedel = safeParse('#SabitBedelTL'); // 🔹 Eksik olan bu
+        const sabitBedel = safeParse('#SabitBedelTL'); 
         const approxKg = safeParse('#ApproximateWeightKg');
         const koliIci = parseInt($('#KoliIciAdet').val()) || 0;
 
         if (quantity < 1) {
             quantity = 1;
-            // $('#Quantity').val(1);
+            
         }
 
         let toplam = price * quantity;
         [isk1, isk2, isk3, isk4].forEach(isk => {
             if (isk > 0) toplam *= (100 - isk) / 100;
         });
-        // 🔹 Sabit bedel düş
+        //Sabit bedel düş
         if (sabitBedel > 0) {
             toplam -= sabitBedel;
             if (toplam < 0) toplam = 0;
         }
-        //brut total hesapla
-        const totalBrut = quantity * price;// ✅ YENİ
-        $('#TotalBrut').val(totalBrut.toFixed(2)); // ✅ YENİ
+        //brut total hesapl
+        const totalBrut = quantity * price;
+        $('#TotalBrut').val(totalBrut.toFixed(2));
 
 
         const koliIciToplamAdet = quantity * koliIci;
@@ -215,7 +212,7 @@ $(document).ready(function () {
             toplam = sonAdetFiyat * koliIciToplamAdet;
         }
 
-        // 🔢 Maliyet hesaplama (%)
+        //Maliyet hesaplama (%)
         let maliyet = 0;
         if (totalBrut !== 0) {
             maliyet = ((totalBrut - toplam) / totalBrut) * 100;
@@ -282,7 +279,7 @@ $(document).ready(function () {
         const validFrom = new Date($('#ValidFrom').val());
         const validTo = new Date($('#ValidTo').val());
         if (validTo < validFrom) {
-            alert("🛑 Bitiş tarihi, başlangıç tarihinden önce olamaz!");
+            alert("Bitiş tarihi, başlangıç tarihinden önce olamaz!");
             return;
         }
    
@@ -298,7 +295,7 @@ $(document).ready(function () {
         }
         const errors = validateForm(dto);
         if (errors.length > 0) {
-            alert("🛑 Lütfen aşağıdaki alanları doldurunuz:\n\n" + errors.join('\n'));
+            alert("Lütfen aşağıdaki alanları doldurunuz:\n\n" + errors.join('\n'));
             return;
         }
 
@@ -313,10 +310,10 @@ $(document).ready(function () {
             });
 
             const resultText = await res.text();
-            console.log("📤 API yanıtı:", resultText);
+            console.log("API yanıtı:", resultText);
 
             if (res.ok) {
-                alert("✅ Talep başarıyla oluşturuldu.");
+                alert("Talep başarıyla oluşturuldu.");
                 window.location.href = "/Admin/TalepForm/Index";
             } else {
                 alert("❌ Talep kaydedilemedi:\n" + resultText);

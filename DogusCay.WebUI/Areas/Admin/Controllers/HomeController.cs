@@ -14,7 +14,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
         {
             _client = clientFactory.CreateClient("EduClient");
         }
-
         public async Task<IActionResult> Index()
         {
 

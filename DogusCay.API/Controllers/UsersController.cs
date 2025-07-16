@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DogusCay.API.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController(UserManager<AppUser> _userManager, SignInManager<AppUser> _signInManager, IJwtService _jwtService, IMapper _mapper) : ControllerBase
@@ -56,8 +56,29 @@ namespace DogusCay.API.Controllers
 
             return BadRequest();
         }
+        //tum kullanıcılar
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var result = new List<ResultUserDto>();
 
-     
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user); // Tüm rollerini çek
+                result.Add(new ResultUserDto
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ImageUrl = user.ImageUrl,
+                    Roles = roles.ToList()
+                });
+            }
+            return Ok(result);
+        }
+
         [HttpGet("BolgeMuduruList")]
         public async Task<IActionResult> BolgeMuduruList()
         {
@@ -69,6 +90,7 @@ namespace DogusCay.API.Controllers
             {
                 result.Add(new ResultUserDto
                 {
+                    UserId = user.Id, 
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     ImageUrl = user.ImageUrl,
@@ -100,5 +122,31 @@ namespace DogusCay.API.Controllers
 
             return Ok(result);
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("admin-change-password")]//admin bolge mudurlerinin şifresini değiştirebilir
+        public async Task<IActionResult> AdminChangePassword(AdminChangePasswordDto dto)
+        {
+            Console.WriteLine("Gelen UserId: " + dto.UserId);
+            var user = await _userManager.FindByIdAsync(dto.UserId.ToString());
+            if (user == null)
+                return BadRequest("Kullanıcı bulunamadı.");
+
+            if (dto.NewPassword != dto.ConfirmPassword)
+                return BadRequest("Yeni şifreler eşleşmiyor.");
+
+            // Eski şifreye gerek yok
+            var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+            if (!removePasswordResult.Succeeded)
+                return BadRequest(removePasswordResult.Errors.Select(x => x.Description));
+
+            var addPasswordResult = await _userManager.AddPasswordAsync(user, dto.NewPassword);
+            if (!addPasswordResult.Succeeded)
+                return BadRequest(addPasswordResult.Errors.Select(x => x.Description));
+
+            return Ok("Şifre başarıyla değiştirildi.");
+        }
+
     }
+
 }

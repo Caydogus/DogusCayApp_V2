@@ -1,9 +1,13 @@
-﻿@model CreateTalepFormDto
+﻿@* @model CreateTalepFormDto
 
 @{
 	ViewData["Title"] = "";
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+
+<head>
+	<link rel="stylesheet" href="~/css/talepform.css" asp-append-version="true" />
+</head>
 <input type="hidden" id="jwtToken" value="@Context.Session.GetString("JwtToken")" />
 
 
@@ -93,7 +97,7 @@
 		<div class="form-group col-md-3">
 			<label for="Quantity">Planlanan Miktar(koli)</label>
 			<input asp-for="Quantity" class="form-control" id="Quantity" value="1" min="0" />
-			@* <input asp-for="Quantity" class="form-control" id="Quantity" /> *@
+			@* <input asp-for="Quantity" class="form-control" id="Quantity" /> 
 		</div>
 
 		<div class="row">
@@ -216,6 +220,189 @@
 
 	<button type="submit" class="btn btn-success mt-3">Talep Oluştur</button>
 </form>
+@section Scripts {
+	<script src="~/js/talepForm.js" asp-append-version="true"></script>
+} 
+*@
+
+@model CreateTalepFormDto
+@{
+	ViewData["Title"] = "";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<head>
+	<link rel="stylesheet" href="~/css/talepform.css" asp-append-version="true" />
+</head>
+<input type="hidden" id="jwtToken" value="@Context.Session.GetString("JwtToken")" />
+
+<form id="talepForm">
+	<!-- Ana Alanlar Cardı -->
+	<div class="form-card mb-4">
+		<div class="row">
+			<div class="form-group col-md-4">
+				<label for="KanalId">Kanal</label>
+				<select asp-for="KanalId" class="form-control" id="KanalId" asp-items="ViewBag.Kanallar">
+					<option value="">Seçiniz</option>
+				</select>
+			</div>
+			<div class="form-group col-md-4" id="distributorDiv" style="display:none;">
+				<label for="DistributorId">Distributor</label>
+				<select asp-for="DistributorId" class="form-control" id="DistributorId">
+					<option value="">Seçiniz</option>
+				</select>
+			</div>
+			<div class="form-group col-md-4" id="pointGroupDiv" style="display:none;">
+				<label for="PointGroupTypeId">Nokta Grubu</label>
+				<select asp-for="PointGroupTypeId" class="form-control" id="PointGroupTypeId">
+					<option value="">Seçiniz</option>
+				</select>
+			</div>
+			<div class="form-group col-md-4" id="pointDiv">
+				<label for="PointId">Nokta</label>
+				<select asp-for="PointId" class="form-control" id="PointId">
+					<option value="">Seçiniz</option>
+				</select>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="CategoryId">Kategori</label>
+				<select asp-for="CategoryId" class="form-control" id="CategoryId">
+					<option value="">Seçiniz</option>
+				</select>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="SubCategoryId">Alt Kategori</label>
+				<select asp-for="SubCategoryId" class="form-control" id="SubCategoryId">
+					<option value="">Önce kategori seçiniz</option>
+				</select>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="SubSubCategoryId">Marka</label>
+				<select asp-for="SubSubCategoryId" class="form-control" id="SubSubCategoryId">
+					<option value="">Önce alt kategori seçiniz</option>
+				</select>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="ProductId">Ürün</label>
+				<select asp-for="ProductId" class="form-control" id="ProductId">
+					<option value="">Önce marka seçiniz</option>
+				</select>
+			</div>
+			<div class="form-group col-md-3">
+				<label for="ErpCode">Logo Kodu</label>
+				<input asp-for="ErpCode" class="form-control" id="ErpCode" readonly />
+			</div>
+			<input asp-for="KoliIciAdet" class="form-control" id="KoliIciAdet" readonly type="hidden" />
+			<input asp-for="Price" class="form-control" id="Price" type="hidden" />
+			<input asp-for="ApproximateWeightKg" class="form-control" id="ApproximateWeightKg" readonly type="hidden" />
+			<div class="form-group col-md-3">
+				<label for="Quantity">Planlanan Miktar(koli)</label>
+				<input asp-for="Quantity" class="form-control" id="Quantity" value="1" min="0" />
+			</div>
+		</div>
+	</div>
+
+	<!-- Anlaşma Kondüsyonları & Kampanya Cardı -->
+	<div class="form-card mb-4">
+		<div class="row">
+			<div class="col-md-6 mb-3 mb-md-0">
+				<h6>Anlaşma Kondüsyonları</h6>
+				<div class="divider"></div>
+				<div class="form-group mb-2">
+					<label for="Iskonto1">İskonto 1 (%)</label>
+					<input asp-for="Iskonto1" class="form-control" />
+				</div>
+				<div class="form-group mb-2">
+					<label for="Iskonto2">İskonto 2 (%)</label>
+					<input asp-for="Iskonto2" class="form-control" />
+				</div>
+				<div class="form-group mb-2">
+					<label for="Iskonto3">İskonto 3 (%)</label>
+					<input asp-for="Iskonto3" class="form-control" />
+				</div>
+			</div>
+			<div class="col-md-6">
+				<h6>Kampanya İskontoları</h6>
+				<div class="divider"></div>
+				<div class="form-group mb-2">
+					<label for="Iskonto4">Adet Fark (%)</label>
+					<input asp-for="Iskonto4" class="form-control" />
+				</div>
+				<div class="form-group mb-2">
+					<label for="AdetFarkDonusuTL">Adet Farkı (₺)</label>
+					<input asp-for="AdetFarkDonusuTL" class="form-control" />
+				</div>
+				<div class="form-group mb-2">
+					<label for="SabitBedelTL">Sabit Bedel (₺)</label>
+					<input asp-for="SabitBedelTL" class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Hesaplanan Alanlar Cardı -->
+	<div class="form-card mb-4">
+		<h6>Hesaplanan Alanlar</h6>
+		<div class="divider"></div>
+		<div class="row">
+			<input asp-for="BrutTotal" type="hidden" id="BrutTotal" />
+			<div class="form-group col-md-6">
+				<label>Toplam Brüt Tutar (₺)</label>
+				<input class="form-control" id="BrutTotalDisplay" readonly />
+			</div>
+			<input asp-for="Total" type="hidden" id="Total" />
+			<div class="form-group col-md-6">
+				<label>Toplam Net Tutar (₺)</label>
+				<input class="form-control" id="TotalDisplay" readonly />
+			</div>
+			<input type="hidden" asp-for="Maliyet" id="Maliyet" />
+			<div class="form-group col-md-6">
+				<label>Maliyet (%)</label>
+				<input type="text" class="form-control" id="MaliyetDisplay" readonly />
+			</div>
+			<input asp-for="ListeFiyat" type="hidden" id="ListeFiyat" />
+			<div class="form-group col-md-6">
+				<label>Liste Fiyatı (₺)</label>
+				<input class="form-control" id="ListeFiyatDisplay" readonly />
+			</div>
+			<input asp-for="SonAdetFiyati" type="hidden" id="SonAdetFiyati" />
+			<div class="form-group col-md-6">
+				<label>Son Adet Fiyatı (₺)</label>
+				<input class="form-control" id="SonAdetFiyatiDisplay" readonly />
+			</div>
+			<input asp-for="KoliIciToplamAdet" type="hidden" id="KoliIciToplamAdet" />
+			<div class="form-group col-md-6">
+				<label>Koli İçi Toplam Adet</label>
+				<input class="form-control" id="KoliIciToplamAdetDisplay" readonly />
+			</div>
+
+			<input asp-for="KoliToplamAgirligiKg" type="hidden" id="KoliToplamAgirligiKg" />
+			<div class="form-group col-md-6">
+				<label>Toplam Koli Ağırlığı (kg)</label>
+				<input class="form-control" id="KoliToplamAgirligiKgDisplay" readonly />
+			</div>
+
+			<div class="row date-row">
+				<div class="form-group col-md-6">
+					<label for="ValidFrom">Başlangıç Tarihi</label>
+					<input asp-for="ValidFrom" id="ValidFrom" type="date" class="form-control" />
+				</div>
+				<div class="form-group col-md-6">
+					<label for="ValidTo">Bitiş Tarihi</label>
+					<input asp-for="ValidTo" id="ValidTo" type="date" class="form-control" />
+				</div>
+			</div>
+
+			<div class="form-group col-md-12">
+				<label for="Note">Açıklama</label>
+				<textarea asp-for="Note" class="form-control" rows="2"></textarea>
+			</div>
+		</div>
+	</div>
+	<div class="text-center">
+		<button type="submit" class="btn btn-success mt-3">Talep Oluştur</button>
+	</div>
+</form>
+
 @section Scripts {
 	<script src="~/js/talepForm.js" asp-append-version="true"></script>
 }

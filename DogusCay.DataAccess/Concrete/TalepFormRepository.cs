@@ -4,8 +4,6 @@ using DogusCay.DataAccess.Context;
 using DogusCay.DataAccess.Repositories;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DogusCay.DataAccess.Concrete
 {

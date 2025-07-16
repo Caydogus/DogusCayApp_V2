@@ -26,15 +26,14 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             if (string.IsNullOrEmpty(jwtToken))
             {
-                Console.WriteLine("🚨 Uyarı: Session'dan JWT token alınamadı!");
+                Console.WriteLine("Uyarı: Session'dan JWT token alınamadı!");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                // Diğer dropdown'lar için de boş liste atayın
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); // TalepFormController için
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); 
                 TempData["Error"] = "Dropdown verileri yüklenirken bir hata oluştu: Oturum süresi dolmuş veya token bulunamadı.";
                 return;
             }
 
-            _client.DefaultRequestHeaders.Clear(); // Önceki başlıkları temizle (Eğer client yeniden oluşturulmuyorsa)
+            _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + jwtToken);
 
             try
@@ -51,14 +50,14 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             {
                 Console.WriteLine($"❌ HTTP Request Error (SetDropdownsAsync): {httpEx.Message}");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); // TalepFormController için
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); 
                 TempData["Error"] = $"Dropdown verileri yüklenirken bir HTTP hatası oluştu: {httpEx.Message}";
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error fetching dropdown data (SetDropdownsAsync): {ex.Message}");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); // TalepFormController için
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName");
                 TempData["Error"] = "Dropdown verileri yüklenirken beklenmeyen bir hata oluştu: " + ex.Message;
             }
         }
@@ -70,7 +69,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             return View(new CreateMalYuklemeTalepFormDto());
         }
 
-        // Mal Yükleme Talep Formunu kaydetme (POST isteği)
         [HttpPost]
         public async Task<IActionResult> CreateMalYuklemeTalepForm(CreateMalYuklemeTalepFormDto createMalYuklemeTalepFormDto)
         {
@@ -79,12 +77,10 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 await SetDropdownsAsync();
                 return View(createMalYuklemeTalepFormDto);
             }
-
             try
             {
-              
                 var response = await _client.PostAsJsonAsync("MalYuklemeTalepForms", createMalYuklemeTalepFormDto);
-                var responseText = await response.Content.ReadAsStringAsync(); // API'den gelen mesajı oku
+                var responseText = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -127,25 +123,25 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             try
             {
-                // 🛠 JWT token al
+                //JWT token al
                 var token = HttpContext.Session.GetString("JwtToken");
                 if (string.IsNullOrEmpty(token))
                 {
-                    Console.WriteLine("🚨 Uyarı: Session'dan JWT token alınamadı!");
+                    Console.WriteLine("Uyarı: Session'dan JWT token alınamadı!");
                 }
                 else
                 {
-                    Console.WriteLine("✅ JWT token başarıyla session'dan alındı.");
+                    Console.WriteLine("JWT token başarıyla session'dan alındı.");
                 }
                 var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                // 🧠 HttpClient üzerinden istek gönder
+                //HttpClient üzerinden istek gönder
                 var response = await _client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("🌐 Gelen JSON:");
+                Console.WriteLine("Gelen JSON:");
                 var pagedResult = JsonConvert.DeserializeObject<PagedMalYuklemeTalepFormResponse>(jsonResponse);
 
                 ViewBag.CurrentPage = pagedResult.Page;

@@ -1,8 +1,9 @@
-﻿body, .table, .card-talep {
+﻿
+body, .table, .card-talep {
     font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
-    font-size: 0.98rem;
-    color: #1a212a;
-    background: #f3f6fa;
+    font-size: 1.01rem;
+    color: #20262e;
+    background: #f6f8fd;
 }
 
     /* TABLO & HÜCRE */
@@ -12,39 +13,49 @@
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 150px;
-        padding: 0.44rem 0.72rem;
+        padding: 0.58rem 1.05rem;
         vertical-align: middle;
-        font-size: 0.96rem;
-        font-weight: 450;
-        line-height: 1.26;
+        font-size: 1.01rem;
+        font-weight: 500;
+        line-height: 1.28;
         letter-spacing: 0.01em;
-        transition: background .18s, color .18s;
+        border: none;
+        border-bottom: 1.6px solid #e6eaf2 !important;
+        transition: background .15s, color .15s;
     }
 
     .table th {
-        background: #222a37;
-        color: #fafbfc;
-        font-size: 1.04rem;
+        background: linear-gradient(90deg,#1b2232 65%,#37405a 100%);
+        color: #f9fafe;
+        font-size: 1.11rem;
         font-weight: 700;
+        letter-spacing: 0.02em;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
+    }
+
+    .table td {
+        color: #232d39;
         border: none;
     }
 
 .table-bordered th, .table-bordered td {
-    border-color: #d2d6de !important;
+    border-color: #d6dbe8 !important;
 }
 
 .table td:hover {
-    background: #f6f9fc;
-    color: #183146;
-    font-weight: 500;
+    background: #f2f7fc;
+    color: #163258;
+    font-weight: 600;
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
     max-width: none;
     z-index: 10;
+    position: relative;
 }
 
-/* SÜTUN BOYLARI (KISA TUT) */
+/* SÜTUN BOYLARI */
 .table th:nth-child(1), .table td:nth-child(1) {
     width: 54px;
     text-align: center;
@@ -81,42 +92,41 @@
     }
 
     .card-talep {
-        margin-bottom: 1.1rem;
+        margin-bottom: 1.18rem;
     }
 }
 
-/* -- BUTON, DOSYA VE INPUT KÜÇÜLTME ORTAK -- */
+/* -- BUTON, DOSYA VE INPUT KÜÇÜLTME -- */
 input.form-control-sm,
 input[type="file"].form-control-sm,
 button.btn-sm {
-    font-size: 0.89rem !important;
-    border-radius: 6px !important;
-    height: 26px !important;
-    padding: 0.08em 0.6em !important;
-    min-width: 38px !important;
-    max-width: 105px;
+    font-size: 0.91rem !important;
+    border-radius: 7px !important;
+    height: 27px !important;
+    padding: 0.11em 0.68em !important;
+    min-width: 40px !important;
+    max-width: 108px;
     box-sizing: border-box;
     margin-right: 0.13em;
     vertical-align: middle;
-    line-height: 1.1;
+    line-height: 1.14;
 }
 
 input[type="file"].form-control-sm {
-    max-width: 95px !important;
-    padding: 0.08em 0.32em !important;
-    font-size: 0.86rem !important;
+    max-width: 98px !important;
+    padding: 0.11em 0.35em !important;
+    font-size: 0.88rem !important;
 }
 
-/* ADDET INPUT FİX */
 input[type="number"].form-control-sm {
-    min-width: 38px !important;
-    max-width: 70px !important;
-    padding: 0.07em 0.4em !important;
+    min-width: 40px !important;
+    max-width: 72px !important;
+    padding: 0.08em 0.44em !important;
 }
 
 /* YATAY İÇERİK DÜZENİ */
 .d-flex.align-items-center {
-    gap: 0.36rem !important;
+    gap: 0.38rem !important;
     flex-wrap: nowrap;
 }
 
@@ -125,178 +135,395 @@ input[type="number"].form-control-sm {
     display: inline-block;
     white-space: nowrap;
     margin-left: 0.19rem;
-    color: #2584c6 !important;
-    font-size: 0.93rem !important;
+    color: #268fd0 !important;
+    font-size: 0.95rem !important;
     font-weight: 500;
     vertical-align: middle;
+    transition: color .14s;
 }
 
+    .table td a.text-info:hover, .card-talep a.text-info:hover {
+        color: #2563eb !important;
+    }
+
+/* KART YENİ NESİL TASARIM */
 .card-talep {
-    background: #fcfdff;
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px #0c143016;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 20px 0 #1a233816;
     overflow: hidden;
-    font-size: 0.99rem;
-    transition: box-shadow .15s;
+    font-size: 1.03rem;
+    transition: box-shadow .14s;
+    border: 1.3px solid #e5e8f1;
 }
+
+    .card-talep:hover {
+        box-shadow: 0 8px 28px #1c294218, 0 2px 8px #a6a9d613;
+    }
 
     .card-talep .card-header {
         background: #fff;
-        padding: 1rem 1.2rem 0.8rem 1.1rem;
-        border-bottom: 1px solid #e8ecf3;
-        font-size: 1.01rem;
+        padding: 1.08rem 1.32rem 0.89rem 1.19rem;
+        border-bottom: 1.5px solid #e9eef8;
+        font-size: 1.07rem;
         font-weight: 700;
-        color: #172039;
+        color: #192a45;
     }
 
         .card-talep .card-header .badge {
-            font-size: 0.95rem;
-            border-radius: 16px;
-            padding: .22em .8em;
+            font-size: 0.99rem;
+            border-radius: 18px;
+            padding: .22em .99em;
             font-weight: 600;
-            box-shadow: 0 1px 4px #00000013;
+            box-shadow: 0 1px 6px #a4b8c418;
             border: none;
+            letter-spacing: .02em;
         }
 
     .card-talep .card-body {
-        padding: 0.9rem 1.2rem;
+        padding: 1.01rem 1.38rem;
     }
 
     .card-talep strong {
-        color: #204070;
+        color: #234c85;
         font-weight: 700;
-        margin-right: .35em;
-        font-size: 1.01rem;
+        margin-right: .38em;
+        font-size: 1.06rem;
     }
 
     .card-talep .fw-bold {
         font-weight: 700 !important;
-        color: #1d7449 !important;
+        color: #17a47b !important;
     }
 
     .card-talep .text-success {
-        color: #1d7449 !important;
+        color: #15a175 !important;
         font-weight: 600;
     }
 
     .card-talep .text-muted {
-        color: #a1a5ad !important;
+        color: #a3adc4 !important;
     }
 
     .card-talep .row.align-items-center > div,
     .card-talep .card-actions, .card-talep .card-media {
-        margin-top: .6rem;
+        margin-top: .63rem;
         padding: 0;
         border: none;
         background: transparent;
     }
 
     .card-talep .form-control, .card-talep input[type="file"] {
-        font-size: 0.92rem;
-        border-radius: 6px;
-        padding: .23em .52em;
-        border: 1px solid #dde3ea;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        padding: .23em .56em;
+        border: 1.2px solid #e1e7f1;
         margin-right: .13em;
-        background: #f9fafd;
+        background: #f9fbfe;
         transition: border .13s;
-        height: 26px;
+        height: 27px;
     }
 
         .card-talep .form-control:focus, .card-talep input[type="file"]:focus {
-            border: 1.2px solid #4d86fd;
+            border: 1.6px solid #5493fe;
             background: #fff;
             outline: none;
         }
 
+    /* Modern butonlar */
     .card-talep .btn {
-        border-radius: 7px;
-        font-weight: 500;
-        font-size: 0.96rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.01rem;
+        padding: 0.17em 0.89em;
+        min-height: 27px;
+        transition: background .15s, color .15s, box-shadow .12s;
+        border: none;
+        box-shadow: 0 1px 4px #b4d3e214;
     }
 
     .card-talep .btn-info {
-        background: linear-gradient(90deg,#48a9ef,#57c6e1);
+        background: linear-gradient(90deg,#44c4e7,#3894d3);
         color: #fff;
-        border: none;
     }
 
     .card-talep .btn-danger {
-        background: linear-gradient(90deg,#f35a5a,#ee6262);
-        border: none;
+        background: linear-gradient(90deg,#fc6369,#f7605d);
         color: #fff;
     }
 
+    .card-talep .btn-success {
+        background: linear-gradient(90deg,#63dfa3,#37b98e);
+        color: #fff;
+    }
+
+    .card-talep .btn-warning {
+        background: linear-gradient(90deg,#ffefa3,#ffd36b);
+        color: #ba9604;
+    }
+
+    /* Medya */
     .card-talep .card-media a {
-        margin-top: .15em;
+        margin-top: .17em;
         color: #2584c6;
-        font-size: 0.92rem;
+        font-size: 0.96rem;
         text-decoration: underline;
         font-weight: 500;
     }
 
     .card-talep .card-media img {
-        max-width: 96px;
-        border-radius: 6px;
-        margin-top: .16em;
+        max-width: 100px;
+        border-radius: 8px;
+        margin-top: .19em;
         background: #fff;
-        border: 1px solid #e0e0e0;
+        border: 1px solid #e3e3e3;
     }
 
     .card-talep .text-end .btn-danger {
-        margin-top: .15em;
-        min-width: 42px;
-        font-size: 0.97rem;
+        margin-top: .17em;
+        min-width: 44px;
+        font-size: 1.01rem;
     }
 
-/* BADGE MODERNİZASYONU */
+/* MODERN BADGE STİLLERİ */
 .badge.bg-warning {
     background: #fffbe7 !important;
     color: #bf9402 !important;
-    border: 1px solid #f6e27a;
+    border: 1.3px solid #ffe37a;
     font-weight: 600;
 }
 
 .badge.bg-success {
-    background: #e4fbe6 !important;
-    color: #198754 !important;
-    border: 1px solid #a6efb8;
+    background: #e7fbe7 !important;
+    color: #1fa974 !important;
+    border: 1.3px solid #b2efc6;
     font-weight: 600;
 }
 
 .badge.bg-danger {
-    background: #fff1f1 !important;
-    color: #b92020 !important;
-    border: 1px solid #ffb6b6;
+    background: #fff2f2 !important;
+    color: #d0223d !important;
+    border: 1.3px solid #fdbfc6;
     font-weight: 600;
 }
 
 .badge.bg-secondary {
-    background: #eaeef1 !important;
-    color: #40495b !important;
-    border: 1px solid #ced4da;
+    background: #f5f7fa !important;
+    color: #4a5062 !important;
+    border: 1.3px solid #d1d8e0;
     font-weight: 600;
 }
 
-/* Küçük ekranda kart detayları */
+/* Responsive kart ve tablo stilleri (mobil) */
 @media (max-width: 767.98px) {
-    .card-talep .card-body, .card-talep .card-header {
-        padding: 0.77rem 0.7rem;
-        font-size: 0.94rem;
+    .card-talep {
+        margin-bottom: 0.52rem;
+        border-radius: 11px;
+        box-shadow: 0 2px 10px #0c143012;
+        font-size: 0.97rem;
     }
 
-    .card-talep strong {
-        min-width: 82px;
-    }
+        .card-talep .card-header,
+        .card-talep .card-body {
+            padding: 0.31rem 0.31rem;
+            font-size: 0.93rem;
+        }
+
+        .card-talep strong {
+            min-width: 56px;
+            font-size: 0.95rem;
+            margin-right: .14em;
+        }
+
+        .card-talep .card-header .badge {
+            font-size: 0.91rem;
+            border-radius: 12px;
+            padding: .09em .52em;
+        }
+
+        .card-talep .form-control,
+        .card-talep input[type="file"] {
+            font-size: 0.89rem;
+            border-radius: 6px;
+            padding: .08em .23em;
+            height: 22px;
+        }
+
+        .card-talep .btn {
+            border-radius: 6px;
+            font-size: 0.91rem;
+            padding: 0.13rem 0.72rem;
+            min-height: 22px;
+        }
+
+        .card-talep .row.align-items-center > div,
+        .card-talep .card-actions,
+        .card-talep .card-media {
+            margin-top: .26rem;
+        }
+
+            .card-talep .card-media img {
+                max-width: 68px;
+                border-radius: 5px;
+                margin-top: .08em;
+            }
+
+        .card-talep .text-end .btn-danger {
+            min-width: 29px;
+            font-size: 0.92rem;
+            margin-top: .09em;
+        }
 }
 
-/* Scroll güzellikleri */
+/* Modern scroll-bar */
 .table-responsive::-webkit-scrollbar, .card-view::-webkit-scrollbar {
-    height: 6px;
+    height: 7px;
     background: #f1f4fa;
 }
 
 .table-responsive::-webkit-scrollbar-thumb, .card-view::-webkit-scrollbar-thumb {
-    background: #c8d2e1;
-    border-radius: 7px;
+    background: #d0d9e7;
+    border-radius: 8px;
+}
+
+
+
+
+
+form#talepForm {
+    background: #f7fafd;
+    border-radius: 22px;
+    padding: 2.2rem 1.7rem 2.4rem 1.7rem;
+    box-shadow: 0 7px 40px #16386816;
+    max-width: 1100px;
+    margin: 2.4rem auto 2.7rem auto;
+    border: 1.5px solid #e7eaf3;
+}
+
+.form-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 22px #19304d14;
+    padding: 1.25rem 1.15rem 1.10rem 1.15rem;
+    margin-bottom: 1.6rem;
+    border: 1.2px solid #e7eaf3;
+    transition: box-shadow 0.18s;
+}
+
+    .form-card h6 {
+        font-size: 1.11rem;
+        color: #2956a2;
+        font-weight: 700;
+        margin-bottom: 1.12rem;
+        letter-spacing: 0.01em;
+        background: transparent;
+    }
+
+    .form-card .form-group {
+        margin-bottom: 1.09rem;
+    }
+
+    .form-card label {
+        font-weight: 600;
+        color: #233a60;
+        font-size: 1rem;
+        margin-bottom: 0.21rem;
+        display: block;
+    }
+
+    .form-card .form-control,
+    .form-card select,
+    .form-card textarea {
+        border-radius: 8px;
+        border: 1.3px solid #d7dcea;
+        background: #fafdff;
+        font-size: 0.98rem;
+        color: #223256;
+        padding: 0.42rem 0.82rem;
+        box-shadow: none;
+        transition: border 0.18s, box-shadow 0.18s;
+    }
+
+        .form-card .form-control:focus,
+        .form-card select:focus,
+        .form-card textarea:focus {
+            border-color: #4c8df8;
+            background: #fff;
+            outline: none;
+        }
+
+        .form-card textarea.form-control {
+            min-height: 46px;
+            max-height: 110px;
+            resize: vertical;
+        }
+
+    .form-card .btn-success {
+        background: linear-gradient(90deg,#3ecf8e 20%,#45c3ec 90%);
+        color: #fff;
+        font-size: 1.07rem;
+        font-weight: 700;
+        border-radius: 9px;
+        box-shadow: 0 2px 8px #1e98cc19;
+        padding: 0.58rem 2.2rem;
+        border: none;
+        margin-top: 1.2rem;
+        letter-spacing: 0.02em;
+        transition: background 0.15s;
+    }
+
+        .form-card .btn-success:hover {
+            background: linear-gradient(90deg,#30b37c 15%,#27b6e0 90%);
+        }
+
+.divider {
+    border-top: 1.5px dashed #d7dbea;
+    margin: 14px 0 19px 0;
+}
+
+/* Kart hover efekti (opsiyonel) */
+.form-card:hover {
+    box-shadow: 0 8px 34px #2251bb23;
+    border-color: #b9d0fa;
+}
+
+/* Responsive - Mobilde kartlar arası daha az padding */
+@media (max-width: 767.98px) {
+    form#talepForm {
+        padding: 0.61rem 0.1rem 1.1rem 0.1rem;
+        border-radius: 10px;
+    }
+
+    .form-card {
+        border-radius: 9px;
+        padding: 0.72rem 0.59rem 0.7rem 0.59rem;
+        margin-bottom: 1.05rem;
+    }
+
+        .form-card h6 {
+            font-size: 1.07rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .form-card .btn-success {
+            width: 100%;
+            font-size: 1.10rem;
+            padding: 0.59rem 0;
+            margin-top: 0.85rem;
+        }
+}
+@media (max-width: 767.98px) {
+    .date-row {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 0.55rem;
+        margin-bottom: 1.1rem;
+        padding-left: 0.7rem;
+    }
+
+        .date-row .form-group {
+            width: 100%;
+            flex: 1 1 0%;
+            margin-bottom: 0 !important;
+        }
 }

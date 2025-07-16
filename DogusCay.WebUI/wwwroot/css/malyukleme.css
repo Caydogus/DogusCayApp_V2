@@ -1,34 +1,431 @@
 ﻿
-.table th, .table td {
-    white-space: nowrap; /* Metni tek satırda tut */
-    overflow: hidden; /* Taşan içeriği gizle */
-    text-overflow: ellipsis; /* Taşan metni "..." ile göster */
-    padding: 0.5rem 0.75rem; /* Daha kompakt hücreler */
-    vertical-align: middle; /* İçeriği dikey ortala */
+/*body, .table, .mal-yukleme-card {
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
+    font-size: 0.97rem;
+    color: #1a212a;
+    background: #f3f6fa;
+}*/
+
+    /* Tablo */
+    /*.table th, .table td {
+        background: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0.44rem 0.72rem;
+        vertical-align: middle;
+        font-size: 0.96rem;
+        font-weight: 450;
+        line-height: 1.26;
+        letter-spacing: 0.01em;
+        transition: background .18s, color .18s;
+    }
+
+    .table th {
+        background: #222a37;
+        color: #fafbfc;
+        font-size: 1.04rem;
+        font-weight: 700;
+        border: none;
+    }
+
+.table-bordered th, .table-bordered td {
+    border-color: #d2d6de !important;
 }
 
-    /* Sütun genişliklerini ayarla */
-    .table th:nth-child(1), .table td:nth-child(1) { /* # (Sıra Numarası/ID) */
-        width: 50px;
-        max-width: 50px;
-        text-align: center;
+.table td:hover {
+    background: #f6f9fc;
+    color: #183146;
+    font-weight: 500;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: none;
+    z-index: 10;
+}*/
+
+/* Mobilde tabloyu gizle, kartı göster */
+/*@media (max-width: 767.98px) {
+    .table-responsive {
+        display: none !important;
     }
 
-    .table th:nth-child(2), .table td:nth-child(2) { /* Kullanıcı (Ad Soyad) */
-        width: 150px;
-        max-width: 150px;
+    .mal-yukleme-card {
+        display: block !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .mal-yukleme-card {
+        display: none !important;
+    }
+}*/
+
+/* Kart görünümü */
+/*.mal-yukleme-card {
+    background: #fcfdff;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px #0c143016;
+    overflow: hidden;
+    font-size: 0.98rem;
+    margin-bottom: 1.08rem;
+    padding: 1rem 1.13rem 1.02rem 1.13rem;
+    color: #1a212a;
+    transition: box-shadow .15s;
+}
+
+    .mal-yukleme-card .talep-header {
+        font-weight: 700;
+        font-size: 1.07rem;
+        color: #172039;
+        margin-bottom: .32rem;
+        letter-spacing: 0.01em;
     }
 
+    .mal-yukleme-card .row > div,
+    .mal-yukleme-card .fw-semibold,
+    .mal-yukleme-card .card-body {
+        font-size: 0.97rem;
+        line-height: 1.23;
+        margin-bottom: 0.16rem;
+        letter-spacing: .01em;
+    }
 
+    .mal-yukleme-card .badge {
+        font-size: 0.93rem;
+        border-radius: 16px;
+        font-weight: 600;
+        padding: .18em .8em;
+        box-shadow: 0 1px 4px #00000013;
+        border: none;
+        margin-left: 0.19rem;
+    }
 
-    .table th:nth-child(4), .table td:nth-child(4) { /* Point (Nokta Adı) */
-        width: 200px; /* Point Name için daha fazla alan */
+    .mal-yukleme-card .btn, .mal-yukleme-card button {
+        border-radius: 7px !important;
+        font-weight: 500;
+        font-size: 0.95rem !important;
+        padding: 0.18em 0.7em !important;
+        min-width: 60px;
+        box-shadow: none;
+        outline: none;
+        margin-top: .13em;
+        margin-bottom: .13em;
+    }*/
+
+    /* ŞIK BUTON RENKLERİ */
+    /*.mal-yukleme-card .btn-info {
+        background: linear-gradient(90deg,#48a9ef,#57c6e1);
+        color: #fff;
+        border: none;
+    }
+
+    .mal-yukleme-card .btn-danger {
+        background: linear-gradient(90deg,#f35a5a,#ee6262);
+        border: none;
+        color: #fff;
+    }
+
+    .mal-yukleme-card .btn-success {
+        background: linear-gradient(90deg,#56da89,#38b97d);
+        color: #fff;
+        border: none;
+    }
+
+    .mal-yukleme-card .btn-warning {
+        background: linear-gradient(90deg,#ffeb98,#ffd36b);
+        color: #b68c02;
+        border: none;
+    }*/
+
+/* Badge Modernizasyonu */
+/*.badge.bg-warning {
+    background: #fffbe7 !important;
+    color: #bf9402 !important;
+    border: 1px solid #f6e27a;
+    font-weight: 600;
+}
+
+.badge.bg-success {
+    background: #e4fbe6 !important;
+    color: #198754 !important;
+    border: 1px solid #a6efb8;
+    font-weight: 600;
+}
+
+.badge.bg-danger {
+    background: #fff1f1 !important;
+    color: #b92020 !important;
+    border: 1px solid #ffb6b6;
+    font-weight: 600;
+}
+
+.badge.bg-secondary {
+    background: #eaeef1 !important;
+    color: #40495b !important;
+    border: 1px solid #ced4da;
+    font-weight: 600;
+}*/
+
+/* Kart içinde label'lar ve alanlar daha okunur */
+/*.mal-yukleme-card strong, .mal-yukleme-card .fw-bold {
+    color: #204070;
+    font-weight: 700;
+    margin-right: .18em;
+    font-size: 0.99rem;
+}
+
+.mal-yukleme-card .small-label {
+    color: #a1a5ad;
+    font-size: 0.92rem;
+    margin-right: .18rem;
+    font-weight: 500;
+}
+
+.mal-yukleme-card .talep-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .37rem;
+    margin-top: .38rem;
+}*/
+
+/* Responsive: kart padding'i ve butonları ekstra küçük ekranda azalt */
+/*@media (max-width: 480px) {
+    .mal-yukleme-card {
+        padding: 0.53rem 0.12rem 0.52rem 0.22rem;
+        font-size: 0.92rem;
+    }
+
+        .mal-yukleme-card .btn, .mal-yukleme-card button {
+            font-size: 0.85rem !important;
+            min-width: 44px;
+            padding: 0.10em 0.29em !important;
+        }
+}*/
+body, .table, .mal-yukleme-card {
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
+    font-size: 1.01rem;
+    color: #20262e;
+    background: #f4f6fb;
+}
+
+    /* TABLO */
+    .table th, .table td {
+        background: #fff;
+        padding: 0.52rem 1.06rem;
+        vertical-align: middle;
+        font-size: 0.97rem;
+        font-weight: 500;
+        border: none;
+        transition: background .18s, color .18s;
+        border-bottom: 1.5px solid #e6eaf2 !important;
+    }
+
+    .table th {
+        background: linear-gradient(90deg,#242e41 65%,#3d4862 100%);
+        color: #f9fafe;
+        font-size: 1.08rem;
+        font-weight: 700;
+        border: none;
+        letter-spacing: 0.02em;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .table td {
+        color: #232d39;
+        border: none;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
         max-width: 200px;
     }
 
-    .table th:nth-child(5), .table td:nth-child(5) { /* Tarih */
-        width: 100px;
-        max-width: 100px;
+        .table td:hover {
+            background: #f0f5fa;
+            color: #0e2139;
+            font-weight: 600;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            z-index: 10;
+            position: relative;
+        }
+
+/* Mobilde tablo gizle, kart göster */
+@media (max-width: 767.98px) {
+    .table-responsive {
+        display: none !important;
     }
 
+    .mal-yukleme-card {
+        display: block !important;
+    }
+}
 
+@media (min-width: 768px) {
+    .mal-yukleme-card {
+        display: none !important;
+    }
+}
+
+/* KART TASARIMI */
+.mal-yukleme-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 20px 0 #20293a13;
+    padding: 1.15rem 1.28rem 1.18rem 1.28rem;
+    color: #20262e;
+    margin-bottom: 1.12rem;
+    transition: box-shadow .18s;
+    border: 1.5px solid #e7ebf3;
+}
+
+    .mal-yukleme-card:hover {
+        box-shadow: 0 6px 26px #34426918, 0 2px 8px #d3d9e333;
+    }
+
+    .mal-yukleme-card .talep-header {
+        font-weight: 700;
+        font-size: 1.12rem;
+        color: #193368;
+        margin-bottom: .37rem;
+        letter-spacing: 0.01em;
+    }
+
+    .mal-yukleme-card .row > div,
+    .mal-yukleme-card .fw-semibold,
+    .mal-yukleme-card .card-body {
+        font-size: 1.01rem;
+        line-height: 1.22;
+        margin-bottom: 0.17rem;
+        letter-spacing: .01em;
+    }
+
+    .mal-yukleme-card .badge {
+        font-size: 0.98rem;
+        border-radius: 16px;
+        font-weight: 600;
+        padding: .21em .95em;
+        box-shadow: 0 1px 4px #b1b6bf14;
+        border: none;
+        margin-left: 0.23rem;
+        letter-spacing: .02em;
+    }
+
+    /* Modern buton renkleri */
+    .mal-yukleme-card .btn, .mal-yukleme-card button {
+        border-radius: 8px !important;
+        font-weight: 600;
+        font-size: 0.98rem !important;
+        padding: 0.22em 1.02em !important;
+        min-width: 70px;
+        box-shadow: 0 2px 6px #d3e1ee13;
+        outline: none;
+        border: none;
+        margin: .17em .07em;
+        transition: background .16s, color .16s;
+    }
+
+    .mal-yukleme-card .btn-info {
+        background: linear-gradient(90deg,#44c4e7,#3894d3);
+        color: #fff;
+    }
+
+    .mal-yukleme-card .btn-danger {
+        background: linear-gradient(90deg,#fc6369,#f7605d);
+        color: #fff;
+    }
+
+    .mal-yukleme-card .btn-success {
+        background: linear-gradient(90deg,#6ee7b7,#38bdf8);
+        color: #0b2d1b;
+    }
+
+    .mal-yukleme-card .btn-warning {
+        background: linear-gradient(90deg,#fff3cd,#ffe493);
+        color: #b47e01;
+    }
+
+/* Modern badge renkleri */
+.badge.bg-warning {
+    background: #fffbe7 !important;
+    color: #b47e01 !important;
+    border: 1.2px solid #ffe17a;
+}
+
+.badge.bg-success {
+    background: #e8fbe8 !important;
+    color: #24a055 !important;
+    border: 1.2px solid #b6eec7;
+}
+
+.badge.bg-danger {
+    background: #fff3f3 !important;
+    color: #cc2345 !important;
+    border: 1.2px solid #fdbfc6;
+}
+
+.badge.bg-secondary {
+    background: #f5f7fa !important;
+    color: #4a5062 !important;
+    border: 1.2px solid #d1d8e0;
+}
+
+/* Kart içinde label ve alanlar daha net */
+.mal-yukleme-card strong, .mal-yukleme-card .fw-bold {
+    color: #204070;
+    font-weight: 700;
+    margin-right: .18em;
+    font-size: 1.04rem;
+}
+
+.mal-yukleme-card .small-label {
+    color: #98a0b3;
+    font-size: 0.92rem;
+    margin-right: 0.18rem;
+    font-weight: 500;
+    letter-spacing: .01em;
+}
+
+.mal-yukleme-card .talep-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .42rem;
+    margin-top: .41rem;
+}
+
+/* Ekstra küçük ekran için (mobil) */
+@media (max-width: 480px) {
+    .mal-yukleme-card {
+        padding: 0.57rem 0.22rem 0.58rem 0.22rem;
+        font-size: 0.92rem;
+    }
+
+        .mal-yukleme-card .btn, .mal-yukleme-card button {
+            font-size: 0.88rem !important;
+            min-width: 44px;
+            padding: 0.13em 0.32em !important;
+        }
+}
+
+/* Mobilde tablo hücre overflow'u yumuşakça kırar */
+@media (max-width: 992px) {
+    .table td, .table th {
+        max-width: 120px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    background: #e9edf5;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c9d3e6;
+    border-radius: 6px;
+}

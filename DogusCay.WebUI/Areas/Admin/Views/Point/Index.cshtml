@@ -1,29 +1,21 @@
 ﻿@model List<ResultPointDto>
-
 @{
-    ViewData["Title"] = "";
+    ViewData["Title"] = "Nokta Listesi";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
     var currentPage = (int)ViewBag.CurrentPage;
     var totalPages = (int)ViewBag.TotalPages;
     var totalCount = (int)ViewBag.TotalCount;
     var pageSize = (int)ViewBag.PageSize;
-
-    // Akıllı sayfalama için görünür sayfa numarası aralığını belirleyelim.
-    // Genellikle mevcut sayfanın sağında ve solunda kaç sayfa gösterileceğini belirler.
-    // Örneğin, displayRange = 2 ise, CurrentPage=10 iken 8, 9, 10, 11, 12 gösterilir.
-    // Başlangıç ve bitişteki sayfa sayısı da önemlidir (örn: ilk 2, son 2).
-    var displayRange = 2; // Mevcut sayfanın her iki tarafında gösterilecek sayfa sayısı
-    var firstLastPagesToShow = 1; // Başlangıçta ve sonda gösterilecek sabit sayfa sayısı
+    var displayRange = 2;
+    var firstLastPagesToShow = 1;
 }
-
-<h1 class="mb-4">Nokta Listesi</h1>
+<head>
+    <link rel="stylesheet" href="~/css/point.css" asp-append-version="true" />
+</head>
 
 @if (ViewBag.Error != null)
 {
-    <div class="alert alert-danger" role="alert">
-        @ViewBag.Error
-    </div>
+    <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
 }
 
 @if (Model == null || !Model.Any())
@@ -32,7 +24,8 @@
 }
 else
 {
-    <div class="table-responsive" style="overflow-x:auto; max-width:100%;">
+    <!-- MASAÜSTÜ TABLOSU -->
+    <div class="table-responsive d-none d-md-block">
         <table class="table table-bordered table-striped table-hover text-nowrap" style="min-width: 1000px;">
             <thead class="bg-dark text-white">
                 <tr>
@@ -71,82 +64,76 @@ else
         </table>
     </div>
 
+    <!-- MOBİL KARTLAR -->
+    <div class="d-md-none">
+        @foreach (var item in Model)
+        {
+            <div class="point-card mb-3 p-2 rounded-3 shadow-sm">
+                <div class="point-title">@item.PointName</div>
+                <div class="point-fields mb-1">
+                    <div class="field-row">
+                        <span class="field-label">ERC:</span>
+                        <span class="field-value">@item.PointErc</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-label">Grup:</span>
+                        <span class="field-value">@item.PointGroupTypeName</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-label">Kanal:</span>
+                        <span class="field-value">@item.KanalName</span>
+                    </div>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="field-row">
+                            <span class="field-label">Bölge Müdürü:</span>
+                            <span class="field-value">@item.AppUserFullName</span>
+                        </div>
+                    }
+                </div>
+                <div class="field-row-full">
+                    <span class="field-label">Distribütör:</span>
+                    <span class="field-value">@item.DistributorName</span>
+                </div>
+            </div>
+        }
+    </div>
+
     @if (totalPages > 1)
     {
         <nav aria-label="Nokta Sayfalaması" class="mt-4">
             <ul class="pagination justify-content-center">
-                @* Önceki Sayfa Butonu *@
                 <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                     <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1 })" aria-label="Önceki">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Önceki</span>
+                        <span aria-hidden="true">&laquo;</span><span class="sr-only">Önceki</span>
                     </a>
                 </li>
-
                 @{
-                    // Sayfa numaralarını oluşturmak için liste
                     var pageNumbers = new List<int>();
-
-                    // Başlangıçtaki sabit sayfalar
-                    for (int i = 1; i <= firstLastPagesToShow && i <= totalPages; i++)
-                    {
-                        if (!pageNumbers.Contains(i))
-                        {
-                            pageNumbers.Add(i);
-                        }
-                    }
-
-                    // Mevcut sayfa etrafındaki sayfalar
-                    for (int i = Math.Max(1, currentPage - displayRange); i <= Math.Min(totalPages, currentPage + displayRange); i++)
-                    {
-                        if (!pageNumbers.Contains(i))
-                        {
-                            pageNumbers.Add(i);
-                        }
-                    }
-
-                    // Sondaki sabit sayfalar
-                    for (int i = totalPages - firstLastPagesToShow + 1; i <= totalPages; i++)
-                    {
-                        if (i > 0 && !pageNumbers.Contains(i)) // i > 0 kontrolü totalPages küçükse hatalı değerleri engeller
-                        {
-                            pageNumbers.Add(i);
-                        }
-                    }
-
-                    // Sayfa numaralarını sırala
+                    for (int i = 1; i <= firstLastPagesToShow && i <= totalPages; i++) if (!pageNumbers.Contains(i)) pageNumbers.Add(i);
+                    for (int i = Math.Max(1, currentPage - displayRange); i <= Math.Min(totalPages, currentPage + displayRange); i++) if (!pageNumbers.Contains(i)) pageNumbers.Add(i);
+                    for (int i = totalPages - firstLastPagesToShow + 1; i <= totalPages; i++) if (i > 0 && !pageNumbers.Contains(i)) pageNumbers.Add(i);
                     pageNumbers = pageNumbers.OrderBy(p => p).ToList();
-
-                    int? lastPageNumber = null; // En son eklenen sayfa numarasını takip etmek için
-
-                    // Oluşturulan sayfa numaralarını ve '...' kısımlarını ekle
+                    int? lastPageNumber = null;
                     foreach (var pageNum in pageNumbers)
                     {
                         if (lastPageNumber.HasValue && pageNum > lastPageNumber + 1)
                         {
-                            // Arada atlama varsa '...' ekle
-                            <li class="page-item disabled">
-                                <span class="page-link">...</span>
-                            </li>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
                         }
-
                         <li class="page-item @(pageNum == currentPage ? "active" : "")">
                             <a class="page-link" href="@Url.Action("Index", new { page = pageNum })">@pageNum</a>
                         </li>
                         lastPageNumber = pageNum;
                     }
                 }
-
-                @* Sonraki Sayfa Butonu *@
                 <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                     <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1 })" aria-label="Sonraki">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Sonraki</span>
+                        <span aria-hidden="true">&raquo;</span><span class="sr-only">Sonraki</span>
                     </a>
                 </li>
             </ul>
         </nav>
+        <p class="text-center mt-3">Toplam Kayıt: <b>@totalCount</b> | Sayfa @currentPage / @totalPages</p>
     }
-
-    <p class="text-center mt-3">Toplam Kayıt: **@totalCount** | Sayfa @currentPage / @totalPages</p>
 }

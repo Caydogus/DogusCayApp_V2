@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DogusCay.Business.Concrete
 {
-    public class UserService(UserManager<AppUser> _userManager, SignInManager<AppUser> _signInManager, RoleManager<AppRole> _roleManager, IMapper _mapper, DogusCayContext _context) : IUserService
+    public class UserService(UserManager<AppUser> _userManager,
+        SignInManager<AppUser> _signInManager, 
+        RoleManager<AppRole> _roleManager, 
+        IMapper _mapper, DogusCayContext _context) : IUserService
     {
         public async Task<bool> AssignRoleAsync(List<AssignRoleDto> assignRoleDto)
         {
@@ -88,5 +91,24 @@ namespace DogusCay.Business.Concrete
             return await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+     
+        public async Task<IdentityResult> ChangePasswordAsync(int userId, AdminChangePasswordDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return IdentityResult.Failed(new IdentityError { Description = "Kullanıcı bulunamadı." });
+
+            if (dto.NewPassword != dto.ConfirmPassword)
+                return IdentityResult.Failed(new IdentityError { Description = "Yeni şifre ve onay şifresi eşleşmiyor." });
+
+            // Şifre varsa önce kaldır
+            var removeResult = await _userManager.RemovePasswordAsync(user);
+            if (!removeResult.Succeeded)
+                return removeResult;
+
+            // Yeni şifreyi ata
+            var addResult = await _userManager.AddPasswordAsync(user, dto.NewPassword);
+            return addResult;
+        }
     }
 }

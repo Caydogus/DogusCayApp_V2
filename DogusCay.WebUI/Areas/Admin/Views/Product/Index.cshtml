@@ -4,39 +4,76 @@
     ViewData["Title"] = "";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<head>
+    <link rel="stylesheet" href="~/css/product.css" asp-append-version="true" />
+</head>
 
-<table class="table table-bordered table-striped table-hover">
-    <thead class="thead-dark">
-        <tr>
-            <th>Ürün Adı</th>
-            <th>Ana Kategori</th>
-            <th>Alt Kategori</th>
-            <th>ERP Kodu</th>
-@*             <th>Birim Tipi</th>
- *@            <th>Ağırlık (kg)</th>
-@*             <th>Durum</th>
- *@            <th>Fiyat</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <!-- Masaüstü / Büyük Ekran Tablo Görünümü -->
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
             <tr>
-                <td>@item.ProductName</td>
-                <td>@item.ParentCategoryName</td>
-                <td>@item.CategoryName</td>
-                <td>@item.ErpCode</td>
-@*                 <td>@item.UnitTypeName</td>
- *@                <td>@(item.ApproximateWeightKg.ToString("N2") ?? "0,00")</td>
-@*                 <td>@(item.IsShown ? "Aktif" : "Pasif")</td>
- *@                <td>@item.Price</td>
-      
-@*                 <td>
-                    <a asp-action="UpdateProduct" asp-route-id="@item.ProductId" class="btn btn-sm btn-warning">Güncelle</a>
-                    <a asp-action="DeleteProduct" asp-route-id="@item.ProductId" class="btn btn-sm btn-danger">Sil</a>
-                </td>
- *@            </tr>
-        }
-    </tbody>
-</table>
+                <th>Ürün Adı</th>
+                <th>Ana Kategori</th>
+                <th>Alt Kategori</th>
+                <th>ERP Kodu</th>
+                <th>Ağırlık (kg)</th>
+                <th>Fiyat</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.ParentCategoryName</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.ErpCode</td>
+                    <td>@(item.ApproximateWeightKg.ToString("N2") ?? "0,00")</td>
+                    <td>@item.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
+<!-- Mobil Kart Görünümü -->
+<!-- Mobil Kart Görünümü -->
+<div class="product-card-view">
+    @foreach (var item in Model)
+    {
+        <div class="product-card">
+            <div class="card-header">
+                <strong>@item.ProductName</strong>
+            </div>
+            <div class="info-list">
+                <div>
+                    <span class="label">Ana Kategori:</span>
+                    <span class="value">@item.ParentCategoryName</span>
+                </div>
+                <div>
+                    <span class="label">Alt Kategori:</span>
+                    <span class="value">@item.CategoryName</span>
+                </div>
+                <div>
+                    <span class="label">ERP Kodu:</span>
+                    <span class="value">@item.ErpCode</span>
+                </div>
+                <div>
+                    <span class="label">Ağırlık (kg):</span>
+                    <span class="value">@(item.ApproximateWeightKg.ToString("N2") ?? "0,00")</span>
+                </div>
+                <div>
+                    <span class="label">Fiyat:</span>
+                    <span class="value">@item.Price</span>
+                </div>
+            </div>
+            @* 
+            <div class="card-actions">
+                <a asp-action="UpdateProduct" asp-route-id="@item.ProductId" class="btn btn-sm btn-warning">Güncelle</a>
+                <a asp-action="DeleteProduct" asp-route-id="@item.ProductId" class="btn btn-sm btn-danger">Sil</a>
+            </div>
+            *@
+        </div>
+    }
+</div>

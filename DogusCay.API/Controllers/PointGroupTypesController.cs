@@ -59,7 +59,6 @@ namespace DogusCay.API.Controllers
         [HttpGet("by-distributor/{distributorId}")]
         public IActionResult GetByDistributor(int distributorId)
         {
-            //Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5055");
             var list = _pointGroupTypeService.TGetPointGroupsByDistributorId(distributorId);
             var result = _mapper.Map<List<ResultPointGroupTypeDto>>(list);
             return Ok(result);

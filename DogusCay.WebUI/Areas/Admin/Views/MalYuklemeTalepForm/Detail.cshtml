@@ -1,6 +1,155 @@
 ﻿@model ResultMalYuklemeTalepFormDto
 
 @{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var toplamTonaj = Model.MalYuklemeTalepFormDetails?.Sum(x => x.ApproximateWeightKg * x.Quantity) ?? 0;
+    var toplamBrutTutar = Model.MalYuklemeTalepFormDetails?.Sum(x => x.BrutTutar ?? 0) ?? 0;
+    var toplamNetTutar = Model.MalYuklemeTalepFormDetails?.Sum(x => x.NetTutar ?? 0) ?? 0;
+    var ortalamaMaliyet = (toplamBrutTutar > 0) ? (1 - (toplamNetTutar / toplamBrutTutar)) * 100 : 0;
+}
+<head>
+    <link rel="stylesheet" href="~/css/MalYuklemeDetail.css" asp-append-version="true" />
+</head>
+
+<h3 class="mb-4 d-none d-md-block">Talep Detayı - #@Model.MalYuklemeTalepFormId</h3>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<!-- MASAÜSTÜ: MODERN KUTU + TABLO GÖRÜNÜMÜ -->
+<div class="d-none d-md-block">
+    <div class="mal-yukleme-detail-table mb-4">
+        <div class="card-header">Genel Bilgiler</div>
+        <div class="card-body row">
+            <div class="col-md-4"><strong>Kullanıcı:</strong> @Model.AppUser?.FirstName @Model.AppUser?.LastName</div>
+            <div class="col-md-4"><strong>Kanal:</strong> @Model.Kanal?.KanalName</div>
+            <div class="col-md-4"><strong>Nokta:</strong> @Model.Point?.PointName</div>
+            <div class="col-md-4 mt-2"><strong>Tarih:</strong> @Model.CreateDate.ToShortDateString()</div>
+            <div class="col-md-4 mt-2">
+                <strong>Durum:</strong>
+                <span class="badge
+                    @(Model.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                      Model.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                      "bg-warning text-dark")">
+                    @Model.TalepDurumu
+                </span>
+            </div>
+            <div class="col-md-4 mt-2"><strong>Toplam Tonaj:</strong> @toplamTonaj.ToString("N2") kg</div>
+            <div class="col-md-4 mt-2"><strong>Toplam Brüt Tutar:</strong> @toplamBrutTutar.ToString("C2")</div>
+            <div class="col-md-4 mt-2"><strong>Toplam Net Tutar:</strong> @toplamNetTutar.ToString("C2")</div>
+            <div class="col-md-4 mt-2"><strong>Ortalama Maliyet:</strong> @ortalamaMaliyet.ToString("N2") %</div>
+        </div>
+    </div>
+    @if (Model.MalYuklemeTalepFormDetails != null && Model.MalYuklemeTalepFormDetails.Any())
+    {
+        <div class="mal-yukleme-detail-table">
+            <div class="card-header section-title">Ürün Detayları</div>
+            <div class="card-body table-responsive">
+                <table class="table table-bordered table-striped text-nowrap align-middle">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ürün Adı</th>
+                            <th>ERP Kodu</th>
+                            <th>Tonaj</th>
+                            <th>Toplam Adet</th>
+                            <th>Brüt</th>
+                            <th>Net</th>
+                            <th>İsk1</th>
+                            <th>İsk2</th>
+                            <th>Sabit Bedel</th>
+                            <th>Net Adet Fiyatı</th>
+                            <th>Maliyet(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model.MalYuklemeTalepFormDetails)
+                        {
+                            <tr>
+                                <td>@d.ResultMalYuklemeTalepFormDetailId</td>
+                                <td>@(d.ProductName ?? "N/A")</td>
+                                <td>@(d.ErpCode ?? "N/A")</td>
+                                <td>@((d.ApproximateWeightKg * d.Quantity).ToString("N2"))</td>
+                                <td>@(d.Quantity * d.KoliIciAdet)</td>
+                                <td>@d.BrutTutar?.ToString("C2")</td>
+                                <td>@d.NetTutar?.ToString("C2")</td>
+                                <td>@d.Discount1?.ToString("N2")</td>
+                                <td>@d.Discount2?.ToString("N2")</td>
+                                <td>@d.FixedPrice?.ToString("C2")</td>
+                                <td>@d.NetAdetFiyat?.ToString("C2")</td>
+                                <td>@(d.Maliyet?.ToString("N2") + " %")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">Bu talebe ait ürün detayı bulunamadı.</div>
+    }
+    <a asp-action="Index" class="btn btn-secondary mt-4">← Geri Dön</a>
+</div>
+
+<!-- MOBİL: MODERN KART (DOKUNMA) -->
+<div class="d-md-none">
+    <div class="mal-yukleme-card">
+        <div class="card-title mb-3">Genel Bilgiler</div>
+        <div class="row-detail"><span class="field-label">Kullanıcı:</span> <span class="field-value">@Model.AppUser?.FirstName @Model.AppUser?.LastName</span></div>
+        <div class="row-detail"><span class="field-label">Kanal:</span> <span class="field-value">@Model.Kanal?.KanalName</span></div>
+        <div class="row-detail"><span class="field-label">Nokta:</span> <span class="field-value">@Model.Point?.PointName</span></div>
+        <div class="row-detail"><span class="field-label">Tarih:</span> <span class="field-value">@Model.CreateDate.ToShortDateString()</span></div>
+        <div class="row-detail"><span class="field-label">Brüt Tutar:</span> <span class="field-value">@toplamBrutTutar.ToString("C2")</span></div>
+        <div class="row-detail"><span class="field-label">Net Tutar:</span> <span class="field-value">@toplamNetTutar.ToString("C2")</span></div>
+        <div class="row-detail"><span class="field-label">Tonaj:</span> <span class="field-value">@toplamTonaj.ToString("N2") kg</span></div>
+        <div class="row-detail"><span class="field-label">Ortalama Maliyet:</span> <span class="field-value">@ortalamaMaliyet.ToString("N2") %</span></div>
+        <div class="row-detail mb-2"> <span class="field-label">Durum:</span>
+            <span class="badge
+                @(Model.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                  Model.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                  "bg-warning text-dark")">
+                @Model.TalepDurumu
+            </span>
+        </div>
+        <div class="section-title mb-2">Ürün Detayları</div>
+        @if (Model.MalYuklemeTalepFormDetails != null && Model.MalYuklemeTalepFormDetails.Any())
+        {
+            @foreach (var d in Model.MalYuklemeTalepFormDetails)
+            {
+                <div class="mini-product-card">
+                    <div><span class="field-label">Ürün:</span> <span class="field-value">@d.ProductName</span></div>
+                    <div><span class="field-label">ERP:</span> <span class="field-value">@d.ErpCode</span></div>
+                    <div><span class="field-label">Tonaj:</span> <span class="field-value">@((d.ApproximateWeightKg * d.Quantity).ToString("N2")) kg</span></div>
+                    <div><span class="field-label">Adet:</span> <span class="field-value">@(d.Quantity * d.KoliIciAdet)</span></div>
+                    <div><span class="field-label">Brüt:</span> <span class="field-value">@d.BrutTutar?.ToString("C2")</span></div>
+                    <div><span class="field-label">Net:</span> <span class="field-value">@d.NetTutar?.ToString("C2")</span></div>
+                    <div><span class="field-label">İsk1:</span> <span class="field-value">@d.Discount1?.ToString("N2")</span></div>
+                    <div><span class="field-label">İsk2:</span> <span class="field-value">@d.Discount2?.ToString("N2")</span></div>
+                    <div><span class="field-label">Sabit:</span> <span class="field-value">@d.FixedPrice?.ToString("C2")</span></div>
+                    <div><span class="field-label">NetAdet:</span> <span class="field-value">@d.NetAdetFiyat?.ToString("C2")</span></div>
+                    <div><span class="field-label">Maliyet:</span> <span class="field-value">@((d.Maliyet?.ToString("N2") + " %"))</span></div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info">Bu talebe ait ürün detayı bulunamadı.</div>
+        }
+        <a asp-action="Index" class="btn btn-secondary w-100 mt-3">← Geri Dön</a>
+    </div>
+</div>
+
+
+@* @model ResultMalYuklemeTalepFormDto
+
+@{
     ViewData["Title"] = "Talep Detayı"; // Daha anlamlı bir başlık
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
@@ -10,6 +159,9 @@
     var toplamNetTutar = Model.MalYuklemeTalepFormDetails?.Sum(x => x.NetTutar ?? 0) ?? 0;
     var ortalamaMaliyet = (toplamBrutTutar > 0) ? (1 - (toplamNetTutar / toplamBrutTutar)) * 100 : 0;
 }
+<head>
+    <link rel="stylesheet" href="~/css/MalYuklemeDetail.css" asp-append-version="true" />
+</head>
 
 <h3 class="mb-4">Talep Detayı - #@Model.MalYuklemeTalepFormId</h3>
 
@@ -97,3 +249,4 @@ else
 }
 
 <a asp-action="Index" class="btn btn-secondary mt-4">← Geri Dön</a>
+ *@

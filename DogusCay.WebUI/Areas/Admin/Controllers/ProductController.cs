@@ -76,84 +76,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-
-        #region
-        //[HttpGet]
-        //public async Task<IActionResult> UpdateProduct(int id)
-        //{
-        //    var product = await _client.GetFromJsonAsync<UpdateProductDto>("Products/" + id);
-        //    var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("Categories");
-
-        //    var selectedCategory = categoryList.FirstOrDefault(c => c.CategoryId == product.CategoryId);
-        //    var selectedMainCategoryId = selectedCategory?.ParentCategoryId;
-
-        //    var mainCategories = categoryList
-        //        .Where(x => x.ParentCategoryId == null)
-        //        .Select(x => new SelectListItem
-        //        {
-        //            Text = x.CategoryName,
-        //            Value = x.CategoryId.ToString()
-        //        }).ToList();
-
-        //    var subCategories = categoryList
-        //        .Where(x => x.ParentCategoryId == selectedMainCategoryId)
-        //        .Select(x => new SelectListItem
-        //        {
-        //            Text = x.CategoryName,
-        //            Value = x.CategoryId.ToString()
-        //        }).ToList();
-
-        //    ViewBag.MainCategories = new SelectList(mainCategories, "Value", "Text", selectedMainCategoryId);
-        //    ViewBag.SubCategories = new SelectList(subCategories, "Value", "Text", product.CategoryId);
-
-        //    ViewBag.SelectedMainCategoryId = selectedMainCategoryId;
-
-        //    return View(product);
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateProduct(UpdateProductDto updateProductDto)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        // Hatalıysa dropdown'ları yeniden doldur
-        //        var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("Categories");
-
-        //        var selectedCategory = categoryList.FirstOrDefault(c => c.CategoryId == updateProductDto.CategoryId);
-        //        var selectedMainCategoryId = selectedCategory?.ParentCategoryId;
-
-        //        var mainCategories = categoryList
-        //            .Where(x => x.ParentCategoryId == null)
-        //            .Select(x => new SelectListItem
-        //            {
-        //                Text = x.CategoryName,
-        //                Value = x.CategoryId.ToString()
-        //            }).ToList();
-
-        //        var subCategories = categoryList
-        //            .Where(x => x.ParentCategoryId == selectedMainCategoryId)
-        //            .Select(x => new SelectListItem
-        //            {
-        //                Text = x.CategoryName,
-        //                Value = x.CategoryId.ToString()
-        //            }).ToList();
-
-        //        ViewBag.MainCategories = mainCategories;
-        //        ViewBag.SubCategories = subCategories;
-        //        ViewBag.SelectedMainCategoryId = selectedMainCategoryId;
-
-        //        return View(updateProductDto);
-        //    }
-
-        //    await _client.PutAsJsonAsync("Products", updateProductDto);
-        //    return RedirectToAction("Index");
-        //}
-        //public async Task<IActionResult> DeleteProduct(int id)
-        //{
-        //    await _client.DeleteAsync("Products/" + id);
-        //    return RedirectToAction("Index");
-        //}
-        #endregion
-
         public async Task<IActionResult> ShowOnHome(int id)
         {
             await _client.GetAsync("Products/ShowOnHome/" + id);
@@ -166,7 +88,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        // AJAX: Alt kategorileri getir
+        // Alt kategorileri getir
         public async Task<IActionResult> GetSubCategories(int id)
         {
             var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("Categories");

@@ -20,8 +20,8 @@
     <input type="hidden" id="jwtToken" value="@jwt" />
 
     <h3 class="mb-4 d-flex justify-content-between align-items-center">
-        <span>Talep Formu Listesi</span>
-        <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni Talep Oluştur</a>
+        <span>İnsert Listesi</span>
+        <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni İnsert Oluştur</a>
     </h3>
 
     @if (TempData["Success"] != null)
@@ -41,7 +41,7 @@
     {
         @* --- Tablo Görünümü (Büyük ekranlar için) --- *@
         <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover">
+            <table class="table table-bordered table-striped table-hover searchable-table">
                 <thead class="bg-dark text-white">
                     <tr>
                         <th>#</th>
@@ -56,7 +56,7 @@
                         <th>Son Fiyatı</th>
                         <th>Toplam (₺)</th>
                         <th>Maliyet</th>
-                        <th>Dönüş Adet</th>
+                        @if(User.IsInRole("BolgeMuduru")){ <th>Dönüş Adet</th>}
                         <th>Durum</th>
                         @if (User.IsInRole("Admin")) {<th>İşlemler</th> }
                         <th>Kampanya Dönüşü</th>
@@ -76,15 +76,15 @@
                             <td>@item.PointName</td>
                             <td>@item.ProductName</td>
                             <td>@item.ErpCode</td>
-                            <td>@item.SubCategoryName</td> @* Bu sırayı kontrol edin, önceki listemde 5. sıradaydı *@
-                            <td>@item.SubSubCategoryName</td> @* Bu sırayı kontrol edin, önceki listemde 6. sıradaydı *@
+                            <td>@item.SubCategoryName</td>
+                            <td>@item.SubSubCategoryName</td> 
                             <td>@item.ApproximateWeightKg.ToString("0.00")</td>
                             <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
                             <td>@item.SonAdetFiyati.ToString("C2")</td>
                             <td class="fw-bold">@item.Total.ToString("C2")</td>
                             <td>@item.Maliyet</td>
-                            <td>@item.KampanyaDonusAdedi</td>
-                            <td>
+                             @if (User.IsInRole("BolgeMuduru")){<td>@item.KampanyaDonusAdedi</td>}
+                             <td>
                                 @if (item.TalepDurumu == 0) { <span class="badge bg-warning text-dark">Bekliyor</span> }
                                 else if (item.TalepDurumu == TalepDurumu.Onaylandi) {<span class="badge bg-success">Onaylandı</span> }
                                 else if (item.TalepDurumu == TalepDurumu.Reddedildi) { <span class="badge bg-danger">Reddedildi</span> }
@@ -163,13 +163,13 @@
         </div>
 
         @* --- Kart Görünümü (Küçük ekranlar için) --- *@
-        <div class="card-view">
+        <div class="card-view searchable-list">
             @{
                 int cardIndex = ((currentPage - 1) * pageSize) + 1;
             }
             @foreach (var item in Model)
             {
-                <div class="card mb-4 shadow-sm border-0 rounded-4 px-0 card-talep" style="background: #f8fafc;">
+                <div class="card mb-4 shadow-sm border-0 rounded-4 px-0 card-talep mal-yukleme-card" style="background: #f8fafc;">
                     <div class="card-header rounded-top-4 bg-white d-flex justify-content-between align-items-center border-bottom-0" style="padding: 20px 24px;">
                         <div>
                             <span class="fw-bold text-dark-emphasis fs-6">#@cardIndex</span>

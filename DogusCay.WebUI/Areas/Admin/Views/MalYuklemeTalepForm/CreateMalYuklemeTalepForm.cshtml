@@ -3,7 +3,9 @@
     ViewData["Title"] = "";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
+<head>
+    <link rel="stylesheet" href="~/css/malYuklemeCreate.css" asp-append-version="true" />
+</head>
 <input type="hidden" id="jwtToken" value="@Context.Session.GetString("JwtToken")" />
 <div class="container-fluid">
     <form id="talepForm">
@@ -17,24 +19,166 @@
 }
 @section Styles {
     @Html.Raw(@"
-        <style>
-            @media (max-width: 768px) {
-                #productTable td input[type='number'],
-                #productTable td input[type='text'] {
-                    min-width: 70px !important;
-                    font-size: 14px;
-                }
+    <style>
+        /* === Genel Masaüstü Tablo ve Form Stili === */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px #0c143016;
+            padding: 1.25rem 1rem 1rem 1rem;
+            border: 1.1px solid #e7eaf3;
+            margin-bottom: 1.2rem;
+        }
+        .card h4 {
+            font-size: 1.17rem;
+            font-weight: 700;
+            color: #2d466d;
+            margin-bottom: 1rem;
+            letter-spacing: 0.02em;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #234371;
+            margin-bottom: 0.18rem;
+            font-size: 1rem;
+        }
+        .form-group input, .form-group select {
+            border-radius: 8px;
+            border: 1.3px solid #d7dcea;
+            background: #fafdff;
+            font-size: 0.97rem;
+            color: #2c3444;
+            padding: 0.38rem 0.72rem;
+            transition: border 0.18s, box-shadow 0.18s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #47a7f5;
+            background: #fff;
+            outline: none;
+        }
+        .btn {
+            border-radius: 8px;
+            font-size: 1.03rem;
+            font-weight: 600;
+            padding: 0.38rem 1.2rem;
+            border: none;
+            letter-spacing: 0.01em;
+            transition: background 0.14s, box-shadow 0.14s;
+        }
+        .btn-primary { background: linear-gradient(90deg,#4185fa 70%,#3ac4f6 100%); color: #fff; }
+        .btn-success { background: linear-gradient(90deg,#38c477,#21c8b3 100%); color: #fff; }
+        .btn-secondary { background: #e3e6f4; color: #446; }
+        .btn-danger { background: linear-gradient(90deg,#ee6c6c,#e74747 100%); color: #fff; }
+        .btn-block { width: 100%; }
+        .btn:active { filter: brightness(0.96); }
+        .btn[disabled] { opacity: .7; }
 
-                #productTable td {
-                    white-space: nowrap;
-                    vertical-align: middle;
-                }
+        /* === Tablo === */
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            box-shadow: 0 2px 12px #0001;
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 0.97rem;
+            margin-bottom: 0;
+        }
+        .table th, .table td {
+            border: 1px solid #e4e7ee;
+            padding: 0.28rem 0.34rem;
+            vertical-align: middle;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-size: 0.96rem;
+            background: #fff;
+        }
+        .table th {
+            background: #25395a;
+            color: #f8fafd;
+            font-weight: 700;
+            font-size: 1.01rem;
+            border: none;
+            letter-spacing: 0.01em;
+        }
+        .table-striped tbody tr:nth-of-type(odd) td { background: #f8fafc; }
+        .table-hover tbody tr:hover td { background: #f4f8fd; color: #1877f2; }
+        .table-danger td {
+            background: #fff5f5 !important;
+            color: #ba2020 !important;
+            border-color: #ffbaba !important;
+        }
+        .table td input[type='number'],
+        .table td input[type='text'] {
+            min-width: 64px;
+            max-width: 120px;
+            padding: 0.22em 0.45em;
+            font-size: 0.97rem;
+            border-radius: 5px;
+            border: 1.1px solid #dae3ee;
+            background: #f7fafd;
+            text-align: center;
+        }
+        .table td input[type='number']:focus,
+        .table td input[type='text']:focus {
+            border-color: #47a7f5;
+            background: #fff;
+        }
+        .table td button.btn {
+            padding: 3px 10px;
+            font-size: 0.97rem;
+            border-radius: 6px;
+            margin: 0 1px;
+        }
 
-                #productTable .btn {
-                    padding: 4px 8px;
-                    font-size: 13px;
-                }
+        /* === MOBİL DÜZEN (768px altı) === */
+        @media (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
-        </style>
-    ")
+            #productTable {
+                min-width: 720px;
+                font-size: 0.93rem;
+                display: block;
+                white-space: nowrap;
+            }
+            #productTable th, #productTable td {
+                padding: 0.20rem 0.13rem;
+                font-size: 0.90rem;
+            }
+            #productTable td input[type='number'],
+            #productTable td input[type='text'] {
+                min-width: 54px !important;
+                max-width: 88px;
+                font-size: 0.93rem;
+                padding: 6px 2px;
+                border-radius: 5px;
+            }
+            #productTable .btn {
+                padding: 5px 10px;
+                font-size: 0.95rem;
+                margin: 0 1px;
+            }
+            #productTable td {
+                white-space: nowrap;
+                vertical-align: middle;
+            }
+        }
+
+        /* Mobilde scroll bar daha yumuşak görünüm */
+        @media (max-width: 768px) {
+            ::-webkit-scrollbar {
+                height: 5px;
+                background: #f4f4f4;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #d0e9d7;
+                border-radius: 4px;
+            }
+        }
+    </style>
+")
 }

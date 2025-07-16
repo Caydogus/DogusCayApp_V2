@@ -11,7 +11,7 @@ namespace DogusCay.WebUI.DTOs.UserDtos
         public IList<string> Roles { get; set; }
         public string? RegionName { get; set; } // Yeni alan
 
-        public int Id { get; set; }   // Distrubutor eklerken bolge mudurlerini getirmek için eklendi.liste halinde
+        public int UserId { get; set; }   // Distrubutor eklerken bolge mudurlerini getirmek için eklendi.liste halinde
       //  public AppUser AppUser { get; set; } 
 
 

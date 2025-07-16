@@ -4,38 +4,162 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     int count = 0;
 }
+<head>
+    <link rel="stylesheet" href="~/css/director.css" asp-append-version="true" />
+</head>
 
-<h3 class="mb-4">👤 Kullanıcı Listesi</h3>
+<h3 class="mb-4">Kullanıcı Listesi</h3>
 
-<table class="table table-bordered table-hover table-striped align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>#</th>
-            <th>Ad</th>
-            <th>Soyad</th>
-            <th>Resim</th>
-            <th>Roller</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            count++;
+<!-- Başarı/Hata Mesajları -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- Masaüstü Tablo Görünümü -->
+<div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped align-middle">
+        <thead class="table-dark">
             <tr>
-                <td>@count</td>
-                <td>@user.FirstName</td>
-                <td>@user.LastName</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(user.ImageUrl))
+                <th>#</th>
+                <th>Ad</th>
+                <th>Soyad</th>
+                <th>Resim</th>
+                <th>Roller</th>
+                @if (User.IsInRole("Admin")){ <th>Şifre Değiştir</th> }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                count++;
+                <tr>
+                    <td>@count</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(user.ImageUrl))
+                        {
+                            <img src="@user.ImageUrl" alt="profil" width="50" class="rounded-circle user-photo" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Yok</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.Roles != null && user.Roles.Any())
+                        {
+                            @foreach (var role in user.Roles)
+                            {
+                                <span class="badge bg-primary me-1">@role</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-danger">Rol atanmamış</span>
+                        }
+                    </td>
+                    @if (User.IsInRole("Admin"))
                     {
-                        <img src="@user.ImageUrl" alt="profil" width="50" class="rounded-circle" />
+                        <td>
+                            <!-- Şifre Değiştir Butonu -->
+                            <button type="button" class="btn btn-warning btn-sm"
+                                    data-toggle="modal"
+                                    data-target="#changePasswordModal_@user.UserId">
+                                Şifre Değiştir
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="changePasswordModal_@user.UserId" tabindex="-1"
+                                 role="dialog" aria-labelledby="changePasswordModalLabel_@user.UserId" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <form asp-action="AdminChangePassword"
+                                              asp-controller="Director"
+                                              asp-area="Admin"
+                                              method="post"
+                                              autocomplete="off">
+                                            @Html.AntiForgeryToken()
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="changePasswordModalLabel_@user.UserId">
+                                                    Şifre Değiştir - @user.FirstName @user.LastName
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="UserId" value="@user.UserId" />
+
+                                                <!-- Kullanıcı Bilgisi (readonly, sadece bilgi için) -->
+                                                <input type="text"
+                                                       class="form-control-plaintext mb-2"
+                                                       value="@user.FirstName @user.LastName"
+                                                       readonly tabindex="-1"
+                                                       style="pointer-events:none; background:none; border:none;" />
+
+                                                <div class="mb-3">
+                                                    <label for="newPassword_@user.UserId" class="form-label">Yeni Şifre</label>
+                                                    <input type="password"
+                                                           class="form-control"
+                                                           id="newPassword_@user.UserId"
+                                                           name="NewPassword"
+                                                           required minlength="6"
+                                                           autocomplete="new-password" />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="confirmPassword_@user.UserId" class="form-label">Yeni Şifre (Tekrar)</label>
+                                                    <input type="password"
+                                                           class="form-control"
+                                                           id="confirmPassword_@user.UserId"
+                                                           name="ConfirmPassword"
+                                                           required minlength="6"
+                                                           autocomplete="new-password" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">Kaydet</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
                     }
-                    else
-                    {
-                        <span class="text-muted">Yok</span>
-                    }
-                </td>
-                <td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Mobil Kart Görünümü -->
+<div class="user-card-list d-lg-none">
+    @foreach (var user in Model)
+    {
+        <div class="user-card mb-3">
+            <div class="user-card-header d-flex align-items-center">
+                @if (!string.IsNullOrEmpty(user.ImageUrl))
+                {
+                    <img src="@user.ImageUrl" alt="profil" class="user-card-photo me-3" width="50" />
+                }
+                else
+                {
+                    <div class="user-card-placeholder">Yok</div>
+                }
+                <div class="user-card-name flex-grow-1">
+                    <strong>@user.FirstName @user.LastName</strong>
+                </div>
+            </div>
+            <div class="user-card-body">
+                <div>
+                    <span class="label">Roller:</span>
                     @if (user.Roles != null && user.Roles.Any())
                     {
                         @foreach (var role in user.Roles)
@@ -47,8 +171,69 @@
                     {
                         <span class="text-danger">Rol atanmamış</span>
                     }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </div>
+                <!-- Şifre Değiştir Butonu (Kartta) -->
+                <button type="button" class="btn btn-warning btn-sm mt-2"
+                        data-toggle="modal"
+                        data-target="#changePasswordModalCard_@user.UserId">
+                    Şifre Değiştir
+                </button>
+
+                <!-- Modal (Kart için) -->
+                <div class="modal fade" id="changePasswordModalCard_@user.UserId" tabindex="-1"
+                     role="dialog" aria-labelledby="changePasswordModalCardLabel_@user.UserId" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form asp-action="AdminChangePassword"
+                                  asp-controller="Director"
+                                  asp-area="Admin"
+                                  method="post"
+                                  autocomplete="off">
+                                @Html.AntiForgeryToken()
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="changePasswordModalCardLabel_@user.UserId">
+                                        Şifre Değiştir - @user.FirstName @user.LastName
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="UserId" value="@user.UserId" />
+                                    <input type="text"
+                                           class="form-control-plaintext mb-2"
+                                           value="@user.FirstName @user.LastName"
+                                           readonly tabindex="-1"
+                                           style="pointer-events:none; background:none; border:none;" />
+                                    <div class="mb-3">
+                                        <label for="newPasswordCard_@user.UserId" class="form-label">Yeni Şifre</label>
+                                        <input type="password"
+                                               class="form-control"
+                                               id="newPasswordCard_@user.UserId"
+                                               name="NewPassword"
+                                               required minlength="6"
+                                               autocomplete="new-password" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirmPasswordCard_@user.UserId" class="form-label">Yeni Şifre (Tekrar)</label>
+                                        <input type="password"
+                                               class="form-control"
+                                               id="confirmPasswordCard_@user.UserId"
+                                               name="ConfirmPassword"
+                                               required minlength="6"
+                                               autocomplete="new-password" />
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success">Kaydet</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Sonu -->
+            </div>
+        </div>
+    }
+</div>

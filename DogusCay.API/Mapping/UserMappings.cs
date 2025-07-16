@@ -15,6 +15,7 @@ namespace DogusCay.API.Mapping
             CreateMap<AppRole, CreateRoleDto>().ReverseMap();
             CreateMap<AppRole, UpdateRoleDto>().ReverseMap();
             CreateMap<AppUser, ResultUserDto>().ReverseMap();
+            CreateMap<AppUser, AdminChangePasswordDto>().ReverseMap();
 
         }
     }

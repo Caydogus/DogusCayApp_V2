@@ -11,7 +11,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
         public PointController(IHttpClientFactory clientFactory)
         {
-            _client = clientFactory.CreateClient("EduClient"); // API base URL'si buraya ayarlanmış olmalı
+            _client = clientFactory.CreateClient("EduClient"); 
         }
 
         // Kullanıcının rolüne göre noktaları sayfalı olarak listeler
@@ -21,13 +21,13 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             try
             {
                 string endpoint;
-                int pageSize = 10; // Sayfa boyutunu burada belirleyebiliriz.
+                int pageSize = 10; 
 
-                // Kullanıcının rolüne göre API endpoint'ini belirle
                 if (User.IsInRole("Admin"))
                 {
                     endpoint = $"points/paged?page={page}&pageSize={pageSize}"; // Tüm noktalar (Admin için)
                 }
+
                 else // Bölge Müdürü veya diğer yetkili roller için
                 {
                     endpoint = $"points/mine-paged?page={page}&pageSize={pageSize}"; // Sadece kendi noktaları
@@ -37,9 +37,8 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 var response = await _client.GetFromJsonAsync<PagedResult>(endpoint);
 
                 // Sayfalama bilgilerini ViewBag'e ata
-                // Bu değerler View'de sayfalama linklerini oluşturmak için kullanılacak
                 ViewBag.CurrentPage = response.Page;
-                ViewBag.PageSize = response.PageSize; // Burası önemli, View'de kullanılacak
+                ViewBag.PageSize = response.PageSize;
                 ViewBag.TotalCount = response.TotalCount;
                 ViewBag.TotalPages = (int)Math.Ceiling((double)response.TotalCount / response.PageSize);
 
