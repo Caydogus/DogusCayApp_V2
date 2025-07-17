@@ -56,8 +56,8 @@ namespace DogusCay.API.Controllers
 
             return BadRequest();
         }
+
         //tum kullanıcılar
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {

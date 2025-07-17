@@ -299,7 +299,7 @@
         }
 
         .cart-product-card input[type='number'] {
-            width: 68px;
+            width: 85px;
             font-size: .97em;
             border-radius: 7px;
             border: 1.1px solid #dae3ee;
@@ -325,4 +325,9 @@
         border: 2px solid #ee6c6c !important;
         box-shadow: 0 2px 14px #ffbaba33;
     }
+}
+.prd-discount-input-table {
+    width: 90px !important;
+    min-width: 80px;
+    text-align: center;
 }
