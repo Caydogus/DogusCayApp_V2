@@ -12,6 +12,7 @@ namespace DogusCay.Entity.Entities
         public int DistributorId { get; set; }
         public string DistributorName { get; set; }
         public string DistributorErcKod { get; set; }
+        public string? DistributorLogoKod { get; set; }//23.07.2025 eklendi. Distribütörün logosu için kullanılır.
         public int KanalId { get; set; }
         public Kanal Kanal { get; set; }
         public ICollection<Point> Points { get; set; }

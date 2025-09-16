@@ -37,12 +37,7 @@ namespace DogusCay.DataAccess.Repositories
                 throw; // isteğe bağlı: tekrar fırlatmak istersen
             }
         }
-        //public void Create(T entity)
-        //{
-        //    Table.Add(entity);
-        //    _context.SaveChanges();
-        //}
-
+    
         public void Delete(int id)
         {
             var entity = Table.Find(id);

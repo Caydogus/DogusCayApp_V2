@@ -8,7 +8,7 @@ using DogusCay.Business.Abstract;
 namespace DogusCay.API.Controllers
 {
     //[Authorize(Roles = "Admin")]
-    [Route("api/[controller]")]
+    [Route("api/roleassings")]
     [ApiController]
     public class RoleAssignsController(IUserService _userService, UserManager<AppUser> _userManager, RoleManager<AppRole> _roleManager) : ControllerBase
     {

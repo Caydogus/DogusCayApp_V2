@@ -10,7 +10,7 @@ using Microsoft.SqlServer.Server;
 namespace DogusCay.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/pointgrouptypes")]
     [ApiController]
     public class PointGroupTypesController(IPointGroupTypeService _pointGroupTypeService, IMapper _mapper) : ControllerBase
     {

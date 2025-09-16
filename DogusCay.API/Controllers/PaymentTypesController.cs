@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DogusCay.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/paymenttypes")]
     [ApiController]
 
     public class PaymentTypesController(IPaymentTypeService _paymentTypeService, IMapper _mapper) : ControllerBase

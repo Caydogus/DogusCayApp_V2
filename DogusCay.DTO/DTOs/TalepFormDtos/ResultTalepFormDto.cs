@@ -26,6 +26,8 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public string ErpCode { get; set; } // opsiyonel
         public decimal ApproximateWeightKg { get; set; }
         public int KoliIciAdet { get; set; }
+        public decimal? OneriRafFiyati { get; set; }//23.07.2025 eklendi
+        public decimal? OneriAksiyonFiyati { get; set; }//23.07.2025 eklendi
         public string UserFullName { get; set; }
         // Talep detayları
         public int Quantity { get; set; }
@@ -55,6 +57,7 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public TalepDurumu TalepDurumu { get; set; }
         public int? KampanyaDonusAdedi { get; set; }
         public string? KampanyaResimYolu { get; set; }
+        public decimal? AksiyonSatisFiyati { get; set; } //23.07.2025 eklendi. İnsert talebinde bulunan kişi ürünü hangi fiyattan satacagını belirler.
 
     }
 }

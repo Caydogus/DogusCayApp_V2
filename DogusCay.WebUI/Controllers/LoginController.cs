@@ -38,15 +38,15 @@ namespace DogusCay.WebUI.Controllers
                 return View(userLoginDto);
             }
 
-            // 🔐 Token'ı session'a yaz
+            //Token'ı session'a yaz
             HttpContext.Session.SetString("JwtToken", response.Token);
 
-            // 🔐 Token'dan claim'leri oku
+            //Token'dan claim'leri oku
             var handler = new JwtSecurityTokenHandler();
             var token = handler.ReadJwtToken(response.Token);
             var claims = token.Claims.ToList();
 
-            // 🔐 Kimliği oluştur ve login yap
+            // Kimliği oluştur ve login yap
             var identity = new ClaimsIdentity(claims, "DogusCookie");
             var authProps = new AuthenticationProperties
             {

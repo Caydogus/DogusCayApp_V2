@@ -32,6 +32,7 @@ namespace DogusCay.Business.Concrete
                 TalepTip = TalepTip.MalYukleme,
                 TalepDurumu = TalepDurumu.Bekliyor,
                 CreateDate = DateTime.Now,
+                Note = dto.Note,
                 MalYuklemeTalepFormDetails = new List<MalYuklemeTalepFormDetail>()
             };
 
@@ -139,6 +140,11 @@ namespace DogusCay.Business.Concrete
         public List<ResultMalYuklemeTalepFormDto> TGetAllForIndex()
         {  
             return _malYuklemeTalepFormRepository.GetAllForIndex();
+        }
+
+        public MalYuklemeTalepForm TGetByIdWithUserAndPoint(int id)
+        {
+            return _malYuklemeTalepFormRepository.GetByIdWithUserAndPoint(id);//gelen mail için:taleplerde bulunan kullanıcı adı ve point ismi lazım
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
+using DogusCay.API.Helpers;
 using DogusCay.Business.Abstract;
 using DogusCay.DTO.DTOs.MalYuklemeDtos;
 using DogusCay.Entity.Entities.Talep;
@@ -9,18 +10,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace DogusCay.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/malyuklemetalepforms")]
     [ApiController]
     public class MalYuklemeTalepFormsController : ControllerBase
     {
         private readonly IMalYuklemeTalepFormService _malYuklemeTalepFormService;
         private readonly IMapper _mapper;
-       
-        public MalYuklemeTalepFormsController(IMalYuklemeTalepFormService malYuklemeTalepFormService, IMapper mapper)
+        private readonly MailHelper _mailHelper;
+        public MalYuklemeTalepFormsController(IMalYuklemeTalepFormService malYuklemeTalepFormService, IMapper mapper, MailHelper mailHelper)
         {
             _malYuklemeTalepFormService = malYuklemeTalepFormService;
             _mapper = mapper;
-            
+            _mailHelper = mailHelper;
         }
         private int GetUserId()
         {
@@ -32,56 +33,75 @@ namespace DogusCay.API.Controllers
         [Authorize(Roles = "BolgeMuduru")]
         public IActionResult Create([FromBody] CreateMalYuklemeTalepFormDto dto)
         {
-            Console.WriteLine("🧾 API’ye Mal Yükleme formu ulaştı.");
-
             int authenticatedUserId = GetUserId();
             if (authenticatedUserId == 0)
-            {
                 return Unauthorized("Kullanıcı kimliği alınamadı. Lütfen giriş yapın.");
-            }
 
-            // 2. Model doğrulama
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values
                                        .SelectMany(v => v.Errors)
                                        .Select(e => e.ErrorMessage)
                                        .ToList();
-                Console.Error.WriteLine("API: Model doğrulama başarısız. Hatalar: " + string.Join("; ", errors));
                 return BadRequest(new { Message = "Gönderilen veri geçerli değil.", Errors = errors });
             }
 
             try
             {
-                var createdForm = _malYuklemeTalepFormService.TCreateMalYuklemeTalepForm(dto, authenticatedUserId);
+                var createdForm = _malYuklemeTalepFormService
+                    .TCreateMalYuklemeTalepForm(dto, authenticatedUserId);
 
-                Console.WriteLine($"✅ Form Oluşturuldu → ID: {createdForm?.MalYuklemeTalepFormId}, Brüt: {createdForm?.BrutTotal}, Kg: {createdForm?.ToplamAgirlikKg}");
-                return Ok(new{
-                    success = true,
-                    message = "Mal Yükleme talebi başarıyla oluşturuldu.",
-                    formId = createdForm.MalYuklemeTalepFormId
+                //Navigation property’ler dolu şekilde tekrar çekiyoruz
+                var fullForm = _malYuklemeTalepFormService
+                    .TGetByIdWithUserAndPoint(createdForm.MalYuklemeTalepFormId);
+
+                var userName = fullForm.AppUser != null
+                    ? $"{fullForm.AppUser.FirstName} {fullForm.AppUser.LastName}"
+                    : "Bilinmeyen Kullanıcı";
+
+                var pointName = fullForm.Point != null
+                    ? fullForm.Point.PointName
+                    : "Bilinmeyen Müşteri";
+
+                //Mail gönderimi opsiyonel ve asenkron
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        var notify = _mailHelper.GetNotifyAddress();
+                        _mailHelper.Send(notify,
+                            "Yeni Ürün Yükleme Talebi",
+                            $"Yeni ürün yükleme talebi oluşturuldu.\n" +
+                            $"Talep No: {fullForm.MalYuklemeTalepFormId}\n" +
+                            $"Kullanıcı: {userName}\n" +
+                            $"Müşteri (Nokta): {pointName}");
+                    }
+                    catch (Exception mailEx)
+                    {
+                        Console.WriteLine("📧 Ürün yükleme bilgilendirme maili gönderilemedi: " + mailEx.Message);
+                        // TODO: ILogger/Serilog ile loglanabilir
+                    }
                 });
 
-            }
-
-            catch (InvalidOperationException ex)
-            {
-                Console.Error.WriteLine($"❌ API Hatası (Geçersiz İşlem - Servis): {ex.Message}");
-                return BadRequest(new { success = false, message = ex.Message });
-                //return BadRequest(ex.Message); 
+                return Ok(new
+                {
+                    success = true,
+                    message = "Ürün Yükleme talebi başarıyla oluşturuldu.",
+                    formId = createdForm.MalYuklemeTalepFormId
+                });
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"❌ API Hatası (Genel - Controller): Form oluşturulurken beklenmeyen bir hata oluştu: {ex.Message}");
-                return StatusCode(500, "Form oluşturulurken beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+                return StatusCode(500, "Form oluşturulurken beklenmeyen bir hata oluştu. " + ex.Message);
             }
         }
 
+
         [HttpGet("mine-paged")]
         [Authorize(Roles = "BolgeMuduru")]
-        public IActionResult GetOwnFormsPaged(int page = 1, int pageSize = 10)
+        public IActionResult GetOwnFormsPaged(int page = 1, int pageSize = 7)
         {
-            Console.WriteLine("🧪 mine-paged endpoint çağrıldı");
+            Console.WriteLine(" mine-paged endpoint çağrıldı");
 
             int userId = GetUserId();
             if (userId == 0)
@@ -115,7 +135,7 @@ namespace DogusCay.API.Controllers
 
         [HttpGet("paged")]
         [Authorize(Roles = "Admin")]
-        public IActionResult GetAllFormsPaged(int page = 1, int pageSize = 10)
+        public IActionResult GetAllFormsPaged(int page = 1, int pageSize = 7)
         {
             var allForms = _malYuklemeTalepFormService.TGetAllWithUser().AsQueryable();
 
@@ -136,39 +156,95 @@ namespace DogusCay.API.Controllers
             });
         }
 
-
         // mal yukleme Talep formunu onaylar (Admin rolü için).
         [HttpPost("approve/{id}")]
-        [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
+        [Authorize(Roles = "Admin")]
         public IActionResult Approve(int id)
         {
-            // Onaylayan Admin'in ID'sini JWT token'dan al
             int adminId = GetUserId();
             if (adminId == 0)
-            {
                 return Unauthorized("Admin ID'si token'dan alınamadı.");
-            }
+
+            var form = _malYuklemeTalepFormService.TGetByIdWithUserAndPoint(id);
+            if (form == null)
+                return NotFound("Talep bulunamadı.");
+
             _malYuklemeTalepFormService.TUpdateStatus(id, TalepDurumu.Onaylandi, adminId);
+
+            //  Mail gönderimini asenkron yapıyoruz
+            Task.Run(() =>
+            {
+                try
+                {
+                    var userEmail = form.AppUser?.Email;
+                    if (!string.IsNullOrEmpty(userEmail))
+                    {
+                        var userName = $"{form.AppUser.FirstName} {form.AppUser.LastName}";
+                        var pointName = form.Point?.PointName ?? "Bilinmeyen Müşteri";
+
+                        _mailHelper.Send(
+                            userEmail,
+                            "Ürün Yükleme Talebiniz Onaylandı",
+                            $"Merhaba {userName},\n" +
+                            $"{pointName} için açmış olduğunuz " +
+                            $"{form.MalYuklemeTalepFormId} numaralı ürün yükleme talebi onaylandı."
+                        );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("📧 Onay maili gönderilemedi: " + ex.Message);
+                    // TODO: ILogger veya Serilog ile logla
+                }
+            });
+
             return Ok("Talep onaylandı.");
         }
 
-
-
         // mal yukleme Talep formunu reddeder (Admin rolü için).
         [HttpPost("reject/{id}")]
-        [Authorize(Roles = "Admin")] // Sadece Admin rolündekiler erişebilir
+        [Authorize(Roles = "Admin")]
         public IActionResult Reject(int id)
         {
-            // Reddeden Admin'in ID'sini JWT token'dan al
             int adminId = GetUserId();
             if (adminId == 0)
-            {
                 return Unauthorized("Admin ID'si token'dan alınamadı.");
-            }
+
+            var form = _malYuklemeTalepFormService.TGetByIdWithUserAndPoint(id);
+            if (form == null)
+                return NotFound("Talep bulunamadı.");
+
             _malYuklemeTalepFormService.TUpdateStatus(id, TalepDurumu.Reddedildi, adminId);
+
+            //  Mail gönderimi opsiyonel ve asenkron
+            Task.Run(() =>
+            {
+                try
+                {
+                    var userEmail = form.AppUser?.Email;
+                    if (!string.IsNullOrEmpty(userEmail))
+                    {
+                        var userName = $"{form.AppUser.FirstName} {form.AppUser.LastName}";
+                        var pointName = form.Point?.PointName ?? "Bilinmeyen Müşteri";
+
+                        _mailHelper.Send(
+                            userEmail,
+                            "Ürün Yükleme Talebiniz Reddedildi",
+                            $"Merhaba {userName},\n" +
+                            $"{pointName} için açmış olduğunuz " +
+                            $"{form.MalYuklemeTalepFormId} numaralı ürün yükleme talebi reddedildi."
+                        );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("📧 Red maili gönderilemedi: " + ex.Message);
+                    
+                }
+            });
+
             return Ok("Talep reddedildi.");
         }
-
 
 
         // Kullanıcının kendi onaylanmamış formunu silebilir.

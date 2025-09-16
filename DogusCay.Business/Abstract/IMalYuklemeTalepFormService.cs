@@ -18,5 +18,7 @@ namespace DogusCay.Business.Abstract
 
         MalYuklemeTalepForm TCreateMalYuklemeTalepForm(CreateMalYuklemeTalepFormDto dto, int authenticatedUserId);
         public List<ResultMalYuklemeTalepFormDto> TGetAllForIndex();
+        public MalYuklemeTalepForm TGetByIdWithUserAndPoint(int id);//gelen mail için:taleplerde bulunan kullanıcı adı ve point ismi lazım
+
     }
 }

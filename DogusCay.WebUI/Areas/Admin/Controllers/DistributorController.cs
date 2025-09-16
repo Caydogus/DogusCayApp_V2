@@ -20,7 +20,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var values = await _client.GetFromJsonAsync<List<ResultDistributorDto>>("Distributors");
+            var values = await _client.GetFromJsonAsync<List<ResultDistributorDto>>("distributors");
             return View(values);
         }
 

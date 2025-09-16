@@ -50,7 +50,9 @@ namespace DogusCay.WebUI.Controllers
                 return View(userRegisterDto);
             }
 
-            return RedirectToAction("SignIn", "Login");
+            //return RedirectToAction("SignIn", "Login");
+            return RedirectToAction("Index", "Director", new { area = "Admin" });
+
         }
 
     }

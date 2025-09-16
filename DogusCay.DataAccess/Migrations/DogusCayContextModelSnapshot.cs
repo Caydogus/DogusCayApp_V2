@@ -172,6 +172,9 @@ namespace DogusCay.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DistributorLogoKod")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DistributorName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -232,6 +235,9 @@ namespace DogusCay.DataAccess.Migrations
                     b.Property<decimal?>("Maliyet")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OnaylayanAdminId")
                         .HasColumnType("int");
@@ -462,6 +468,12 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.Property<int>("KoliIciAdet")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("OneriAksiyonFiyati")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("OneriRafFiyati")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -702,6 +714,9 @@ namespace DogusCay.DataAccess.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal?>("AksiyonSatisFiyati")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("AppUserId")
                         .HasColumnType("int");
 
@@ -770,6 +785,12 @@ namespace DogusCay.DataAccess.Migrations
 
                     b.Property<int?>("OnaylayanAdminId")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("OneriAksiyonFiyati")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("OneriRafFiyati")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("PointGroupTypeId")
                         .HasColumnType("int");

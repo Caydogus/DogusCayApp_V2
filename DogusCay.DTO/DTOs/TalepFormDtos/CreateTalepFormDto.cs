@@ -28,6 +28,8 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public decimal ApproximateWeightKg { get; set; } // opsiyonel
         public int KoliIciAdet { get; set; } // opsiyonel
         public decimal? SabitBedelTL { get; set; }
+        public decimal? OneriRafFiyati { get; set; }//23.07.2025 eklendi
+        public decimal? OneriAksiyonFiyati { get; set; }//23.07.2025 eklendi
         // Talep detayları
         public int Quantity { get; set; }
         public decimal Price { get; set; }
@@ -52,6 +54,7 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public decimal Total { get; set; }
         public decimal BrutTotal { get; set; }
         public decimal Maliyet { get; set; }
+        public decimal AksiyonSatisFiyati { get; set; } //23.07.2025 eklendi. İnsert talebinde bulunan kişi ürünü hangi fiyattan satacagını belirler.
 
     }
 

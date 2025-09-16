@@ -17,12 +17,12 @@ namespace DogusCay.DataAccess.Concrete
         {
         }
 
-        // YENİ İMPLEMENTASYON: Belirli bir AppUserId'ye bağlı distribütörleri getirir.
+        //  Belirli bir AppUserId'ye bağlı distribütörleri getirir.
         public List<Distributor> GetDistributorsByAppUserId(int appUserId)
         {
-            // _context, GenericRepository'den gelen protected bir DbContext örneği olmalıdır.
-            // AppUser navigasyon özelliğini de dahil etmek isteyebilirsiniz, bu sayede 
-            // distribütör ile ilişkilendirilmiş kullanıcı bilgileri de getirilir.
+            
+            // AppUser navigasyon özelliğini de dahil et bu sayede 
+            // distribütör ile ilişkilendirilmiş kullanıcı bilgileri de getirir
             return _context.Distributors
                            .Include(d => d.AppUser) // İsteğe bağlı: AppUser bilgisini de çekmek için
                            .Where(d => d.AppUserId == appUserId)

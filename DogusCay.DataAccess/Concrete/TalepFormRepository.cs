@@ -82,5 +82,13 @@ namespace DogusCay.DataAccess.Concrete
                 .Include(tf => tf.SubSubCategory)
                 .FirstOrDefault(tf => tf.TalepFormId == formId);
         }
+
+        public TalepForm GetByIdWithUserAndPoint(int id)
+        {
+            return _context.TalepForms
+        .Include(x => x.AppUser)
+        .Include(x => x.Point)
+        .FirstOrDefault(x => x.TalepFormId == id);
+        }
     }
 }

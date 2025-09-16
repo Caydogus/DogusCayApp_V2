@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace DogusCay.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("[area]/[controller]/[action]/{id?}")]
+    [Route("admin/[controller]/[action]/{id?}")]
     public class ProductController : Controller
     {
         private readonly HttpClient _client;
@@ -16,17 +16,18 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
         {
             _client = clientFactory.CreateClient("EduClient");
         }
+
         // 09.05.2025 - Ana ve alt kategori bilgilerini içeren ürün listesi eklendi
         public async Task<IActionResult> Index()
         {
-            var values = await _client.GetFromJsonAsync<List<ResultProductDto>>("Products/GetProductsWithCategoryDetails");
+            var values = await _client.GetFromJsonAsync<List<ResultProductDto>>("products/getproductswithcategorydetails");
             return View(values);
         }
 
         [HttpGet]
         public async Task<IActionResult> CreateProduct()
         {
-            var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("Categories");
+            var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("categories");
 
             var mainCategories = categoryList
                 .Where(x => x.ParentCategoryId == null)
@@ -39,19 +40,19 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             var model = new ProductCreateViewModel
             {
                 MainCategories = mainCategories,
-                SubCategories = new List<SelectListItem>(), // Başlangıçta boş
+                SubCategories = new List<SelectListItem>(),
                 CreateProductDto = new CreateProductDto()
             };
 
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductCreateViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                // Kategorileri yeniden yükle
-                var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("Categories");
+                var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("categories");
 
                 model.MainCategories = categoryList
                     .Where(x => x.ParentCategoryId == null)
@@ -72,26 +73,25 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 return View(model);
             }
 
-            await _client.PostAsJsonAsync("Products", model.CreateProductDto);
+            await _client.PostAsJsonAsync("products", model.CreateProductDto);
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> ShowOnHome(int id)
         {
-            await _client.GetAsync("Products/ShowOnHome/" + id);
+            await _client.GetAsync("products/showonhome/" + id);
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> DontShowOnHome(int id)
         {
-            await _client.GetAsync("Products/DontShowOnHome/" + id);
+            await _client.GetAsync("products/dontshowonhome/" + id);
             return RedirectToAction("Index");
         }
 
-        // Alt kategorileri getir
         public async Task<IActionResult> GetSubCategories(int id)
         {
-            var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("Categories");
+            var categoryList = await _client.GetFromJsonAsync<List<ResultCategoryDto>>("categories");
 
             var subCategories = categoryList
                 .Where(x => x.ParentCategoryId == id)

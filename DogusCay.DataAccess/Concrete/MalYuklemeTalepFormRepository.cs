@@ -37,7 +37,7 @@ namespace DogusCay.DataAccess.Concrete
                 .Include(x => x.MalYuklemeTalepFormDetails)
                     .ThenInclude(d => d.SubCategory) // Alt kategoriyi yükle
                 .Include(x => x.MalYuklemeTalepFormDetails)
-                    .ThenInclude(d => d.SubSubCategory) // Alt-alt kategoriyi yükle
+                    .ThenInclude(d => d.SubSubCategory) // Alt alt kategoriyi yükle
                 .OrderByDescending(x => x.MalYuklemeTalepFormId)
                 .ToList();
         }
@@ -165,7 +165,17 @@ namespace DogusCay.DataAccess.Concrete
 
             return result;
         }
+
+        public MalYuklemeTalepForm GetByIdWithUserAndPoint(int id)
+        {
+            return _context.MalYuklemeTalepForms
+                .Include(x => x.AppUser)
+                .Include(x => x.Point)
+                .FirstOrDefault(x => x.MalYuklemeTalepFormId == id);
+        }
+
     }
 }
+
 
 

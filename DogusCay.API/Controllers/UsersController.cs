@@ -35,7 +35,7 @@ namespace DogusCay.API.Controllers
             var token = await _jwtService.CreateTokenAsync(user);
             return Ok(token);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto model)
         {
@@ -90,7 +90,7 @@ namespace DogusCay.API.Controllers
             {
                 result.Add(new ResultUserDto
                 {
-                    UserId = user.Id, 
+                    UserId = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     ImageUrl = user.ImageUrl,

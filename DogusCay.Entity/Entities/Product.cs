@@ -19,7 +19,9 @@ namespace DogusCay.Entity.Entities
         public decimal ApproximateWeightKg { get; set; }
         public bool IsShown { get; set; } = true;
         public decimal Price { get; set; }            
-        public int KoliIciAdet { get; set; }             
+        public int KoliIciAdet { get; set; }
+        public decimal? OneriRafFiyati { get; set; }//23.07.2025 eklendi
+        public decimal? OneriAksiyonFiyati { get; set; }//23.07.2025 eklendi
         public ICollection<Sale> Sales { get; set; }
     }
 }

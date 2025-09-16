@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 [Authorize(Roles = "Admin,BolgeMuduru")]
-[Route("api/[controller]")]
+[Route("api/analytics")]
 [ApiController]
 public class AnalyticsController : ControllerBase
 {

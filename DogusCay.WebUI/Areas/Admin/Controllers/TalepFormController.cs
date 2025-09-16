@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace DogusCay.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("Admin/[controller]/[action]/{id?}")]
+    [Route("admin/[controller]/[action]/{id?}")]
     public class TalepFormController : Controller
     {
         private readonly HttpClient _client;
@@ -16,7 +16,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
         {
             _client = httpClientFactory.CreateClient("EduClient");
         }
-
 
         private async Task SetDropdownsAsync()
         {
@@ -31,7 +30,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 return;
             }
 
-            _client.DefaultRequestHeaders.Clear(); // Önceki başlıkları temizle (Eğer client yeniden oluşturulmuyorsa)
+            _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + jwtToken);
 
             try
@@ -39,7 +38,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 var kanallar = await _client.GetFromJsonAsync<List<KanalDropdownDto>>("kanals/dropdown");
                 ViewBag.Kanallar = new SelectList(kanallar, "KanalId", "KanalName");
 
-                // TalepFormController için
                 var urunler = await _client.GetFromJsonAsync<List<ProductDropdownDto>>("products/dropdown");
                 ViewBag.Products = new SelectList(urunler, "ProductId", "ProductName");
             }
@@ -47,7 +45,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             {
                 Console.WriteLine($"❌ HTTP Request Error (SetDropdownsAsync): {httpEx.Message}");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); 
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName");
                 TempData["Error"] = $"Dropdown verileri yüklenirken bir HTTP hatası oluştu: {httpEx.Message}";
             }
             catch (Exception ex)
@@ -65,12 +63,12 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             try
             {
                 string endpoint;
-                int pageSize = 10;
+                int pageSize = 7;
 
                 if (User.IsInRole("Admin"))
                     endpoint = $"talepforms/paged?page={page}&pageSize={pageSize}";
                 else
-                    endpoint = $"talepforms/mine-paged?page={page}&pageSize={pageSize}";  // sadece kendi talepleri
+                    endpoint = $"talepforms/mine-paged?page={page}&pageSize={pageSize}";
 
                 var response = await _client.GetFromJsonAsync<PagedTalepFormResponse>(endpoint);
 
@@ -79,7 +77,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 ViewBag.TotalCount = response.TotalCount;
                 ViewBag.PageSize = response.PageSize;
 
-                return View(response.Data); // Model olarak sadece liste gönderiyoruz
+                return View(response.Data);
             }
             catch (Exception ex)
             {
@@ -87,7 +85,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 return View(new List<ResultTalepFormDto>());
             }
         }
-
 
         [HttpGet]
         public async Task<IActionResult> CreateTalepForm()
@@ -157,7 +154,5 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
-
     }
-
 }

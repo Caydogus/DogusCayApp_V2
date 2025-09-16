@@ -1,5 +1,4 @@
-﻿
-const token = document.getElementById("jwtToken")?.value;
+﻿const token = document.getElementById("jwtToken")?.value;
 
 async function deleteTalep(id) {
     if (!confirm("Bu talep formunu silmek istediğinize emin misiniz?")) return;
@@ -10,7 +9,7 @@ async function deleteTalep(id) {
     }
 
     try {
-        const response = await fetch(`${apiBaseUrl}/talepforms/${id}`, {
+        const response = await fetch(`${apiBaseUrl}talepforms/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -23,7 +22,7 @@ async function deleteTalep(id) {
             alert("Silme başarısız: " + error);
         }
     } catch (err) {
-        alert("Hata oluştu: " + err);
+        alert("Sunucu hatası: " + err);
     }
 }
 
@@ -42,7 +41,7 @@ async function updateStatus(id, action, successMessage) {
     }
 
     try {
-        const response = await fetch(`${apiBaseUrl}/talepforms/${action}/${id}`, {
+        const response = await fetch(`${apiBaseUrl}talepforms/${action}/${id}`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -60,7 +59,6 @@ async function updateStatus(id, action, successMessage) {
 }
 
 async function gonderKampanyaDonusu(formId, type) {
-    // Tip parametresi ile hangi inputtan değer alacağını belirle
     const inputId = type === "Table"
         ? `kampanyaInputTable_${formId}`
         : `kampanyaInput_${formId}`;
@@ -87,14 +85,16 @@ async function gonderKampanyaDonusu(formId, type) {
         alert("Kampanya dönüş adedi, koli içi toplam adetten büyük olamaz!");
         return;
     }
+
     try {
-        const response = await fetch(`${apiBaseUrl}/talepforms/update-donus/${formId}`, {
+        const response = await fetch(`${apiBaseUrl}talepforms/update-donus/${formId}`, {
             method: "PATCH",
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(value)
+            // API raw int beklediği için
+            body: value.toString()
         });
 
         if (response.ok) {
@@ -108,8 +108,8 @@ async function gonderKampanyaDonusu(formId, type) {
         alert("Sunucu hatası: " + err);
     }
 }
+
 async function uploadImage(formId, type) {
-    const token = document.getElementById("jwtToken")?.value;
     const inputId = type === 'Card' ? `imageInputCard_${formId}` : `imageInputTable_${formId}`;
     const input = document.getElementById(inputId);
 
@@ -128,7 +128,7 @@ async function uploadImage(formId, type) {
     formData.append("image", file);
 
     try {
-        const response = await fetch(`${apiBaseUrl}/talepforms/upload-image/${formId}`, {
+        const response = await fetch(`${apiBaseUrl}talepforms/upload-image/${formId}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`

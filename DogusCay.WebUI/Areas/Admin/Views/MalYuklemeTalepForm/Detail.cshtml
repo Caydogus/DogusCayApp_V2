@@ -44,6 +44,12 @@
             <div class="col-md-4 mt-2"><strong>Toplam Brüt Tutar:</strong> @toplamBrutTutar.ToString("C2")</div>
             <div class="col-md-4 mt-2"><strong>Toplam Net Tutar:</strong> @toplamNetTutar.ToString("C2")</div>
             <div class="col-md-4 mt-2"><strong>Ortalama Maliyet:</strong> @ortalamaMaliyet.ToString("N2") %</div>
+            <div class="col-12 mt-3 align-self-start">
+                <div class="alert alert-info w-100" style="white-space:pre-line;">
+                    <strong>Not:</strong>@(string.IsNullOrEmpty(Model.Note) ? "Not eklenmemiş." : Model.Note)
+                </div>
+            </div>
+
         </div>
     </div>
     @if (Model.MalYuklemeTalepFormDetails != null && Model.MalYuklemeTalepFormDetails.Any())
@@ -54,7 +60,7 @@
                 <table class="table table-bordered table-striped text-nowrap align-middle">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th></th>
                             <th>Ürün Adı</th>
                             <th>ERP Kodu</th>
                             <th>Tonaj</th>
@@ -118,6 +124,17 @@
                 @Model.TalepDurumu
             </span>
         </div>
+        @if (!string.IsNullOrEmpty(Model.Note))
+        {
+            <div class="alert alert-info w-100 mt-3" style="white-space:pre-line;">
+                <strong>Not:</strong>@Model.Note
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary w-100 mt-3">Not eklenmemiş.</div>
+        }
+
         <div class="section-title mb-2">Ürün Detayları</div>
         @if (Model.MalYuklemeTalepFormDetails != null && Model.MalYuklemeTalepFormDetails.Any())
         {
@@ -146,107 +163,3 @@
     </div>
 </div>
 
-
-@* @model ResultMalYuklemeTalepFormDto
-
-@{
-    ViewData["Title"] = "Talep Detayı"; // Daha anlamlı bir başlık
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
-    // Hesaplamalar
-    var toplamTonaj = Model.MalYuklemeTalepFormDetails?.Sum(x => x.ApproximateWeightKg * x.Quantity) ?? 0;
-    var toplamBrutTutar = Model.MalYuklemeTalepFormDetails?.Sum(x => x.BrutTutar ?? 0) ?? 0;
-    var toplamNetTutar = Model.MalYuklemeTalepFormDetails?.Sum(x => x.NetTutar ?? 0) ?? 0;
-    var ortalamaMaliyet = (toplamBrutTutar > 0) ? (1 - (toplamNetTutar / toplamBrutTutar)) * 100 : 0;
-}
-<head>
-    <link rel="stylesheet" href="~/css/MalYuklemeDetail.css" asp-append-version="true" />
-</head>
-
-<h3 class="mb-4">Talep Detayı - #@Model.MalYuklemeTalepFormId</h3>
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-
-<div class="card mb-4">
-    <div class="card-header bg-secondary text-white">Genel Bilgiler</div>
-    <div class="card-body row">
-        <div class="col-md-4"><strong>Kullanıcı:</strong> @Model.AppUser?.FirstName @Model.AppUser?.LastName</div>
-        <div class="col-md-4"><strong>Kanal:</strong> @Model.Kanal?.KanalName</div>
-        <div class="col-md-4"><strong>Nokta:</strong> @Model.Point?.PointName</div>
-        <div class="col-md-4 mt-2"><strong>Tarih:</strong> @Model.CreateDate.ToShortDateString()</div>
-        <div class="col-md-4 mt-2">
-            <strong>Durum:</strong>
-            <span class="badge
-                @(Model.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
-                  Model.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
-                  "bg-warning text-dark")">
-                @Model.TalepDurumu
-            </span>
-        </div>
-        <div class="col-md-4 mt-2"><strong>Toplam Tonaj:</strong> @toplamTonaj.ToString("N2") kg</div>
-        <div class="col-md-4 mt-2"><strong>Toplam Brüt Tutar:</strong> @toplamBrutTutar.ToString("C2")</div>
-        <div class="col-md-4 mt-2"><strong>Toplam Net Tutar:</strong> @toplamNetTutar.ToString("C2")</div>
-        <div class="col-md-4 mt-2"><strong>Ortalama Maliyet:</strong> @ortalamaMaliyet.ToString("N2") %</div>
-
-    </div>
-</div>
-
-@if (Model.MalYuklemeTalepFormDetails != null && Model.MalYuklemeTalepFormDetails.Any())
-{
-    <div class="card">
-        <div class="card-header bg-dark text-white">Ürün Detayları</div>
-        <div class="card-body table-responsive">
-            <table class="table table-bordered table-striped text-nowrap">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Ürün Adı</th>
-                        <th>ERP Kodu</th>
-                        <th>Tonaj(kg)</th>
-                        <th>Toplam Adet</th>
-                        <th>Brüt Tutar</th>
-                        <th>Net Tutar</th>
-                        <th>İskonto1</th>
-                        <th>İskonto2</th>
-                        <th>Sabit Bedel</th>
-                        <th>Net Adet Fiyatı</th>
-                        <th>Maliyet(%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var d in Model.MalYuklemeTalepFormDetails)
-                    {
-                        <tr>
-                            <td>@d.ResultMalYuklemeTalepFormDetailId</td>
-                            <td>@(d.ProductName ?? "N/A")</td>
-                            <td>@(d.ErpCode ?? "N/A")</td>
-                            <td>@((d.ApproximateWeightKg * d.Quantity).ToString("N2"))</td>
-                            <td>@(d.Quantity * d.KoliIciAdet)</td>
-                            <td>@d.BrutTutar?.ToString("C2")</td>
-                            <td>@d.NetTutar?.ToString("C2")</td>
-                            <td>@d.Discount1?.ToString("N2")</td>
-                            <td>@d.Discount2?.ToString("N2")</td>
-                            <td>@d.FixedPrice?.ToString("C2")</td>
-                            <td>@d.NetAdetFiyat?.ToString("C2")</td>
-                            <td>@(d.Maliyet?.ToString("N2") + " %")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-}
-else
-{
-    <div class="alert alert-info">Bu talebe ait ürün detayı bulunamadı.</div>
-}
-
-<a asp-action="Index" class="btn btn-secondary mt-4">← Geri Dön</a>
- *@

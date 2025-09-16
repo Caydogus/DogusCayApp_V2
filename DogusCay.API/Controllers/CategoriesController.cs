@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
 using DogusCay.DTO.DTOs.CategoryDtos;
-using DogusCay.DTO.DTOs.ProductDtos;
 using DogusCay.DTOs.ProductDtos;
 using DogusCay.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DogusCay.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
@@ -69,14 +68,14 @@ namespace DogusCay.API.Controllers
             return Ok("Kategori güncellendi.");
         }
 
-        [HttpGet("ShowOnHome/{id}")]
+        [HttpGet("showonhome/{id}")]
         public IActionResult ShowOnHome(int id)
         {
             _categoryService.TShowOnHome(id);
             return Ok("Ana sayfada gösteriliyor.");
         }
 
-        [HttpGet("DontShowOnHome/{id}")]
+        [HttpGet("dontshowonhome/{id}")]
         public IActionResult DontShowOnHome(int id)
         {
             _categoryService.TDontShowOnHome(id);
@@ -85,7 +84,7 @@ namespace DogusCay.API.Controllers
 
         // IsShown == true olan kategorileri getirir
       
-        [HttpGet("GetActiveCategories")]
+        [HttpGet("getactivecategories")]
         public IActionResult GetActiveCategories()
         {
             var activeCategories = _categoryService.TGetFilteredList(x => x.IsShown);
@@ -94,7 +93,7 @@ namespace DogusCay.API.Controllers
         }
 
         // Tüm kategorileri ağaç yapısıyla döner
-        [HttpGet("GetTree")]
+        [HttpGet("gettree")]
         public IActionResult GetCategoryTree()
         {
             var categories = _categoryService.TGetList();
@@ -125,7 +124,7 @@ namespace DogusCay.API.Controllers
         }
 
         // ANA Kategorileri getirir (ParentCategoryId == null)
-        [HttpGet("MainCategories")]
+        [HttpGet("maincategories")]
         public IActionResult GetMainCategories()
         {
             var mainCategories = _categoryService.TGetFilteredList(c => c.ParentCategoryId == null);
@@ -141,19 +140,23 @@ namespace DogusCay.API.Controllers
             var dto = _mapper.Map<List<ResultProductDto>>(products);
             return Ok(dto);
         }
-
+  
         [HttpGet("{categoryId}/products-recursive")]
         public IActionResult GetProductsWithSubCategories(int categoryId)
         {
-            var allCategories = _categoryService.TGetList(); // Tüm kategorileri al
-            var allIds = new List<int> { categoryId };
-
-            // Alt kategorileri recursive olarak bul
-            CollectChildCategories(categoryId, allCategories, allIds);
-
-            var products = _productService.TGetFilteredList(p => allIds.Contains(p.CategoryId));
-            var dto = _mapper.Map<List<ResultProductDto>>(products);
-            return Ok(dto);
+            try
+            {
+                var allCategories = _categoryService.TGetList();
+                var allIds = new List<int> { categoryId };
+                CollectChildCategories(categoryId, allCategories, allIds);
+                var products = _productService.TGetAllProductsWithCategories(p => allIds.Contains(p.CategoryId));
+                var dto = _mapper.Map<List<ResultProductDto>>(products);
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message, stack = ex.StackTrace });
+            }
         }
 
         private void CollectChildCategories(int parentId, List<Category> all, List<int> result)
@@ -161,10 +164,15 @@ namespace DogusCay.API.Controllers
             var children = all.Where(x => x.ParentCategoryId == parentId).ToList();
             foreach (var child in children)
             {
-                result.Add(child.CategoryId);
-                CollectChildCategories(child.CategoryId, all, result); // recursive çağrı
+                // Döngüsel referansı önlemek için kontrol ekleniyor
+                if (!result.Contains(child.CategoryId))
+                {
+                    result.Add(child.CategoryId);
+                    CollectChildCategories(child.CategoryId, all, result); // recursive çağrı
+                }
             }
         }
+
 
     }
 }

@@ -16,6 +16,8 @@ namespace DogusCay.WebUI.DTOs.DistributorDtos
         [MaxLength(100)]
         public string DistributorName { get; set; }
         public string DistributorErcKod { get; set; }
+        public string DistributorLogoKod { get; set; }//23.07.2025 eklendi. Distribütörün logosu için kullanılır.
+
         public int AppUserId { get; set; }
         public AppUser AppUser { get; set; }
     }

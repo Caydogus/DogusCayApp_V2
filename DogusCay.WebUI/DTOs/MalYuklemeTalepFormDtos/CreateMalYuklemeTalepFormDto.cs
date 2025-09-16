@@ -11,6 +11,7 @@
         public decimal? BrutTotal { get; set; }          // Brüt toplam
         public decimal? ToplamAgirlikKg { get; set; }    // Tüm ürünlerin toplam ağırlığı
         public decimal? Maliyet { get; set; }            // (Brüt - Net) / Brüt × 100
+        public string? Note { get; set; }   // 12.09.2025
         public DateTime CreateDate { get; set; } //tarih otomatik eklenecek
 
         public List<CreateMalYuklemeTalepFormDetailDto>? MalYuklemeTalepFormDetails { get; set; }

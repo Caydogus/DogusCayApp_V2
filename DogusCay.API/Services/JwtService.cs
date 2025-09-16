@@ -33,11 +33,11 @@ namespace DogusCay.API.Services
                 new Claim(ClaimTypes.Email, user.Email)
             };
 
-            // 🔁 Kullanıcının rollerini al ve ilkini ekle
+            //  Kullanıcının rollerini al ve ilkini ekle
             var roles = await _userManager.GetRolesAsync(user);
             if (roles.Any())
             {
-                claims.Add(new Claim(ClaimTypes.Role, roles.First())); // 🔁 Dinamik olarak ilk rolü ekliyor
+                claims.Add(new Claim(ClaimTypes.Role, roles.First())); // Dinamik olarak ilk rolü ekliyor
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["TokenOptions:Key"]));

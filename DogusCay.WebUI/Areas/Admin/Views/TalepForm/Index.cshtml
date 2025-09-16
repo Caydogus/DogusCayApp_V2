@@ -20,7 +20,7 @@
     <input type="hidden" id="jwtToken" value="@jwt" />
 
     <h3 class="mb-4 d-flex justify-content-between align-items-center">
-        <span>İnsert Listesi</span>
+        <span>İnsert Talepleri</span>
         <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni İnsert Oluştur</a>
     </h3>
 
@@ -44,17 +44,18 @@
             <table class="table table-bordered table-striped table-hover searchable-table">
                 <thead class="bg-dark text-white">
                     <tr>
-                        <th>#</th>
-                        <th>Kampanya Tarihi</th>
+                        <th></th>
+                        <th>Tarih</th>
                         <th>Müşteri</th>
                         <th>Ürün Adı</th>
-                        <th>Alt Kategori</th>
+                        <th>ERP</th>
+                        <th>Kategori</th>
                         <th>Marka</th>
-                        <th>ERP Kodu</th>
-                        <th>Ağırlık (kg)</th>
+                        <th>(KG)</th>
                         <th>Adet Farkı (₺)</th>
-                        <th>Son Fiyatı</th>
-                        <th>Toplam (₺)</th>
+                        <th>Son Fiyat</th>
+                        <th>Aksiyon Fiyatı</th>
+                        <th>Toplam(₺)</th>
                         <th>Maliyet</th>
                         @if(User.IsInRole("BolgeMuduru")){ <th>Dönüş Adet</th>}
                         <th>Durum</th>
@@ -81,6 +82,7 @@
                             <td>@item.ApproximateWeightKg.ToString("0.00")</td>
                             <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
                             <td>@item.SonAdetFiyati.ToString("C2")</td>
+                            <td>@item.AksiyonSatisFiyati.ToString("C2")</td>
                             <td class="fw-bold">@item.Total.ToString("C2")</td>
                             <td>@item.Maliyet</td>
                              @if (User.IsInRole("BolgeMuduru")){<td>@item.KampanyaDonusAdedi</td>}
@@ -195,13 +197,14 @@
                             <div class="col-md-6 mb-2">
                                 <div class="mb-2"><strong>Müşteri:</strong> <span>@item.PointName</span></div>
                                 <div class="mb-2"><strong>Kampanya Tarihi:</strong> <span>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</span></div>
-                                <div class="mb-2"><strong>Alt Kategori:</strong> <span>@item.SubCategoryName</span></div>
+                                <div class="mb-2"><strong>Kategori:</strong> <span>@item.SubCategoryName</span></div>
                                 <div class="mb-2"><strong>Marka:</strong> <span>@item.SubSubCategoryName</span></div>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <div class="mb-2"><strong>Ağırlık (kg):</strong> <span>@item.ApproximateWeightKg.ToString("0.00")</span></div>
+                                <div class="mb-2"><strong>KG:</strong> <span>@item.ApproximateWeightKg.ToString("0.00")</span></div>
                                 <div class="mb-2"><strong>Adet Farkı (₺):</strong> <span>@item.AdetFarkDonusuTL.ToString("C2")</span></div>
-                                <div class="mb-2"><strong>Son Fiyatı:</strong> <span>@item.SonAdetFiyati.ToString("C2")</span></div>
+                                <div class="mb-2"><strong>Son Adet Fiyatı:</strong> <span>@item.SonAdetFiyati.ToString("C2")</span></div>
+                                <div class="mb-2"><strong>Aksiyon Fiyatı:</strong> <span>@item.AksiyonSatisFiyati.ToString("C2")</span></div>
                                 <div class="mb-2"><strong>Toplam (₺):</strong> <span class="fw-bold text-success">@item.Total.ToString("C2")</span></div>
                                 <div class="mb-2"><strong>Maliyet:</strong> <span>@item.Maliyet</span></div>
                                 <div class="mb-2"><strong>Dönüş Adet:</strong> <span>@item.KampanyaDonusAdedi</span></div>

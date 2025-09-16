@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
+using DogusCay.DataAccess.Migrations;
 using DogusCay.DTO.DTOs.ProductDtos;
 using DogusCay.DTOs.ProductDtos;
 using DogusCay.Entity.Entities;
@@ -11,11 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace DogusCay.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
     public class ProductsController(IProductService _productService, IMapper _mapper) : ControllerBase
     {
-        // ✅ TÜM ÜRÜNLER
+        // TÜM ÜRÜNLER
        
         [HttpGet]
         public IActionResult Get()
@@ -25,7 +26,7 @@ namespace DogusCay.API.Controllers
             return Ok(products);
         }
 
-        // ✅ ID'ye göre tek ürün
+        // ID'ye göre tek ürün
        
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -34,7 +35,7 @@ namespace DogusCay.API.Controllers
             return Ok(value);
         }
 
-        // ✅ SİLME
+        // SİLME
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -42,7 +43,7 @@ namespace DogusCay.API.Controllers
             return Ok("Ürün silindi");
         }
 
-        // ✅ EKLEME
+        //  EKLEME
         [HttpPost]
         public IActionResult Create(CreateProductDto createProductDto)
         {
@@ -51,7 +52,7 @@ namespace DogusCay.API.Controllers
             return Ok("Ürün oluşturuldu");
         }
 
-        // ✅ GÜNCELLEME
+        // GÜNCELLEME
         [HttpPut]
         public IActionResult Update(UpdateProductDto updateProductDto)
         {
@@ -60,43 +61,43 @@ namespace DogusCay.API.Controllers
             return Ok("Ürün güncellendi");
         }
 
-        // ✅ ANASAYFADA GÖSTER
-        [HttpGet("ShowOnHome/{id}")]
+        // ANASAYFADA GÖSTER
+        [HttpGet("showonhome/{id}")]
         public IActionResult ShowOnHome(int id)
         {
             _productService.TShowOnHome(id);
             return Ok("Ürün ana sayfada gösteriliyor");
         }
 
-        // ✅ ANASAYFADAN KALDIR
-        [HttpGet("DontShowOnHome/{id}")]
+        //ANASAYFADAN KALDIR
+        [HttpGet("dontshowonhome/{id}")]
         public IActionResult DontShowOnHome(int id)
         {
             _productService.TDontShowOnHome(id);
             return Ok("Ürün ana sayfadan kaldırıldı");
         }
 
-        // ✅ SADECE AKTİF ÜRÜNLER
+        //SADECE AKTİF ÜRÜNLER
         [AllowAnonymous]
-        [HttpGet("GetActiveProducts")]
+        [HttpGet("getactiveproducts")]
         public IActionResult GetActiveProducts()
         {
             var values = _productService.TGetFilteredList(x => x.IsShown == true);
             return Ok(values);
         }
 
-        // ✅ ÜRÜN SAYISI
+        // ÜRÜN SAYISI
         [AllowAnonymous]
-        [HttpGet("GetProductCount")]
+        [HttpGet("getproductcount")]
         public IActionResult GetProductCount()
         {
             var productCount = _productService.TCount();
             return Ok(productCount);
         }
 
-        // ✅ BELİRLİ KATEGORİYE GÖRE ÜRÜNLER
+        // BELİRLİ KATEGORİYE GÖRE ÜRÜNLER
         [AllowAnonymous]
-        [HttpGet("GetProductsByCategoryId/{id}")]
+        [HttpGet("getproductsbycategoryıd/{id}")]
         public IActionResult GetProductsByCategoryId(int id)
         {
             var values = _productService.TGetAllProductsWithCategories(x => x.CategoryId == id);
@@ -105,7 +106,7 @@ namespace DogusCay.API.Controllers
 
         //TÜM ÜRÜNLER + KATEGORİ DETAYLARI
         [AllowAnonymous]
-        [HttpGet("GetProductsWithCategoryDetails")]
+        [HttpGet("getproductswithcategorydetails")]
         public IActionResult GetProductsWithCategoryDetails()
         {
             var values = _productService.TGetAllProductsWithCategoryDetails();
@@ -125,7 +126,7 @@ namespace DogusCay.API.Controllers
             return Ok(result);
         }
 
-        // ✅ ÜRÜN DETAYI (fiyat, kategori vs.)
+        //ÜRÜN DETAYI (fiyat, kategori vs.)
         [AllowAnonymous]
         [HttpGet("details/{productId}")]
         public IActionResult GetProductDetails(int productId)
@@ -153,20 +154,17 @@ namespace DogusCay.API.Controllers
         [HttpGet("get-product-info/{id}")]
         public IActionResult GetProductInfo(int id)
         {
-            var product = _productService.TGetById(id);
+            var product = _productService
+                .TGetAllProductsWithCategories(p => p.ProductId == id)
+                .FirstOrDefault();
+
             if (product == null)
                 return NotFound();
 
-            return Ok(new
-            {
-                Price = product.Price,
-                KoliIciAdet = product.KoliIciAdet,
-                ApproximateWeightKg = product.ApproximateWeightKg,
-                ErpCode = product.ErpCode,
-                
-            });
+            var dto = _mapper.Map<ResultProductDto>(product);
+            return Ok(dto);
         }
-
+       
 
     }
 

@@ -25,15 +25,21 @@ namespace DogusCay.DataAccess.Concrete
             value.IsShown = false;
             _context.SaveChanges();
         }
-
         public List<Product> GetAllProductsWithCategories()
         {
-            return _context.Products.Include(x => x.Category).ToList();
+            return _context.Products
+                .Include(x => x.Category)
+                .Include(x => x.UnitType)   
+                .ToList();
         }
 
         public List<Product> GetAllProductsWithCategories(Expression<Func<Product, bool>> filter = null)
         {
-            IQueryable<Product> values = _context.Products.Include(x => x.Category).AsQueryable();
+            IQueryable<Product> values = _context.Products
+                .Include(x => x.Category).ThenInclude(c => c.ParentCategory) 
+                .Include(x => x.UnitType)  
+                .AsQueryable();
+
             if (filter != null)
             {
                 values = values.Where(filter);
@@ -41,6 +47,7 @@ namespace DogusCay.DataAccess.Concrete
 
             return values.ToList();
         }
+
         //kategorileri ve tum alt kategorileride getirsin:09.05.2025
 
         public List<ResultProductDto> GetAllProductsWithCategoryDetails()

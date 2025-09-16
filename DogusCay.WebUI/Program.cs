@@ -1,55 +1,57 @@
-﻿using System.Net.Http.Headers;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Security.Claims;
-using System.Text.Json.Serialization;
 using DogusCay.WebUI.Services.TokenServices;
 using DogusCay.WebUI.Services.UserServices;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DogusCay.WebUI.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ---------------------- SESSION ve COOKIE POLICY ----------------------
+// Session (HTTP yayında Secure=None olmalı)
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None; // ÖNEMLİ: HTTP için
+    options.Cookie.SameSite = SameSiteMode.Lax;
 });
 
-// 🔧 Cookie policy tanımlanmalı, yoksa bazı ortamlarda session cookie yazılmaz
+// CookiePolicy
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.Lax;
 });
 
-// ----------------------------------------------------------------------
-
-// Servis kayıtları
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddHttpContextAccessor();
-
-// HttpClient için Token Header handler
 builder.Services.AddTransient<AuthHeaderHandler>();
+
+// Canlı API adresi (HTTP)
+var apiBase = builder.Configuration["ApiSettings:BaseUrl"];
+Console.WriteLine($"🔍 ApiSettings:BaseUrl = {apiBase}");
+if (string.IsNullOrWhiteSpace(apiBase))
+    throw new InvalidOperationException("❌ ApiSettings:BaseUrl değeri appsettings dosyalarında tanımlı değil!");
+
+// HttpClient
 builder.Services.AddHttpClient("EduClient", cfg =>
 {
-    cfg.BaseAddress = new Uri("https://localhost:7076/api/");
+    cfg.BaseAddress = new Uri(apiBase);
 })
 .AddHttpMessageHandler<AuthHeaderHandler>();
 
-// ------------------ COOKIE tabanlı JWT Authentication ------------------
+// Cookie Auth (HTTP: Secure=None)
 builder.Services.AddAuthentication("DogusCookie")
     .AddCookie("DogusCookie", opt =>
     {
         opt.LoginPath = "/Login/SignIn";
         opt.LogoutPath = "/Login/Logout";
         opt.AccessDeniedPath = "/ErrorPage/AccessDenied";
-        opt.Cookie.SameSite = SameSiteMode.Strict;
+        opt.Cookie.SameSite = SameSiteMode.Lax;
         opt.Cookie.HttpOnly = true;
-        opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        opt.Cookie.SecurePolicy = CookieSecurePolicy.None; // ÖNEMLİ: HTTP için
         opt.Cookie.Name = "DogusCayJwt";
         opt.SlidingExpiration = true;
 
@@ -75,27 +77,25 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly())
     .AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
 
+// MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// -------------------- MIDDLEWARE PIPELINE --------------------
+// Production hataları
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    // app.UseHsts(); // HTTP yayında KAPALI
 }
 
-app.UseHttpsRedirection();
+// *** ÖNEMLİ: HTTPS yönlendirmeyi kapat ***
+/*app.UseHttpsRedirection(); */ // HTTP’de sorun çıkarır
+
 app.UseStaticFiles();
 app.UseRouting();
-
-// 🔥 CookiePolicy mutlaka burada olmalı!
 app.UseCookiePolicy();
-
-// 🔥 Session cookie yazılmadan önce çalışmalı
 app.UseSession();
-
 app.UseAuthentication();
 app.UseAuthorization();
 

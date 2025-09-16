@@ -10,5 +10,8 @@ public interface ITalepFormService : IGenericService<TalepForm>
     void TUpdateStatus(int formId, TalepDurumu durum, int adminId); // Admin onay/red
     void TUpdateItemFields(int TalepFormitemId, int quantity, DateTime validFrom, DateTime validTo); // Güvenli alan güncelleme
     TalepForm TGetDetailsForForm(int formId); // Tek talep detay
+    public TalepForm CreateTalepFormWithCalculations(CreateTalepFormDto dto, int appUserId);
+    TalepForm TGetByIdWithUserAndPoint(int id);//gelen mail için:taleplerde bulunan kullanıcı adı ve point ismi lazım
+
 
 }

@@ -18,5 +18,7 @@ namespace DogusCay.DataAccess.Abstract
         void UpdateStatus(int formId, TalepDurumu durum, int adminId); // Admin onay/red
         MalYuklemeTalepForm GetDetailsForForm(int formid); // Navigation dahil detay
         public List<ResultMalYuklemeTalepFormDto> GetAllForIndex();
+        MalYuklemeTalepForm GetByIdWithUserAndPoint(int id);//gelen mail için:taleplerde bulunan kullanıcı adı ve point ismi lazım
+
     }
 }

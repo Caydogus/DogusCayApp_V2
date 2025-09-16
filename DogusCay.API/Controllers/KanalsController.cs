@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace DogusCay.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/kanals")]
     [ApiController]
     public class KanalsController(IKanalService _kanalService, IMapper _mapper) : ControllerBase
     {
@@ -67,7 +67,7 @@ namespace DogusCay.API.Controllers
         }
    
         
-        [HttpGet("GetKanalCount")]
+        [HttpGet("getkanalcount")]
         public IActionResult GetKanalCount()
         {
             var courseCount = _kanalService.TCount();

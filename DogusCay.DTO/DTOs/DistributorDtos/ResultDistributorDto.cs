@@ -15,8 +15,9 @@ namespace DogusCay.DTO.DTOs.DistributorDtos
             public int DistributorId { get; set; }
             public string DistributorName { get; set; }
             public string DistributorErcKod { get; set; }
+        public string? DistributorLogoKod { get; set; }
 
-            public SimpleUserDto AppUser { get; set; }
+        public SimpleUserDto AppUser { get; set; }
         
 
     }

@@ -10,15 +10,12 @@ using DogusCay.Business.Validators;
 using DogusCay.DataAccess.Context;
 using DogusCay.Entity.Entities;
 using DogusCay.API.Services;
+using Microsoft.OpenApi.Models;
+using DogusCay.API.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Service Config
 builder.Services.AddServiceExtensions(builder.Configuration);
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddScoped<IJwtService, JwtService>();
-
 // Identity & Authentication
 builder.Services.AddIdentity<AppUser, AppRole>()
     .AddEntityFrameworkStores<DogusCayContext>()
@@ -34,7 +31,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;
+    options.RequireHttpsMetadata = false; // Required for HTTP usage
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -46,57 +43,92 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero,
         NameClaimType = ClaimTypes.NameIdentifier,
         RoleClaimType = ClaimTypes.Role
-        //NameClaimType = ClaimTypes.Name
-
     };
 });
 
-// ? CORS: WebUI (localhost:5055) eriþimine izin ver
+// CORS
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost", policy =>
+    options.AddPolicy("AllowCustomOrigins", policy =>
     {
-        policy.WithOrigins(
-            "https://localhost:7192")
-        //policy.SetIsOriginAllowed(origin => true)
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials(); ;
+        policy
+            .WithOrigins(allowedOrigins) // Allowed origins defined in appsettings.json
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
-// DbContext
-builder.Services.AddDbContext<DogusCayContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 
-// JSON ayarlarý ve Controller servisi
+var compatibilityLevel = builder.Configuration.GetSection("Database:CompatibilityLevel").Get<int>();
+
+builder.Services.AddDbContext<DogusCayContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"), sqlOptions =>
+    {
+        sqlOptions.UseCompatibilityLevel(compatibilityLevel);
+    }));
+
+
+// JSON & Controllers
 builder.Services.AddControllers()
     .AddJsonOptions(x =>
         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "DogusCay API",
+        Version = "v1"
+    });
+
+    // JWT Security Schema
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Enter JWT token as 'Bearer <token>'.",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 var app = builder.Build();
 
-// Swagger yalnýzca development'ta açýk
-if (app.Environment.IsDevelopment())
+// Swagger UI enabled in all environments
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "DogusCay API v1");
+    c.RoutePrefix = "swagger";
+});
 
-// Middleware sýralamasý ?
-app.UseHttpsRedirection();
+// HTTPS redirection disabled for HTTP deployment
+//app.UseHttpsRedirection();
 
-app.UseRouting();                 // Routing önce
+app.UseRouting();
+app.UseCors("AllowCustomOrigins");
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseCors("AllowLocalhost");   // ?? CORS tam burada
-
-app.UseAuthentication();         // Kimlik doðrulama
-app.UseAuthorization();          // Yetkilendirme
-
-app.MapControllers();            // Endpoint'leri baðla
+app.MapControllers();
 
 app.Run();

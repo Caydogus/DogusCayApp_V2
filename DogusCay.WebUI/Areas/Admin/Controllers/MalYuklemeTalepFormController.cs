@@ -1,25 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering; 
-using DogusCay.WebUI.DTOs.KanalDtos; 
+using Microsoft.AspNetCore.Mvc.Rendering;
+using DogusCay.WebUI.DTOs.KanalDtos;
 using DogusCay.WebUI.DTOs.MalYuklemeTalepFormDtos;
 using Newtonsoft.Json;
 using DogusCay.WebUI.DTOs.ProductDtos;
 
-
 namespace DogusCay.WebUI.Areas.Admin.Controllers
 {
-    [Area("Admin")] 
-    [Route("Admin/[controller]/[action]/{id?}")] 
+    [Area("Admin")]
+    [Route("admin/[controller]/[action]/{id?}")]
     public class MalYuklemeTalepFormController : Controller
     {
         private readonly HttpClient _client;
 
         public MalYuklemeTalepFormController(IHttpClientFactory httpClientFactory)
         {
-            _client = httpClientFactory.CreateClient("EduClient"); 
+            _client = httpClientFactory.CreateClient("EduClient");
         }
 
-       
         private async Task SetDropdownsAsync()
         {
             var jwtToken = HttpContext.Session.GetString("JwtToken");
@@ -28,7 +26,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             {
                 Console.WriteLine("Uyarı: Session'dan JWT token alınamadı!");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); 
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName");
                 TempData["Error"] = "Dropdown verileri yüklenirken bir hata oluştu: Oturum süresi dolmuş veya token bulunamadı.";
                 return;
             }
@@ -38,11 +36,9 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             try
             {
-                // ARTIK 'api/' ÖN EKİ YOK!
                 var kanallar = await _client.GetFromJsonAsync<List<KanalDropdownDto>>("kanals/dropdown");
                 ViewBag.Kanallar = new SelectList(kanallar, "KanalId", "KanalName");
 
-                // TalepFormController için:
                 var urunler = await _client.GetFromJsonAsync<List<ProductDropdownDto>>("products/dropdown");
                 ViewBag.Products = new SelectList(urunler, "ProductId", "ProductName");
             }
@@ -50,7 +46,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             {
                 Console.WriteLine($"❌ HTTP Request Error (SetDropdownsAsync): {httpEx.Message}");
                 ViewBag.Kanallar = new SelectList(new List<KanalDropdownDto>(), "KanalId", "KanalName");
-                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName"); 
+                ViewBag.Products = new SelectList(new List<ProductDropdownDto>(), "ProductId", "ProductName");
                 TempData["Error"] = $"Dropdown verileri yüklenirken bir HTTP hatası oluştu: {httpEx.Message}";
             }
             catch (Exception ex)
@@ -61,11 +57,11 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 TempData["Error"] = "Dropdown verileri yüklenirken beklenmeyen bir hata oluştu: " + ex.Message;
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> CreateMalYuklemeTalepForm()
         {
             await SetDropdownsAsync();
-          
             return View(new CreateMalYuklemeTalepFormDto());
         }
 
@@ -79,7 +75,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             }
             try
             {
-                var response = await _client.PostAsJsonAsync("MalYuklemeTalepForms", createMalYuklemeTalepFormDto);
+                var response = await _client.PostAsJsonAsync("malyuklemetalepforms", createMalYuklemeTalepFormDto);
                 var responseText = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
@@ -89,7 +85,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 }
                 else
                 {
-
                     TempData["Error"] = $"Talep kaydedilemedi: {responseText}";
                 }
             }
@@ -99,49 +94,37 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                 TempData["Error"] = "İstek gönderilirken bir hata oluştu: " + ex.Message;
             }
 
-            await SetDropdownsAsync(); // Hata veya başarısızlık durumunda dropdownları tekrar doldur
-            return View(createMalYuklemeTalepFormDto); // Model ile view'ı tekrar göster
+            await SetDropdownsAsync();
+            return View(createMalYuklemeTalepFormDto);
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 7)
         {
             string endpoint;
             bool isAdmin = User.IsInRole("Admin");
 
             if (isAdmin)
             {
-                endpoint = $"MalYuklemeTalepForms/paged?page={page}&pageSize={pageSize}";
+                endpoint = $"malyuklemetalepforms/paged?page={page}&pageSize={pageSize}";
                 ViewBag.Title = "Tüm Mal Yükleme Talepleri";
             }
             else
             {
-                endpoint = $"MalYuklemeTalepForms/mine-paged?page={page}&pageSize={pageSize}";
+                endpoint = $"malyuklemetalepforms/mine-paged?page={page}&pageSize={pageSize}";
                 ViewBag.Title = "Mal Yükleme Taleplerim";
             }
 
             try
             {
-                //JWT token al
                 var token = HttpContext.Session.GetString("JwtToken");
-                if (string.IsNullOrEmpty(token))
-                {
-                    Console.WriteLine("Uyarı: Session'dan JWT token alınamadı!");
-                }
-                else
-                {
-                    Console.WriteLine("JWT token başarıyla session'dan alındı.");
-                }
                 var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                //HttpClient üzerinden istek gönder
                 var response = await _client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Gelen JSON:");
                 var pagedResult = JsonConvert.DeserializeObject<PagedMalYuklemeTalepFormResponse>(jsonResponse);
 
                 ViewBag.CurrentPage = pagedResult.Page;
@@ -152,39 +135,27 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"API isteği hatası (Index): {ex.Message}");
                 TempData["Error"] = "Talepler getirilirken bir hata oluştu: " + ex.Message;
                 return View(new List<ResultMalYuklemeTalepFormDto>());
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Beklenmeyen hata (Index): {ex.Message}");
                 TempData["Error"] = "Beklenmeyen bir hata oluştu: " + ex.Message;
                 return View(new List<ResultMalYuklemeTalepFormDto>());
             }
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             try
             {
-               
-                var response = await _client.GetAsync($"MalYuklemeTalepForms/{id}");
+                var response = await _client.GetAsync($"malyuklemetalepforms/{id}");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
-                 
                     var formDetail = JsonConvert.DeserializeObject<ResultMalYuklemeTalepFormDto>(jsonResponse);
-
-                     Console.WriteLine($"API Detay Yanıtı: {jsonResponse}");
-                    if (formDetail.MalYuklemeTalepFormDetails != null)
-                    {
-                        Console.WriteLine($"Detaylarda {formDetail.MalYuklemeTalepFormDetails.Count} ürün var.");
-                    }
-
                     return View(formDetail);
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -201,7 +172,6 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ HTTP İstek Hatası (MalYuklemeTalepForm Detail): {ex.Message}");
                 TempData["Error"] = "Mal yükleme talebi detayları getirilirken beklenmeyen bir hata oluştu: " + ex.Message;
                 return RedirectToAction("Index");
             }
@@ -210,7 +180,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Approve(int id)
         {
-            var response = await _client.PostAsync($"MalYuklemeTalepForms/approve/{id}", null);
+            var response = await _client.PostAsync($"malyuklemetalepforms/approve/{id}", null);
             response.EnsureSuccessStatusCode();
             return RedirectToAction("Index");
         }
@@ -218,7 +188,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Reject(int id)
         {
-            var response = await _client.PostAsync($"MalYuklemeTalepForms/reject/{id}", null);
+            var response = await _client.PostAsync($"malyuklemetalepforms/reject/{id}", null);
             response.EnsureSuccessStatusCode();
             return RedirectToAction("Index");
         }
@@ -235,7 +205,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
                     return RedirectToAction("Index");
                 }
 
-                var request = new HttpRequestMessage(HttpMethod.Delete, $"MalYuklemeTalepForms/{id}");
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"malyuklemetalepforms/{id}");
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
                 var response = await _client.SendAsync(request);
@@ -257,7 +227,5 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
-
     }
-
 }

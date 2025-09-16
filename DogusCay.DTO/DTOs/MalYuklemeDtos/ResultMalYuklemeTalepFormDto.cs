@@ -21,6 +21,7 @@ namespace DogusCay.DTO.DTOs.MalYuklemeDtos
         public string? AppUserName { get; set; }
         public string? KanalName { get; set; }
         public string? PointName { get; set; }
+        public string? Note { get; set; }   // 12.09.2025
         public DateTime CreateDate { get; set; }
 
         public decimal? Total { get; set; }              // Net toplam (iskontosuz bile olsa)
