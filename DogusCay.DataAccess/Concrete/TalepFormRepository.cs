@@ -2,6 +2,7 @@
 using DogusCay.DataAccess.Abstract;
 using DogusCay.DataAccess.Context;
 using DogusCay.DataAccess.Repositories;
+using DogusCay.DTO.DTOs.ExcelDtos;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.EntityFrameworkCore;
 
@@ -90,5 +91,44 @@ namespace DogusCay.DataAccess.Concrete
         .Include(x => x.Point)
         .FirstOrDefault(x => x.TalepFormId == id);
         }
+
+        public List<TalepForm> GetAllForExport()
+        {
+            return _context.TalepForms
+       .Include(tf => tf.AppUser)
+       .Include(tf => tf.Kanal)
+       .Include(tf => tf.Distributor)
+       .Include(tf => tf.PointGroupType)
+       .Include(tf => tf.Point)
+       .Include(tf => tf.Category)
+       .Include(tf => tf.SubCategory)
+       .Include(tf => tf.SubSubCategory)
+       .Include(tf => tf.Product)
+       .Include(tf => tf.OnaylayanAdmin)
+       .AsNoTracking()
+       .OrderByDescending(tf => tf.TalepFormId)
+       .ToList();
+        }
+
+        public List<TalepForm> GetListForExportByUserId(int userId)
+        {
+            return _context.TalepForms
+        .Where(tf => tf.AppUserId == userId)
+        .Include(tf => tf.AppUser)
+        .Include(tf => tf.Kanal)
+        .Include(tf => tf.Distributor)
+        .Include(tf => tf.PointGroupType)
+        .Include(tf => tf.Point)
+        .Include(tf => tf.Category)
+        .Include(tf => tf.SubCategory)
+        .Include(tf => tf.SubSubCategory)
+        .Include(tf => tf.Product)
+        .Include(tf => tf.OnaylayanAdmin)
+        .AsNoTracking()
+        .OrderByDescending(tf => tf.TalepFormId)
+        .ToList();
+        }
+
+     
     }
 }

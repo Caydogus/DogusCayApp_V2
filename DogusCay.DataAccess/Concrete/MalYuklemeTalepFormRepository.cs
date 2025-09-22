@@ -174,6 +174,50 @@ namespace DogusCay.DataAccess.Concrete
                 .FirstOrDefault(x => x.MalYuklemeTalepFormId == id);
         }
 
+        public List<MalYuklemeTalepForm> GetAllForExport() // Admin için tüm formlar (detaylarla birlikte) excele aktarılacak
+        {
+            return _context.MalYuklemeTalepForms
+              .Include(f => f.AppUser)
+              .Include(f => f.Kanal)
+              .Include(f => f.Distributor)
+              .Include(f => f.PointGroupType)
+              .Include(f => f.Point)
+              .Include(f => f.OnaylayanAdmin)
+              .Include(f => f.MalYuklemeTalepFormDetails)
+                  .ThenInclude(d => d.Product)
+              .Include(f => f.MalYuklemeTalepFormDetails)
+                  .ThenInclude(d => d.Category)
+              .Include(f => f.MalYuklemeTalepFormDetails)
+                  .ThenInclude(d => d.SubCategory)
+              .Include(f => f.MalYuklemeTalepFormDetails)
+                  .ThenInclude(d => d.SubSubCategory)
+              .AsNoTracking()
+              .OrderByDescending(f => f.MalYuklemeTalepFormId)
+              .ToList();
+                }
+
+        public List<MalYuklemeTalepForm> GetListForExportByUserId(int userId)
+        {
+             return _context.MalYuklemeTalepForms
+                .Where(f => f.AppUserId == userId)
+                .Include(f => f.AppUser)
+                .Include(f => f.Kanal)
+                .Include(f => f.Distributor)
+                .Include(f => f.PointGroupType)
+                .Include(f => f.Point)
+                .Include(f => f.OnaylayanAdmin)
+                .Include(f => f.MalYuklemeTalepFormDetails)
+                    .ThenInclude(d => d.Product)
+                .Include(f => f.MalYuklemeTalepFormDetails)
+                    .ThenInclude(d => d.Category)
+                .Include(f => f.MalYuklemeTalepFormDetails)
+                    .ThenInclude(d => d.SubCategory)
+                .Include(f => f.MalYuklemeTalepFormDetails)
+                    .ThenInclude(d => d.SubSubCategory)
+                .AsNoTracking()
+                .OrderByDescending(f => f.MalYuklemeTalepFormId)
+                .ToList();
+        }
     }
 }
 

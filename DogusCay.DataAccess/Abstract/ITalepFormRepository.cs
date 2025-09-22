@@ -1,4 +1,5 @@
-﻿using DogusCay.Entity.Entities.Talep;
+﻿using DogusCay.DTO.DTOs.ExcelDtos;
+using DogusCay.Entity.Entities.Talep;
 using System.Collections.Generic;
 
 namespace DogusCay.DataAccess.Abstract
@@ -11,6 +12,8 @@ namespace DogusCay.DataAccess.Abstract
         void UpdateItemFields(int TalepFormitemId, int quantity, DateTime validFrom, DateTime validTo); // Güvenli alan güncelleme
         TalepForm GetDetailsForForm(int formId); // Tek talep detay
         TalepForm GetByIdWithUserAndPoint(int id);//gelen mail için:taleplerde bulunan kullanıcı adı ve point ismi lazım
+        List<TalepForm> GetAllForExport();//admin için tüm talepler excele aktar
+        List<TalepForm> GetListForExportByUserId(int userId);//kullanıcıya özel talepler excele aktar
 
     }
 }

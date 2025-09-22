@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DogusCay.Business.Abstract;
 using DogusCay.DataAccess.Abstract;
+using DogusCay.DTO.DTOs.ExcelDtos;
 using DogusCay.DTO.DTOs.TalepFormDtos;
 using DogusCay.Entity.Entities.Talep;
 
@@ -68,12 +69,143 @@ namespace DogusCay.Business.Concrete
 
             return entity; //artık kaydedilen formu geri döndürüyoruz
         }
+        public List<ExportTalepFormDto> TGetAllForExport()
+        {
+
+            var forms = _talepFormRepository.GetAllForExport();
+
+            return forms.Select(x => new ExportTalepFormDto
+            {
+                TalepFormId = x.TalepFormId,
+                AppUserId = x.AppUserId,
+                AppUserName = x.AppUser?.UserName,
+                TalepTip = x.TalepTip.ToString(),
+
+                KanalId = x.KanalId,
+                KanalName = x.Kanal?.KanalName,
+
+                DistributorId = x.DistributorId,
+                DistributorName = x.Distributor?.DistributorName,
+
+                PointGroupTypeId = x.PointGroupTypeId,
+                PointGroupTypeName = x.PointGroupType?.PointGroupTypeName,
+
+                PointId = x.PointId,
+                PointName = x.Point?.PointName,
+
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category?.CategoryName,
+                SubCategoryId = x.SubCategoryId,
+                SubCategoryName = x.SubCategory?.CategoryName,
+                SubSubCategoryId = x.SubSubCategoryId,
+                SubSubCategoryName = x.SubSubCategory?.CategoryName,
+
+                ProductId = x.ProductId,
+                ProductName = x.ProductName,
+                ErpCode = x.ErpCode,
+
+                Quantity = x.Quantity,
+                Price = x.Price,
+                OneriRafFiyati = x.OneriRafFiyati,
+                OneriAksiyonFiyati = x.OneriAksiyonFiyati,
+                KoliIciAdet = x.KoliIciAdet,
+                Total = x.Total,
+                BrutTotal = x.BrutTotal,
+                Maliyet = x.Maliyet,
+                ApproximateWeightKg = x.ApproximateWeightKg,
+                SabitBedelTL = x.SabitBedelTL,
+                Iskonto1 = x.Iskonto1,
+                Iskonto2 = x.Iskonto2,
+                Iskonto3 = x.Iskonto3,
+                Iskonto4 = x.Iskonto4,
+                Note = x.Note,
+                KoliToplamAgirligiKg = x.KoliToplamAgirligiKg,
+                KoliIciToplamAdet = x.KoliIciToplamAdet,
+                ListeFiyat = x.ListeFiyat,
+                SonAdetFiyati = x.SonAdetFiyati,
+                AdetFarkDonusuTL = x.AdetFarkDonusuTL,
+                ValidFrom = x.ValidFrom,
+                ValidTo = x.ValidTo,
+                TalepDurumu = x.TalepDurumu.ToString(),
+                OnaylayanAdminId = x.OnaylayanAdminId,
+                OnaylayanAdminName = x.OnaylayanAdmin?.UserName,
+                KampanyaDonusAdedi = x.KampanyaDonusAdedi,
+                KampanyaResimYolu = x.KampanyaResimYolu,
+                AksiyonSatisFiyati = x.AksiyonSatisFiyati
+            }).ToList();
+        }
+
+        public List<ExportTalepFormDto> TGetListForExportByUserId(int userId)
+        {
+            var forms = _talepFormRepository.GetListForExportByUserId(userId);
+
+            return forms.Select(x => new ExportTalepFormDto
+            {
+                TalepFormId = x.TalepFormId,
+                AppUserId = x.AppUserId,
+                AppUserName = x.AppUser?.UserName,
+                TalepTip = x.TalepTip.ToString(),
+
+                KanalId = x.KanalId,
+                KanalName = x.Kanal?.KanalName,
+
+                DistributorId = x.DistributorId,
+                DistributorName = x.Distributor?.DistributorName,
+
+                PointGroupTypeId = x.PointGroupTypeId,
+                PointGroupTypeName = x.PointGroupType?.PointGroupTypeName,
+
+                PointId = x.PointId,
+                PointName = x.Point?.PointName,
+
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category?.CategoryName,
+                SubCategoryId = x.SubCategoryId,
+                SubCategoryName = x.SubCategory?.CategoryName,
+                SubSubCategoryId = x.SubSubCategoryId,
+                SubSubCategoryName = x.SubSubCategory?.CategoryName,
+
+                ProductId = x.ProductId,
+                ProductName = x.ProductName,
+                ErpCode = x.ErpCode,
+
+                Quantity = x.Quantity,
+                Price = x.Price,
+                OneriRafFiyati = x.OneriRafFiyati,
+                OneriAksiyonFiyati = x.OneriAksiyonFiyati,
+                KoliIciAdet = x.KoliIciAdet,
+                Total = x.Total,
+                BrutTotal = x.BrutTotal,
+                Maliyet = x.Maliyet,
+                ApproximateWeightKg = x.ApproximateWeightKg,
+                SabitBedelTL = x.SabitBedelTL,
+                Iskonto1 = x.Iskonto1,
+                Iskonto2 = x.Iskonto2,
+                Iskonto3 = x.Iskonto3,
+                Iskonto4 = x.Iskonto4,
+                Note = x.Note,
+                KoliToplamAgirligiKg = x.KoliToplamAgirligiKg,
+                KoliIciToplamAdet = x.KoliIciToplamAdet,
+                ListeFiyat = x.ListeFiyat,
+                SonAdetFiyati = x.SonAdetFiyati,
+                AdetFarkDonusuTL = x.AdetFarkDonusuTL,
+                ValidFrom = x.ValidFrom,
+                ValidTo = x.ValidTo,
+                TalepDurumu = x.TalepDurumu.ToString(),
+                OnaylayanAdminId = x.OnaylayanAdminId,
+                OnaylayanAdminName = x.OnaylayanAdmin?.UserName,
+                KampanyaDonusAdedi = x.KampanyaDonusAdedi,
+                KampanyaResimYolu = x.KampanyaResimYolu,
+                AksiyonSatisFiyati = x.AksiyonSatisFiyati
+            }).ToList();
+        }
 
         public List<TalepForm> TGetAllByUserId(int userId)
         {
             return _talepFormRepository.GetAllByUserId(userId);
         }
 
+     
         public List<TalepForm> TGetAllWithUser()
         {
             return _talepFormRepository.GetAllWithUser();
@@ -88,6 +220,8 @@ namespace DogusCay.Business.Concrete
         {
             return _talepFormRepository.GetDetailsForForm(formId);
         }
+
+     
         public void TUpdateItemFields(int TalepFormitemId, int quantity, DateTime validFrom, DateTime validTo)
         {
             _talepFormRepository.UpdateItemFields(TalepFormitemId, quantity, validFrom, validTo);

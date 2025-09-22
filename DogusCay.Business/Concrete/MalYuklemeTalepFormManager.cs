@@ -4,6 +4,7 @@ using DogusCay.Entity.Entities.MalYuklemeTalep;
 using DogusCay.Entity.Entities.Talep; 
 using DogusCay.DTO.DTOs.MalYuklemeDtos;
 using DogusCay.Entity.Entities;
+using DogusCay.DTO.DTOs.ExcelDtos;
 
 namespace DogusCay.Business.Concrete
 {
@@ -145,6 +146,148 @@ namespace DogusCay.Business.Concrete
         public MalYuklemeTalepForm TGetByIdWithUserAndPoint(int id)
         {
             return _malYuklemeTalepFormRepository.GetByIdWithUserAndPoint(id);//gelen mail için:taleplerde bulunan kullanıcı adı ve point ismi lazım
+        }
+
+        public List<ExportMalYuklemeTalepFormDto> TGetAllForExport()
+        {
+            var forms = _malYuklemeTalepFormRepository.GetAllForExport();
+
+            return forms.Select(f => new ExportMalYuklemeTalepFormDto
+            {
+                MalYuklemeTalepFormId = f.MalYuklemeTalepFormId,
+                AppUserId = f.AppUserId,
+                AppUserName = f.AppUser?.UserName,
+                KanalName = f.Kanal?.KanalName,
+                DistributorName = f.Distributor?.DistributorName,
+                PointGroupTypeName = f.PointGroupType?.PointGroupTypeName,
+                PointName = f.Point?.PointName,
+                CreateDate = f.CreateDate,
+                TalepTip = f.TalepTip.ToString(),
+                TalepDurumu = f.TalepDurumu.ToString(),
+                OnaylayanAdminId = f.OnaylayanAdminId,
+                OnaylayanAdminName = f.OnaylayanAdmin?.UserName,
+                Total = f.Total,
+                BrutTotal = f.BrutTotal,
+                ToplamAgirlikKg = f.ToplamAgirlikKg,
+                Maliyet = f.Maliyet,
+                Note = f.Note
+            }).ToList();
+        }
+
+        public List<ExportMalYuklemeTalepFormDto> TGetListForExportByUserId(int userId)
+        {
+            var forms = _malYuklemeTalepFormRepository.GetListForExportByUserId(userId);
+
+            return forms.Select(f => new ExportMalYuklemeTalepFormDto
+            {
+                MalYuklemeTalepFormId = f.MalYuklemeTalepFormId,
+                AppUserId = f.AppUserId,
+                AppUserName = f.AppUser?.UserName,
+                KanalName = f.Kanal?.KanalName,
+                DistributorName = f.Distributor?.DistributorName,
+                PointGroupTypeName = f.PointGroupType?.PointGroupTypeName,
+                PointName = f.Point?.PointName,
+                CreateDate = f.CreateDate,
+                TalepTip = f.TalepTip.ToString(),
+                TalepDurumu = f.TalepDurumu.ToString(),
+                OnaylayanAdminId = f.OnaylayanAdminId,
+                OnaylayanAdminName = f.OnaylayanAdmin?.UserName,
+                Total = f.Total,
+                BrutTotal = f.BrutTotal,
+                ToplamAgirlikKg = f.ToplamAgirlikKg,
+                Maliyet = f.Maliyet,
+                Note = f.Note
+            }).ToList();
+        }
+
+        public List<ExportMalYuklemeTalepFormDetailDto> TGetAllDetailsForExport()
+        {
+            var forms = _malYuklemeTalepFormRepository.GetAllForExport();
+
+            var details = new List<ExportMalYuklemeTalepFormDetailDto>();
+
+            foreach (var f in forms)
+            {
+                if (f.MalYuklemeTalepFormDetails != null)
+                {
+                    foreach (var d in f.MalYuklemeTalepFormDetails)
+                    {
+                        details.Add(new ExportMalYuklemeTalepFormDetailDto
+                        {
+                            MalYuklemeTalepFormDetailId = d.MalYuklemeTalepFormDetailId,
+                            MalYuklemeTalepFormId = f.MalYuklemeTalepFormId,
+                            CategoryId = d.CategoryId,
+                            CategoryName = d.Category?.CategoryName,
+                            SubCategoryId = d.SubCategoryId,
+                            SubCategoryName = d.SubCategory?.CategoryName,
+                            SubSubCategoryId = d.SubSubCategoryId,
+                            SubSubCategoryName = d.SubSubCategory?.CategoryName,
+                            ProductId = d.ProductId,
+                            ProductName = d.ProductName ?? d.Product?.ProductName,
+                            ErpCode = d.ErpCode ?? d.Product?.ErpCode,
+                            UnitTypeId = d.UnitTypeId,
+                            ApproximateWeightKg = d.ApproximateWeightKg,
+                            Price = d.Price,
+                            KoliIciAdet = d.KoliIciAdet,
+                            Quantity = d.Quantity,
+                            Discount1 = d.Discount1,
+                            Discount2 = d.Discount2,
+                            FixedPrice = d.FixedPrice,
+                            NetTutar = d.NetTutar,
+                            NetAdetFiyat = d.NetAdetFiyat,
+                            BrutTutar = d.BrutTutar,
+                            Maliyet = d.Maliyet
+                        });
+                    }
+                }
+            }
+
+            return details;
+        }
+
+        public List<ExportMalYuklemeTalepFormDetailDto> TGetDetailsForExportByUserId(int userId)
+        {
+            var forms = _malYuklemeTalepFormRepository.GetListForExportByUserId(userId);
+
+            var details = new List<ExportMalYuklemeTalepFormDetailDto>();
+
+            foreach (var f in forms)
+            {
+                if (f.MalYuklemeTalepFormDetails != null)
+                {
+                    foreach (var d in f.MalYuklemeTalepFormDetails)
+                    {
+                        details.Add(new ExportMalYuklemeTalepFormDetailDto
+                        {
+                            MalYuklemeTalepFormDetailId = d.MalYuklemeTalepFormDetailId,
+                            MalYuklemeTalepFormId = f.MalYuklemeTalepFormId,
+                            CategoryId = d.CategoryId,
+                            CategoryName = d.Category?.CategoryName,
+                            SubCategoryId = d.SubCategoryId,
+                            SubCategoryName = d.SubCategory?.CategoryName,
+                            SubSubCategoryId = d.SubSubCategoryId,
+                            SubSubCategoryName = d.SubSubCategory?.CategoryName,
+                            ProductId = d.ProductId,
+                            ProductName = d.ProductName ?? d.Product?.ProductName,
+                            ErpCode = d.ErpCode ?? d.Product?.ErpCode,
+                            UnitTypeId = d.UnitTypeId,
+                            ApproximateWeightKg = d.ApproximateWeightKg,
+                            Price = d.Price,
+                            KoliIciAdet = d.KoliIciAdet,
+                            Quantity = d.Quantity,
+                            Discount1 = d.Discount1,
+                            Discount2 = d.Discount2,
+                            FixedPrice = d.FixedPrice,
+                            NetTutar = d.NetTutar,
+                            NetAdetFiyat = d.NetAdetFiyat,
+                            BrutTutar = d.BrutTutar,
+                            Maliyet = d.Maliyet
+                        });
+                    }
+                }
+            }
+
+            return details;
         }
     }
 }

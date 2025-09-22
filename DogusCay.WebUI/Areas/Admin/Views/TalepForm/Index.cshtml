@@ -19,10 +19,26 @@
 <body>
     <input type="hidden" id="jwtToken" value="@jwt" />
 
-    <h3 class="mb-4 d-flex justify-content-between align-items-center">
+  @*   <h3 class="mb-4 d-flex justify-content-between align-items-center">
         <span>İnsert Talepleri</span>
         <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni İnsert Oluştur</a>
+        <a class="btn btn-success" asp-controller="TalepForm" asp-action="ExportToExcel">
+            Excel İndir
+        </a>
     </h3>
+ *@
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">İnsert Talepleri</h3>
+        <div class="btn-group">
+            <a class="btn btn-primary" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">
+                <i class="bi bi-plus-circle"></i> İnsert Talebi Oluştur
+            </a>
+            <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="ExportToExcel">
+                <i class="bi bi-file-earmark-excel"></i> Excel İndir
+            </a>
+        </div>
+    </div>
 
     @if (TempData["Success"] != null)
     {

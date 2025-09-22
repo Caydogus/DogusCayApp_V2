@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
+using ClosedXML.Excel;
 using DogusCay.API.Helpers;
 using DogusCay.Business.Abstract;
+using DogusCay.DTO.DTOs.ExcelDtos;
 using DogusCay.DTO.DTOs.MalYuklemeDtos;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Authorization;
@@ -298,6 +300,83 @@ namespace DogusCay.API.Controllers
                 return StatusCode(500, "Detaylar getirilirken beklenmeyen bir hata oluştu.");
             }
         }
+
+        [HttpGet("export-excel")]
+        public IActionResult ExportToExcel()
+        {
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+            var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+
+            List<ExportMalYuklemeTalepFormDto> forms;
+            List<ExportMalYuklemeTalepFormDetailDto> details;
+
+            if (role == "Admin")
+            {
+                forms = _malYuklemeTalepFormService.TGetAllForExport();
+                details = _malYuklemeTalepFormService.TGetAllDetailsForExport();
+            }
+            else
+            {
+                forms = _malYuklemeTalepFormService.TGetListForExportByUserId(userId);
+                details = _malYuklemeTalepFormService.TGetDetailsForExportByUserId(userId);
+            }
+
+            // Hem formlar hem detaylar boşsa Excel indirme
+            if ((forms == null || !forms.Any()) && (details == null || !details.Any()))
+            {
+                return NoContent();
+            }
+
+            using (var workbook = new XLWorkbook())
+            {
+                //1. Sayfa: Formlar
+                if (forms != null && forms.Any())
+                {
+                    var wsForms = workbook.Worksheets.Add("Formlar");
+                    var propsForms = typeof(ExportMalYuklemeTalepFormDto).GetProperties();
+
+                    for (int i = 0; i < propsForms.Length; i++)
+                        wsForms.Cell(1, i + 1).Value = propsForms[i].Name;
+
+                    for (int row = 0; row < forms.Count; row++)
+                    {
+                        for (int col = 0; col < propsForms.Length; col++)
+                        {
+                            var value = propsForms[col].GetValue(forms[row]);
+                            wsForms.Cell(row + 2, col + 1).Value = value?.ToString() ?? "";
+                        }
+                    }
+                }
+
+                //2. Sayfa: Detaylar
+                if (details != null && details.Any())
+                {
+                    var wsDetails = workbook.Worksheets.Add("Detaylar");
+                    var propsDetails = typeof(ExportMalYuklemeTalepFormDetailDto).GetProperties();
+
+                    for (int i = 0; i < propsDetails.Length; i++)
+                        wsDetails.Cell(1, i + 1).Value = propsDetails[i].Name;
+
+                    for (int row = 0; row < details.Count; row++)
+                    {
+                        for (int col = 0; col < propsDetails.Length; col++)
+                        {
+                            var value = propsDetails[col].GetValue(details[row]);
+                            wsDetails.Cell(row + 2, col + 1).Value = value?.ToString() ?? "";
+                        }
+                    }
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return File(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "MalYuklemeTalepForms.xlsx");
+                }
+            }
+        }
+
 
     }
 }

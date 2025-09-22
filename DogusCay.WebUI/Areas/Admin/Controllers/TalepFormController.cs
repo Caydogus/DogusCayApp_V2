@@ -154,5 +154,31 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> ExportToExcel()
+        {
+            var response = await _client.GetAsync("talepforms/export-excel");
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                TempData["ExcelError"] = "İndirilecek veri bulunamadı.";
+                return RedirectToAction("Index");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["ExcelError"] = "Excel dosyası alınamadı.";
+                return RedirectToAction("Index");
+            }
+
+            var content = await response.Content.ReadAsByteArrayAsync();
+            var fileName = "TalepForms.xlsx";
+
+            return File(content,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fileName);
+        }
+
+
     }
 }

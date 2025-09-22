@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DogusCay.DTO.DTOs.CategoryDtos;
 using DogusCay.DTO.DTOs.DistributorDtos;
+using DogusCay.DTO.DTOs.ExcelDtos;
 using DogusCay.DTO.DTOs.KanalDtos;
 using DogusCay.DTO.DTOs.MalYuklemeDtos;
 using DogusCay.DTO.DTOs.PaymentTypeDtos;
@@ -93,13 +94,16 @@ namespace DogusCay.API.Mapping
             // TalepFormItem  ResultTalepFormItemDto
 
             CreateMap<CreateTalepFormDto, TalepForm>().ReverseMap();
+            CreateMap<TalepForm,ExportTalepFormDto>().ReverseMap();
 
             // Create DTO  Entity
             CreateMap<CreateMalYuklemeTalepFormDto, MalYuklemeTalepForm>().ReverseMap();
             CreateMap<CreateMalYuklemeTalepFormDetailDto, MalYuklemeTalepFormDetail>().ReverseMap();
 
             CreateMap<MalYuklemeTalepForm, ResultMalYuklemeTalepFormDto>().ReverseMap(); 
-            CreateMap<MalYuklemeTalepFormDetail, ResultMalYuklemeTalepFormDetailDto>().ReverseMap(); 
+            CreateMap<MalYuklemeTalepFormDetail, ResultMalYuklemeTalepFormDetailDto>().ReverseMap();
+            CreateMap<MalYuklemeTalepForm, ExportMalYuklemeTalepFormDto>().ReverseMap();
+            CreateMap<MalYuklemeTalepFormDetail, ExportMalYuklemeTalepFormDetailDto>().ReverseMap();
 
         }
     }

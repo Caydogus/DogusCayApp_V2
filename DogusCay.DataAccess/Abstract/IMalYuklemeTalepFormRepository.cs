@@ -19,6 +19,8 @@ namespace DogusCay.DataAccess.Abstract
         MalYuklemeTalepForm GetDetailsForForm(int formid); // Navigation dahil detay
         public List<ResultMalYuklemeTalepFormDto> GetAllForIndex();
         MalYuklemeTalepForm GetByIdWithUserAndPoint(int id);//gelen mail için:taleplerde bulunan kullanıcı adı ve point ismi lazım
+        List<MalYuklemeTalepForm> GetAllForExport(); // Admin için tüm formlar (detaylarla birlikte) excele aktarılacak
+        List<MalYuklemeTalepForm> GetListForExportByUserId(int userId); // Kullanıcıya özel formlar (detaylarla birlikte) excele aktarılacak
 
     }
 }

@@ -227,5 +227,40 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToExcel() //MalYuklemeTalepForms için Excel'e Aktar
+        {
+            var token = HttpContext.Session.GetString("JwtToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                TempData["Error"] = "Oturum süresi dolmuş olabilir. Lütfen tekrar giriş yapın.";
+                return RedirectToAction("Index");
+            }
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "malyuklemetalepforms/export-excel");
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _client.SendAsync(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                TempData["Error"] = "İndirilecek kayıt bulunamadı.";
+                return RedirectToAction("Index");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                TempData["Error"] = "Excel indirme başarısız: " + error;
+                return RedirectToAction("Index");
+            }
+
+            var content = await response.Content.ReadAsByteArrayAsync();
+            return File(content,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "MalYuklemeTalepForms.xlsx");
+        }
+
     }
 }

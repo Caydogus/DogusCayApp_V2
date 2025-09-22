@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using ClosedXML.Excel;
 using DogusCay.API.Helpers;
+using DogusCay.DTO.DTOs.ExcelDtos;
 using DogusCay.DTO.DTOs.TalepFormDtos;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +20,7 @@ namespace DogusCay.API.Controllers
         private readonly IMapper _mapper;
         private readonly MailHelper _mailHelper;
 
-    
+
         public TalepFormsController(ITalepFormService talepFormService, IMapper mapper, MailHelper mailHelper)
         {
             _talepFormService = talepFormService;
@@ -125,7 +127,7 @@ namespace DogusCay.API.Controllers
                 catch (Exception ex)
                 {
                     Console.WriteLine("📧 Mail gönderilemedi: " + ex.Message);
-                    
+
                 }
             });
 
@@ -178,7 +180,7 @@ namespace DogusCay.API.Controllers
                 catch (Exception ex)
                 {
                     Console.WriteLine("📧 Onay maili gönderilemedi: " + ex.Message);
-                    
+
                 }
             });
 
@@ -339,8 +341,55 @@ namespace DogusCay.API.Controllers
             return Ok("Resim başarıyla yüklendi.");
         }
 
+        [HttpGet("export-excel")]
+        public IActionResult ExportToExcel()
+        {
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+            var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
 
+            List<ExportTalepFormDto> exportList;
 
+            if (role == "Admin")
+                exportList = _talepFormService.TGetAllForExport();
+            else
+                exportList = _talepFormService.TGetListForExportByUserId(userId);
+
+            // 📌 Veri kontrolü
+            if (exportList == null || !exportList.Any())
+            {
+                return NoContent(); // 204 → veri yoksa Excel indirme
+            }
+
+            using (var workbook = new XLWorkbook())
+            {
+                var ws = workbook.Worksheets.Add("TalepForms");
+
+                // kolon başlıkları
+                var props = typeof(ExportTalepFormDto).GetProperties();
+                for (int i = 0; i < props.Length; i++)
+                {
+                    ws.Cell(1, i + 1).Value = props[i].Name;
+                }
+
+                // veriler
+                for (int row = 0; row < exportList.Count; row++)
+                {
+                    for (int col = 0; col < props.Length; col++)
+                    {
+                        var value = props[col].GetValue(exportList[row]);
+                        ws.Cell(row + 2, col + 1).Value = value?.ToString() ?? "";
+                    }
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return File(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "TalepForms.xlsx");
+                }
+            }
+        }
 
     }
 }
