@@ -164,7 +164,32 @@ namespace DogusCay.API.Controllers
             var dto = _mapper.Map<ResultProductDto>(product);
             return Ok(dto);
         }
-       
+
+        // ✅ YENİ: TOPLU ÜRÜN BİLGİLERİ (performanslı)
+        [HttpPost("get-multiple-info")]
+        public IActionResult GetMultipleProductsInfo([FromBody] List<int> productIds)
+        {
+            if (productIds == null || !productIds.Any())
+                return BadRequest("Ürün ID listesi boş olamaz.");
+
+            var products = _productService.TGetMultipleProductsInfo(productIds);
+
+            if (products == null || products.Count == 0)
+                return NotFound("Belirtilen ürünler bulunamadı.");
+
+            var result = products.Select(p => new
+            {
+                p.ProductId,
+                p.ProductName,
+                p.Price,
+                p.ApproximateWeightKg,
+                p.KoliIciAdet,
+                CategoryName = p.Category?.CategoryName,
+                ParentCategoryName = p.Category?.ParentCategory?.CategoryName
+            });
+
+            return Ok(result);
+        }
 
     }
 

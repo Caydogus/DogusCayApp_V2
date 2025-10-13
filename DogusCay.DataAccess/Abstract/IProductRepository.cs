@@ -17,5 +17,8 @@ namespace DogusCay.DataAccess.Abstract
         List<Product> GetProductsBySubCategoryId(int subCategoryId);
         Product GetProductWithCategory(int productId);
         Product? GetProductWithDetails(int productId);
+
+        // ✅ Yeni eklendi: Toplu ürün bilgilerini almak için (performanslı)
+        List<Product> GetMultipleProductsInfo(List<int> productIds);
     }
 }

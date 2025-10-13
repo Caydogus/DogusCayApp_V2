@@ -317,92 +317,185 @@ async function addProduct() {
 }
 
 // --- Toplu Ürün Ekleme ---
-async function addAllProductsFromCategory() {
+//async function addAllProductsFromCategory() {
+//    const selectedSubCategoryId = $('#SubCategoryId').val();
+//    if (!selectedSubCategoryId) {
+//        alert("Toplu ürün eklemek için lütfen önce bir Alt Kategori seçiniz.");
+//        $('#addAllProductsCheckbox').prop('checked', false);
+//        return;
+//    }
+//    const kanalId = $('#KanalId').val();
+//    let defaultDiscount = 0;
+//    if (kanalId == "4") defaultDiscount = 7.5;
+//    else if (kanalId == "5") defaultDiscount = 9.5;
+//    try {
+//        if (!globalJwtToken) throw new Error("JWT token bulunamadı. Lütfen giriş yapın.");
+
+//        const response = await fetch(`${apiBaseUrl}categories/${selectedSubCategoryId}/products-recursive`, {
+//            headers: { "Authorization": "Bearer " + globalJwtToken }
+//        });
+
+//        if (!response.ok) {
+//            const errorText = await response.text();
+//            throw new Error(`API hatası: ${response.status} - ${errorText}`);
+//        }
+
+//        const products = await response.json();
+//        if (!products || products.length === 0) {
+//            alert("Bu kategori altında eklenecek ürün bulunamadı.");
+//            $('#addAllProductsCheckbox').prop('checked', false);
+//            return;
+//        }
+
+//        let addedCount = 0;
+
+//        for (const product of products) {
+//            const existingProductIndex = addedProducts.findIndex(p => p.productId === product.productId);
+//            if (existingProductIndex === -1) {
+//                let price = null, weight = null, koliIciAdet = 1;
+//                let categoryName = null, subCategoryName = null, subSubCategoryName = null;
+
+//                try {
+//                    const res = await fetch(`${apiBaseUrl}products/get-product-info/${product.productId}`, {
+//                        headers: { "Authorization": "Bearer " + globalJwtToken }
+//                    });
+
+//                    if (res.ok) {
+//                        const data = await res.json();
+//                        console.log("Toplu ürün detay:", data);
+
+//                        price = data.price ?? null;
+//                        weight = data.approximateWeightKg ?? null;
+//                        koliIciAdet = data.koliIciAdet ?? 1;
+//                        categoryName = data.categoryName ?? null;
+//                        subCategoryName = data.parentCategoryName ?? null;
+//                        subSubCategoryName = null;
+//                    }
+//                } catch (err) {
+//                    console.warn("Ürün detay alınamadı:", err);
+//                }
+
+//                addedProducts.push({
+//                    productId: product.productId,
+//                    productName: product.productName,
+//                    quantity: 1,
+//                    price,
+//                    weight,
+//                    koliIciAdet,
+//                    discount1: defaultDiscount,
+//                    discount2: 0,
+//                    fixedPrice: null,
+//                    categoryName,
+//                    subCategoryName,
+//                    subSubCategoryName
+//                });
+//                addedCount++;
+//            }
+//        }
+
+//        renderSepet();
+//        alert(`${addedCount} ürün sepete eklendi.`);
+
+//    } catch (error) {
+//        alert("Tüm ürünleri çekerken bir hata oluştu: " + error.message);
+//        $('#addAllProductsCheckbox').prop('checked', false);
+//    }
+//}
+
+// --- Kart görünüm: Mobil için şık kartlar ---
+async function addAllProductsFromCategory()//toplu ürün ekleme hızlı
+{
     const selectedSubCategoryId = $('#SubCategoryId').val();
     if (!selectedSubCategoryId) {
-        alert("Toplu ürün eklemek için lütfen önce bir Alt Kategori seçiniz.");
         $('#addAllProductsCheckbox').prop('checked', false);
         return;
     }
+
     const kanalId = $('#KanalId').val();
     let defaultDiscount = 0;
     if (kanalId == "4") defaultDiscount = 7.5;
     else if (kanalId == "5") defaultDiscount = 9.5;
+
     try {
         if (!globalJwtToken) throw new Error("JWT token bulunamadı. Lütfen giriş yapın.");
 
+        // 🌀 Kullanıcıya kısa bilgi göster (isteğe bağlı)
+        const spinner = $('<div id="loadingSpinner" class="loading-overlay">Ürünler ekleniyor...</div>');
+        $('body').append(spinner);
+
+        // 1️⃣ Kategori altındaki ürünleri çek
         const response = await fetch(`${apiBaseUrl}categories/${selectedSubCategoryId}/products-recursive`, {
             headers: { "Authorization": "Bearer " + globalJwtToken }
         });
 
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`API hatası: ${response.status} - ${errorText}`);
+            $('#addAllProductsCheckbox').prop('checked', false);
+            throw new Error(`API hatası: ${response.status}`);
         }
 
         const products = await response.json();
         if (!products || products.length === 0) {
-            alert("Bu kategori altında eklenecek ürün bulunamadı.");
             $('#addAllProductsCheckbox').prop('checked', false);
             return;
         }
 
-        let addedCount = 0;
+        // 2️⃣ Tüm ürün ID'lerini topla
+        const productIds = products.map(p => p.productId);
 
-        for (const product of products) {
-            const existingProductIndex = addedProducts.findIndex(p => p.productId === product.productId);
-            if (existingProductIndex === -1) {
-                let price = null, weight = null, koliIciAdet = 1;
-                let categoryName = null, subCategoryName = null, subSubCategoryName = null;
+        // 3️⃣ Tek endpoint ile tüm detayları çek
+        const bulkResponse = await fetch(`${apiBaseUrl}products/get-multiple-info`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + globalJwtToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(productIds)
+        });
 
-                try {
-                    const res = await fetch(`${apiBaseUrl}products/get-product-info/${product.productId}`, {
-                        headers: { "Authorization": "Bearer " + globalJwtToken }
-                    });
+        if (!bulkResponse.ok) {
+            $('#addAllProductsCheckbox').prop('checked', false);
+            throw new Error(`Toplu ürün API hatası: ${bulkResponse.status}`);
+        }
 
-                    if (res.ok) {
-                        const data = await res.json();
-                        console.log("Toplu ürün detay:", data);
+        const detailedProducts = await bulkResponse.json();
+        if (!detailedProducts || detailedProducts.length === 0) {
+            $('#addAllProductsCheckbox').prop('checked', false);
+            return;
+        }
 
-                        price = data.price ?? null;
-                        weight = data.approximateWeightKg ?? null;
-                        koliIciAdet = data.koliIciAdet ?? 1;
-                        categoryName = data.categoryName ?? null;
-                        subCategoryName = data.parentCategoryName ?? null;
-                        subSubCategoryName = null;
-                    }
-                } catch (err) {
-                    console.warn("Ürün detay alınamadı:", err);
-                }
-
+        // 4️⃣ Ürünleri sepete ekle
+        for (const product of detailedProducts) {
+            const exists = addedProducts.some(p => p.productId === product.productId);
+            if (!exists) {
                 addedProducts.push({
                     productId: product.productId,
                     productName: product.productName,
                     quantity: 1,
-                    price,
-                    weight,
-                    koliIciAdet,
+                    price: product.price ?? null,
+                    weight: product.approximateWeightKg ?? null,
+                    koliIciAdet: product.koliIciAdet ?? 1,
                     discount1: defaultDiscount,
                     discount2: 0,
                     fixedPrice: null,
-                    categoryName,
-                    subCategoryName,
-                    subSubCategoryName
+                    categoryName: product.categoryName ?? null,
+                    subCategoryName: product.parentCategoryName ?? null,
+                    subSubCategoryName: null
                 });
-                addedCount++;
             }
         }
 
+        // 5️⃣ Sepeti yenile
         renderSepet();
-        alert(`${addedCount} ürün sepete eklendi.`);
 
     } catch (error) {
-        alert("Tüm ürünleri çekerken bir hata oluştu: " + error.message);
+        console.warn("Toplu ürün ekleme hatası:", error.message);
         $('#addAllProductsCheckbox').prop('checked', false);
+    } finally {
+        // 🧹 Spinner’ı kaldır
+        $('#loadingSpinner').remove();
     }
 }
 
-// --- Kart görünüm: Mobil için şık kartlar ---
 function renderProductCards() {
     let html = '';
     if (addedProducts.length === 0) {

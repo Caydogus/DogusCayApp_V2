@@ -22,5 +22,7 @@ namespace DogusCay.Business.Abstract
         List<Product> TGetProductsBySubCategoryId(int subCategoryId);
         Product TGetProductWithCategory(int productId);
         Product? TGetProductDetailsById(int productId);
+        public List<Product> TGetMultipleProductsInfo(List<int> productIds);
+
     }
 }

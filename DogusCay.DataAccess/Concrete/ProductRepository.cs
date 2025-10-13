@@ -105,6 +105,20 @@ namespace DogusCay.DataAccess.Concrete
                 .Include(p => p.UnitType) // Ürünün birim tipini dahil et
                 .FirstOrDefault(p => p.ProductId == productId); // Belirtilen ID'ye göre ürünü bul (Senkron)
         }
+
+        //toplu ürün bilgilerini almak için (performanslı)
+        public List<Product> GetMultipleProductsInfo(List<int> productIds)
+        {
+            if (productIds == null || productIds.Count == 0)
+                return new List<Product>();
+
+            return _context.Products
+                .Include(p => p.Category)
+                    .ThenInclude(c => c.ParentCategory)
+                .Include(p => p.UnitType)
+                .Where(p => productIds.Contains(p.ProductId))
+                .ToList();
+        }
     }
 
 }   

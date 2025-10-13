@@ -54,6 +54,12 @@ namespace DogusCay.Business.Concrete
         {
             return _productRepository.GetProductWithDetails(productId);
         }
+
+        public List<Product> TGetMultipleProductsInfo(List<int> productIds)//toplu ürün bilgilerini almak için (performanslı)
+        {
+            return _productRepository.GetMultipleProductsInfo(productIds);
+        }
+       
     }
 
 }
