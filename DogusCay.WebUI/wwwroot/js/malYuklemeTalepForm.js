@@ -497,13 +497,13 @@ function renderProductCards() {
     }
     $('#cartSummaryArea').html(html);
 
-    setTimeout(() => {
-        if (addedProducts.length > 0) {
-            const lastProductId = addedProducts[addedProducts.length - 1].productId;
-            const lastRow = document.getElementById(`product-row-${lastProductId}`);
-            if (lastRow) lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }, 120);
+    //setTimeout(() => {
+    //    if (addedProducts.length > 0) {
+    //        const lastProductId = addedProducts[addedProducts.length - 1].productId;
+    //        const lastRow = document.getElementById(`product-row-${lastProductId}`);
+    //        if (lastRow) lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    //    }
+    //}, 120);
 }
 
 // --- Tablo görünüm: Masaüstü için ---
@@ -610,13 +610,13 @@ function renderProductTable() {
     }
     $('#cartSummaryArea').html(html);
 
-    setTimeout(() => {
-        if (addedProducts.length > 0) {
-            const lastProductId = addedProducts[addedProducts.length - 1].productId;
-            const lastRow = document.getElementById(`product-row-${lastProductId}`);
-            if (lastRow) lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }, 120);
+    //setTimeout(() => {
+    //    if (addedProducts.length > 0) {
+    //        const lastProductId = addedProducts[addedProducts.length - 1].productId;
+    //        const lastRow = document.getElementById(`product-row-${lastProductId}`);
+    //        if (lastRow) lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    //    }
+    //}, 120);
 }
 
 // --- Sepet Güncellemeleri ---
@@ -792,3 +792,5 @@ async function submitTalep() {
 function formatTL(value) {
     return Number(value).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
+

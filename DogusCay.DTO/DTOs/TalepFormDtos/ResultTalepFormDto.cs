@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DogusCay.DTO.DTOs.UserDtos;
 using DogusCay.Entity.Entities.Talep;
 
 namespace DogusCay.DTO.DTOs.TalepFormDtos
@@ -58,6 +59,7 @@ namespace DogusCay.DTO.DTOs.TalepFormDtos
         public int? KampanyaDonusAdedi { get; set; }
         public string? KampanyaResimYolu { get; set; }
         public decimal? AksiyonSatisFiyati { get; set; } //23.07.2025 eklendi. İnsert talebinde bulunan kişi ürünü hangi fiyattan satacagını belirler.
-
+        public int AppUserId { get; set; }
+        public ResultUserDto? AppUser { get; set; }
     }
 }

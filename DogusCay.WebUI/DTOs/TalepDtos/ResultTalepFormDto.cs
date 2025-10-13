@@ -1,4 +1,6 @@
-﻿namespace DogusCay.WebUI.DTOs.TalepDtos
+﻿using DogusCay.WebUI.DTOs.UserDtos;
+
+namespace DogusCay.WebUI.DTOs.TalepDtos
 {
     public class ResultTalepFormDto
     {
@@ -51,6 +53,8 @@
         public string? KampanyaResimYolu { get; set; }
 
         public decimal AksiyonSatisFiyati { get; set; } //23.07.2025 eklendi. İnsert talebinde bulunan kişi ürünü hangi fiyattan satacagını belirler.
+        public int AppUserId { get; set; }
+        public ResultUserDto? AppUser { get; set; }
 
     }
 }

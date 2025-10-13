@@ -52,7 +52,8 @@ else
             <thead class="table-dark">
                 <tr>
                     <th></th>
-                    <th>Kullanıcı</th>
+                    @if (User.IsInRole("Admin"))
+                   {<th>Kullanıcı</th> }
                     <th>Kanal</th>
                     <th>Nokta</th>
                     <th>Tarih</th>
@@ -72,7 +73,10 @@ else
                 {
                     <tr>
                         <td>@(startIndex++)</td>
-                        <td>@item.AppUser?.FirstName @item.AppUser?.LastName</td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>@item.AppUser?.FirstName @item.AppUser?.LastName</td>
+                        }
                         <td>@item.Kanal?.KanalName</td>
                         <td>@item.Point?.PointName</td>
                         <td>@item.CreateDate.ToShortDateString()</td>

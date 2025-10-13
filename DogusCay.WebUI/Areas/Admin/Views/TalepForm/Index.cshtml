@@ -61,6 +61,9 @@
                 <thead class="bg-dark text-white">
                     <tr>
                         <th></th>
+                      @if (User.IsInRole("Admin"))
+                      { <th>Kullanıcı</th>}
+
                         <th>Tarih</th>
                         <th>Müşteri</th>
                         <th>Ürün Adı</th>
@@ -89,6 +92,8 @@
                     {
                         <tr>
                             <td>@(startIndex++)</td>
+                            @if (User.IsInRole("Admin"))
+                          { <td>@item.AppUser?.FirstName @item.AppUser?.LastName</td> }
                             <td>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</td>
                             <td>@item.PointName</td>
                             <td>@item.ProductName</td>
