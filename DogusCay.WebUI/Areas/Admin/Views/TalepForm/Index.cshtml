@@ -71,15 +71,15 @@
                         <th>Kategori</th>
                         <th>Marka</th>
                         <th>(KG)</th>
-                        <th>Adet Farkı (₺)</th>
-                        <th>Son Fiyat</th>
+                     @*    <th>Adet Farkı (₺)</th> *@
+                      @*   <th>Son Fiyat</th> *@
                         <th>Aksiyon Fiyatı</th>
-                        <th>Toplam(₺)</th>
-                        <th>Maliyet</th>
-                        @if(User.IsInRole("BolgeMuduru")){ <th>Dönüş Adet</th>}
+                       @*  <th>Toplam(₺)</th> *@
+                       @*  <th>Maliyet</th> *@
+                      @*   @if(User.IsInRole("BolgeMuduru")){ <th>Dönüş Adet</th>} *@
                         <th>Durum</th>
                         @if (User.IsInRole("Admin")) {<th>İşlemler</th> }
-                        <th>Kampanya Dönüşü</th>
+                      @*   <th>Kampanya Dönüşü</th> *@
                         <th>Görsel</th>
                         <th class="text-center">Sil</th>
                     </tr>
@@ -101,12 +101,12 @@
                             <td>@item.SubCategoryName</td>
                             <td>@item.SubSubCategoryName</td> 
                             <td>@item.ApproximateWeightKg.ToString("0.00")</td>
-                            <td>@item.AdetFarkDonusuTL.ToString("C2")</td>
-                            <td>@item.SonAdetFiyati.ToString("C2")</td>
+                          @*   <td>@item.AdetFarkDonusuTL.ToString("C2")</td> *@
+                           @*  <td>@item.SonAdetFiyati.ToString("C2")</td> *@
                             <td>@item.AksiyonSatisFiyati.ToString("C2")</td>
-                            <td class="fw-bold">@item.Total.ToString("C2")</td>
-                            <td>@item.Maliyet</td>
-                             @if (User.IsInRole("BolgeMuduru")){<td>@item.KampanyaDonusAdedi</td>}
+                          @*   <td class="fw-bold">@item.Total.ToString("C2")</td> *@
+                          @*   <td>@item.Maliyet</td> *@
+                          @*    @if (User.IsInRole("BolgeMuduru")){<td>@item.KampanyaDonusAdedi</td>} *@
                              <td>
                                 @if (item.TalepDurumu == 0) { <span class="badge bg-warning text-dark">Bekliyor</span> }
                                 else if (item.TalepDurumu == TalepDurumu.Onaylandi) {<span class="badge bg-success">Onaylandı</span> }
@@ -129,7 +129,7 @@
                                 </td>
                             }
 
-                            <td>
+                          @*   <td>
                                 @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
                                 {
                                     <div class="d-flex align-items-center gap-2">
@@ -150,7 +150,7 @@
                                 {
                                     <span class="text-muted">-</span>
                                 }
-                            </td>
+                            </td> *@
                             <td>
                                 @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
                                 {
@@ -223,12 +223,12 @@
                             </div>
                             <div class="col-md-6 mb-2">
                                 <div class="mb-2"><strong>KG:</strong> <span>@item.ApproximateWeightKg.ToString("0.00")</span></div>
-                                <div class="mb-2"><strong>Adet Farkı (₺):</strong> <span>@item.AdetFarkDonusuTL.ToString("C2")</span></div>
-                                <div class="mb-2"><strong>Son Adet Fiyatı:</strong> <span>@item.SonAdetFiyati.ToString("C2")</span></div>
+                               @*  <div class="mb-2"><strong>Adet Farkı (₺):</strong> <span>@item.AdetFarkDonusuTL.ToString("C2")</span></div> *@
+                               @*  <div class="mb-2"><strong>Son Adet Fiyatı:</strong> <span>@item.SonAdetFiyati.ToString("C2")</span></div> *@
                                 <div class="mb-2"><strong>Aksiyon Fiyatı:</strong> <span>@item.AksiyonSatisFiyati.ToString("C2")</span></div>
-                                <div class="mb-2"><strong>Toplam (₺):</strong> <span class="fw-bold text-success">@item.Total.ToString("C2")</span></div>
-                                <div class="mb-2"><strong>Maliyet:</strong> <span>@item.Maliyet</span></div>
-                                <div class="mb-2"><strong>Dönüş Adet:</strong> <span>@item.KampanyaDonusAdedi</span></div>
+                               @*  <div class="mb-2"><strong>Toplam (₺):</strong> <span class="fw-bold text-success">@item.Total.ToString("C2")</span></div> *@
+                               @*  <div class="mb-2"><strong>Maliyet:</strong> <span>@item.Maliyet</span></div> *@
+                               @*  <div class="mb-2"><strong>Dönüş Adet:</strong> <span>@item.KampanyaDonusAdedi</span></div> *@
                             </div>
                         </div>
                         <div class="row align-items-center gy-2 gx-4">

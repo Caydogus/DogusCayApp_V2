@@ -64,6 +64,7 @@
                             <th>Ürün Adı</th>
                             <th>ERP Kodu</th>
                             <th>Tonaj</th>
+                            <th>Koli</th>
                             <th>Toplam Adet</th>
                             <th>Brüt</th>
                             <th>Net</th>
@@ -82,6 +83,7 @@
                                 <td>@(d.ProductName ?? "N/A")</td>
                                 <td>@(d.ErpCode ?? "N/A")</td>
                                 <td>@((d.ApproximateWeightKg * d.Quantity).ToString("N2"))</td>
+                                <td>@d.Quantity</td>
                                 <td>@(d.Quantity * d.KoliIciAdet)</td>
                                 <td>@d.BrutTutar?.ToString("C2")</td>
                                 <td>@d.NetTutar?.ToString("C2")</td>
@@ -144,6 +146,7 @@
                     <div><span class="field-label">Ürün:</span> <span class="field-value">@d.ProductName</span></div>
                     <div><span class="field-label">ERP:</span> <span class="field-value">@d.ErpCode</span></div>
                     <div><span class="field-label">Tonaj:</span> <span class="field-value">@((d.ApproximateWeightKg * d.Quantity).ToString("N2")) kg</span></div>
+                    <div><span class="field-label">Koli:</span> <span class="field-value">@(d.Quantity.ToString("C2"))</span></div>
                     <div><span class="field-label">Adet:</span> <span class="field-value">@(d.Quantity * d.KoliIciAdet)</span></div>
                     <div><span class="field-label">Brüt:</span> <span class="field-value">@d.BrutTutar?.ToString("C2")</span></div>
                     <div><span class="field-label">Net:</span> <span class="field-value">@d.NetTutar?.ToString("C2")</span></div>

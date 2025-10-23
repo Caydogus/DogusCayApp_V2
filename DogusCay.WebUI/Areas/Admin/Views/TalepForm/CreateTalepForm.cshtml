@@ -68,7 +68,7 @@
 			<input asp-for="Price" class="form-control" id="Price" type="hidden" />
 			<input asp-for="ApproximateWeightKg" class="form-control" id="ApproximateWeightKg" readonly type="hidden" />
 			<div class="form-group col-md-3">
-				<label for="Quantity">Planlanan Miktar(koli)</label>
+				<label for="Quantity">Hedeflenen Satış Miktarı(koli)</label>
 				<input asp-for="Quantity" class="form-control" id="Quantity" value="1" min="0" />
 			</div>
 		</div>
@@ -78,9 +78,9 @@
 	<div class="form-card mb-4">
 		<div class="row">
 			<div class="col-md-6 mb-3 mb-md-0">
-				<h6>Anlaşma Kondüsyonları</h6>
+				@* <h6>Anlaşma Kondüsyonları</h6> *@
 				<div class="divider"></div>
-				<div class="form-group mb-2">
+			@* 	<div class="form-group mb-2">
 					<label for="Iskonto1">İskonto 1 (%)</label>
 					<input asp-for="Iskonto1" class="form-control" />
 				</div>
@@ -91,7 +91,7 @@
 				<div class="form-group mb-2">
 					<label for="Iskonto3">İskonto 3 (%)</label>
 					<input asp-for="Iskonto3" class="form-control" />
-				</div>
+				</div> *@
 				<div class="form-group mb-2">
 					<label for="AksiyonSatisFiyati">Aksiyon Fiyatı(₺)</label>
 					<input asp-for="AksiyonSatisFiyati" class="form-control" />
@@ -99,7 +99,7 @@
 
 			</div>
 			<div class="col-md-6">
-				<h6>Kampanya İskontoları</h6>
+			@* 	<h6>Kampanya İskontoları</h6>
 				<div class="divider"></div>
 				<div class="form-group mb-2">
 					<label for="Iskonto4">Adet Fark (%)</label>
@@ -112,7 +112,7 @@
 				<div class="form-group mb-2">
 					<label for="SabitBedelTL">Sabit Bedel (₺)</label>
 					<input asp-for="SabitBedelTL" class="form-control" />
-				</div>
+				</div> *@
 
 				<div class="row">
 					<div class="col-md-6">
@@ -145,10 +145,10 @@
 
 	<!-- Hesaplanan Alanlar Cardı -->
 	<div class="form-card mb-4">
-		<h6>Hesaplanan Alanlar</h6>
+		@* <h6>Hesaplanan Alanlar</h6> *@
 		<div class="divider"></div>
 		<div class="row">
-			<input asp-for="BrutTotal" type="hidden" id="BrutTotal" />
+	 		@* <input asp-for="BrutTotal" type="hidden" id="BrutTotal" />
 			<div class="form-group col-md-6">
 				<label>Toplam Brüt Tutar (₺)</label>
 				<input class="form-control" id="BrutTotalDisplay" readonly />
@@ -168,7 +168,6 @@
 				<label>Liste Fiyatı (₺)</label>
 				<input class="form-control" id="ListeFiyatDisplay" readonly />
 			</div>
-
 			<input asp-for="SonAdetFiyati" type="hidden" id="SonAdetFiyati" />
 			<div class="form-group col-md-6">
 				<label style="background-color: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px;">
@@ -177,21 +176,17 @@
 				<input class="form-control" id="SonAdetFiyatiDisplay" readonly
 					   style="background-color: #e8f5e9; font-weight: 500;" />
 			</div>
-
-
 			<input asp-for="KoliIciToplamAdet" type="hidden" id="KoliIciToplamAdet" />
 			<div class="form-group col-md-6">
 				<label>Koli İçi Toplam Adet</label>
 				<input class="form-control" id="KoliIciToplamAdetDisplay" readonly />
 			</div>
-
 			<input asp-for="KoliToplamAgirligiKg" type="hidden" id="KoliToplamAgirligiKg" />
 			<div class="form-group col-md-6">
 				<label>Toplam Koli Ağırlığı (kg)</label>
 				<input class="form-control" id="KoliToplamAgirligiKgDisplay" readonly />
-			</div>
-
-			<div class="row date-row">
+			</div> *@
+		@* 	<div class="row date-row">
 				<div class="form-group col-md-6">
 					<label for="ValidFrom">Başlangıç Tarihi</label>
 					<input asp-for="ValidFrom" id="ValidFrom" type="date" class="form-control" />
@@ -200,7 +195,48 @@
 					<label for="ValidTo">Bitiş Tarihi</label>
 					<input asp-for="ValidTo" id="ValidTo" type="date" class="form-control" />
 				</div>
+			</div>  *@
+		
+			<div class="row">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="form-group col-md-6 mb-3">
+							<label for="GeciciAlan1">Aksiyon Tipi</label>
+							<select class="form-control" id="GeciciAlan1" name="GeciciAlan1">
+								<option value="">Seçiniz</option>
+								<option value="G1D1">Aksiyon Tipi 1</option>
+								<option value="G1D1">Aksiyon Tipi 2</option>
+								<option value="G1D1">Aksiyon Tipi 3</option>
+							</select>
+						</div>
+						<div class="form-group col-md-6 mb-3">
+							<label for="GeciciAlan2">İndirim Tipi</label>
+							<select class="form-control" id="GeciciAlan2" name="GeciciAlan2">
+								<option value="">Seçiniz</option>
+								<option value="G2D1">İndirim Tipi 1</option>
+								<option value="G2D1">İndirim Tipi 2</option>
+								<option value="G2D1">İndirim Tipi 3</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-12">
+					<div class="row">
+						<div class="form-group col-md-6 mb-3">
+							<label for="ValidFrom">Başlangıç Tarihi</label>
+							<input asp-for="ValidFrom" id="ValidFrom" type="date" class="form-control" />
+						</div>
+						<div class="form-group col-md-6 mb-3">
+							<label for="ValidTo">Bitiş Tarihi</label>
+							<input asp-for="ValidTo" id="ValidTo" type="date" class="form-control" />
+						</div>
+					</div>
+				</div>
+
 			</div>
+
+
 
 			<div class="form-group col-md-12">
 				<label for="Note">Açıklama</label>

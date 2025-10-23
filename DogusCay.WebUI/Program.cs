@@ -1,10 +1,12 @@
-﻿using System.Reflection;
-using System.Security.Claims;
+﻿using DogusCay.WebUI.Handlers;
 using DogusCay.WebUI.Services.TokenServices;
 using DogusCay.WebUI.Services.UserServices;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using DogusCay.WebUI.Handlers;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using System.Reflection;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,7 +82,21 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly())
 // MVC
 builder.Services.AddControllersWithViews();
 
+// --- Kültür Ayarları: Para birimi ₺, tarih formatı Türkçe ---
+var cultureInfo = new CultureInfo("tr-TR");
+cultureInfo.NumberFormat.CurrencySymbol = "₺";
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
 var app = builder.Build();
+
+// --- Localization Middleware ---
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("tr-TR"),
+    SupportedCultures = new[] { cultureInfo },
+    SupportedUICultures = new[] { cultureInfo }
+});
 
 // Production hataları
 if (!app.Environment.IsDevelopment())
