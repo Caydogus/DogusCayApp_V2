@@ -62,6 +62,9 @@ namespace DogusCay.DTO.DTOs.ExcelDtos
         public int? KampanyaDonusAdedi { get; set; }
         public string KampanyaResimYolu { get; set; }
         public decimal? AksiyonSatisFiyati { get; set; }
+        public string? AksiyonTipi { get; set; } //22.10.2025 eklendi. 
+        public string? IndirimTipi { get; set; } //22.10.2025 eklendi.
+
     }
 
 }

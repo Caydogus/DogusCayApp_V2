@@ -38,7 +38,7 @@ namespace DogusCay.API.Controllers
 
         [HttpGet("mine-paged")]
         [Authorize(Roles = "BolgeMuduru")]
-        public IActionResult GetOwnFormsPaged(int page = 1, int pageSize = 7)
+        public IActionResult GetOwnFormsPaged(int page = 1, int pageSize = 10)
         {
             int userId = GetUserId();
             if (userId == 0)
@@ -65,7 +65,7 @@ namespace DogusCay.API.Controllers
 
         [HttpGet("paged")]
         [Authorize(Roles = "Admin")]
-        public IActionResult GetAllFormsPaged(int page = 1, int pageSize = 7)
+        public IActionResult GetAllFormsPaged(int page = 1, int pageSize = 10)
         {
             var allForms = _talepFormService.TGetAllWithUser().AsQueryable();
 
@@ -245,8 +245,20 @@ namespace DogusCay.API.Controllers
             return Ok("Talep güncellendi.");
         }
 
+        //// Kullanıcının kendi onaylanmamış formunu silebilir.
+        //[Authorize(Roles = "Admin")]
+        //[HttpDelete("{id}")]
+        //public IActionResult Delete(int id)
+        //{
+        //    var form = _talepFormService.TGetById(id);
+        //    if (form == null)
+        //        return NotFound("Talep bulunamadı.");
+
+        //    _talepFormService.TDelete(id);
+        //    return Ok("Talep silindi.");
+        //}
         // Kullanıcının kendi onaylanmamış formunu silebilir.
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,BolgeMuduru")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -254,8 +266,20 @@ namespace DogusCay.API.Controllers
             if (form == null)
                 return NotFound("Talep bulunamadı.");
 
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var isAdmin = User.IsInRole("Admin");
+
+            if (!isAdmin) // Bölge Müdürü ise kontrol yap
+            {
+                if (form.AppUserId != currentUserId)
+                    return Forbid("Yalnızca kendi taleplerinizi silebilirsiniz.");
+
+                if (form.TalepDurumu != TalepDurumu.Bekliyor)
+                    return BadRequest("Sadece 'Bekliyor' durumundaki talepleri silebilirsiniz.");
+            }
+
             _talepFormService.TDelete(id);
-            return Ok("Talep silindi.");
+            return Ok("Talep başarıyla silindi.");
         }
 
         //Toplam form sayısını getirir.

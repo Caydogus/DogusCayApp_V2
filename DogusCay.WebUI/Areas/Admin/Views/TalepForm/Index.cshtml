@@ -29,10 +29,10 @@
  *@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0">İnsert Talepleri</h3>
+        <h3 class="mb-0">Kampanya-Aksiyon Girişleri</h3>
         <div class="btn-group">
             <a class="btn btn-primary" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">
-                <i class="bi bi-plus-circle"></i> İnsert Talebi Oluştur
+                <i class="bi bi-plus-circle"></i> Kampanya-Aksiyon Oluştur
             </a>
             <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="ExportToExcel">
                 <i class="bi bi-file-earmark-excel"></i> Excel İndir
@@ -74,6 +74,8 @@
                      @*    <th>Adet Farkı (₺)</th> *@
                       @*   <th>Son Fiyat</th> *@
                         <th>Aksiyon Fiyatı</th>
+                        <th>Aksiyon Tipi</th>
+                        <th>İndirim Tipi</th>
                        @*  <th>Toplam(₺)</th> *@
                        @*  <th>Maliyet</th> *@
                       @*   @if(User.IsInRole("BolgeMuduru")){ <th>Dönüş Adet</th>} *@
@@ -104,6 +106,8 @@
                           @*   <td>@item.AdetFarkDonusuTL.ToString("C2")</td> *@
                            @*  <td>@item.SonAdetFiyati.ToString("C2")</td> *@
                             <td>@item.AksiyonSatisFiyati.ToString("C2")</td>
+                            <td>@item.AksiyonTipi</td>
+                            <td>@item.IndirimTipi</td>
                           @*   <td class="fw-bold">@item.Total.ToString("C2")</td> *@
                           @*   <td>@item.Maliyet</td> *@
                           @*    @if (User.IsInRole("BolgeMuduru")){<td>@item.KampanyaDonusAdedi</td>} *@
@@ -226,6 +230,8 @@
                                @*  <div class="mb-2"><strong>Adet Farkı (₺):</strong> <span>@item.AdetFarkDonusuTL.ToString("C2")</span></div> *@
                                @*  <div class="mb-2"><strong>Son Adet Fiyatı:</strong> <span>@item.SonAdetFiyati.ToString("C2")</span></div> *@
                                 <div class="mb-2"><strong>Aksiyon Fiyatı:</strong> <span>@item.AksiyonSatisFiyati.ToString("C2")</span></div>
+                                <div class="mb-2"><strong>Aksiyon Tipi:</strong> <span>@item.AksiyonTipi</span></div>
+                                <div class="mb-2"><strong>İndirim Tipi:</strong> <span>@item.IndirimTipi</span></div>
                                @*  <div class="mb-2"><strong>Toplam (₺):</strong> <span class="fw-bold text-success">@item.Total.ToString("C2")</span></div> *@
                                @*  <div class="mb-2"><strong>Maliyet:</strong> <span>@item.Maliyet</span></div> *@
                                @*  <div class="mb-2"><strong>Dönüş Adet:</strong> <span>@item.KampanyaDonusAdedi</span></div> *@

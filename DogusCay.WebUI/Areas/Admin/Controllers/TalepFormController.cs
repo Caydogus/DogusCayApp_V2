@@ -63,7 +63,7 @@ namespace DogusCay.WebUI.Areas.Admin.Controllers
             try
             {
                 string endpoint;
-                int pageSize = 7;
+                int pageSize = 10;
 
                 if (User.IsInRole("Admin"))
                     endpoint = $"talepforms/paged?page={page}&pageSize={pageSize}";

@@ -37,6 +37,8 @@ $(document).ready(() => {
         adetFark: $('#AdetFarkDonusuTL'),
         validFrom: $('#ValidFrom'),
         validTo: $('#ValidTo'),
+        aksiyonTipi: $('#AksiyonTipi'),
+        indirimTipi: $('#IndirimTipi'),
         form: $('#talepForm')
     };
 
@@ -288,7 +290,8 @@ $(document).ready(() => {
             if (!dto.productId) errors.push("Ürün seçimi zorunludur.");
             if (!dto.aksiyonSatisFiyati || dto.aksiyonSatisFiyati <= 0) errors.push("Aksiyon satış fiyatı girilmelidir.");
             if (!dto.quantity || dto.quantity <= 0) errors.push("Geçerli bir adet girilmelidir.");
-
+            if (!dto.aksiyonTipi) errors.push("Aksiyon tipi seçimi zorunludur.");//23.10.2025 eklendi
+            if (!dto.indirimTipi) errors.push("İndirim tipi seçimi zorunludur.");//23.10.2025 eklendi
             const validFrom = new Date(dto.validFrom);
             const validTo = new Date(dto.validTo);
             if (validTo < validFrom) errors.push("Bitiş tarihi başlangıçtan önce olamaz!");
@@ -329,6 +332,8 @@ $(document).ready(() => {
                 adetFarkDonusuTL: parseFloat(elements.adetFark.val()) || 0,
                 validFrom: elements.validFrom.val(),
                 validTo: elements.validTo.val(),
+                aksiyonTipi: $('#AksiyonTipi').val(), //23.10.2025 eklendi
+                indirimTipi: $('#IndirimTipi').val(), //23.10.2025 eklendi
                 note: $('#Note').val(),
                 total: parseFloat($('#Total').val()) || 0,
                 brutTotal: parseFloat($('#BrutTotal').val()) || 0

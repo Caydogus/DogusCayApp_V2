@@ -57,5 +57,7 @@ public class TalepForm
     public int? KampanyaDonusAdedi { get; set; }
     public string? KampanyaResimYolu { get; set; }
     public decimal? AksiyonSatisFiyati { get; set; } //23.07.2025 eklendi. İnsert talebinde bulunan kişi ürünü hangi fiyattan satacagını belirler.
+    public string? AksiyonTipi { get; set; } //22.10.2025 eklendi. 
+    public string? IndirimTipi { get; set; } //22.10.2025 eklendi.
 
 }

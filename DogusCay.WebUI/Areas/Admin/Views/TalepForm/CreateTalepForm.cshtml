@@ -76,10 +76,11 @@
 
 	<!-- Anlaşma Kondüsyonları & Kampanya Cardı -->
 	<div class="form-card mb-4">
+		<div class="divider"></div>
 		<div class="row">
 			<div class="col-md-6 mb-3 mb-md-0">
 				@* <h6>Anlaşma Kondüsyonları</h6> *@
-				<div class="divider"></div>
+				
 			@* 	<div class="form-group mb-2">
 					<label for="Iskonto1">İskonto 1 (%)</label>
 					<input asp-for="Iskonto1" class="form-control" />
@@ -113,8 +114,9 @@
 					<label for="SabitBedelTL">Sabit Bedel (₺)</label>
 					<input asp-for="SabitBedelTL" class="form-control" />
 				</div> *@
-
+			
 				<div class="row">
+					
 					<div class="col-md-6">
 						<div class="form-group mb-2">
 							<label for="OneriRafFiyati" class="bg-success text-white p-1">Öneri Raf Fiyatı</label>
@@ -196,44 +198,68 @@
 					<input asp-for="ValidTo" id="ValidTo" type="date" class="form-control" />
 				</div>
 			</div>  *@
-		
+
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
+						<!-- Aksiyon Tipi -->
 						<div class="form-group col-md-6 mb-3">
-							<label for="GeciciAlan1">Aksiyon Tipi</label>
-							<select class="form-control" id="GeciciAlan1" name="GeciciAlan1">
+							<label asp-for="AksiyonTipi">Aksiyon Tipi</label>
+							<select asp-for="AksiyonTipi" class="form-control" id="AksiyonTipi">
 								<option value="">Seçiniz</option>
-								<option value="G1D1">Aksiyon Tipi 1</option>
-								<option value="G1D1">Aksiyon Tipi 2</option>
-								<option value="G1D1">Aksiyon Tipi 3</option>
+								<option value="Insert">Insert (gazete, dergi, katalog içi tanıtım)</option>
+								<option value="Kasa Aktivitesi">Kasa aktivitesi (kasa indirimi / kasada kampanya)</option>
+								<option value="Fiyat İndirimi">Fiyat indirimi / kampanyalı satış</option>
+								<option value="Multi-pack Promosyonu">Multi-pack promosyonu (2 al 1 öde, 3 al 2 öde vb.)</option>
+								<option value="Hediye Ürün Kampanyası">Hediye ürün kampanyası</option>
+								<option value="Adet Fark Dönüşlü Kampanya">Adet fark dönüşlü kampanya</option>
+								<option value="Yıl Dönümü Özel Fiyatlama">Yıl dönümü özel fiyatlama</option>
+								<option value="Yeni Mağaza Açılış İndirimi">Yeni mağaza açılış indirimi</option>
+								<option value="Marka Bazlı Kampanya">Marka bazlı kampanya</option>
+								<option value="Yeni Ürün Lansmanı">Yeni ürün lansmanı aksiyonu</option>
+								<option value="Sadakat Programı">Sadakat programı / müşteri özel kampanyası</option>
+								<option value="Kombine Kampanya">Kombine kampanya (örnek: Patos + Ice Tea)</option>
+								<option value="Kasiyer Satış Primi">Kasiyer satış primi</option>
+								<option value="Stok Eritme">Stok eritme / devir azaltma aksiyonu</option>
+								<option value="Sezonluk Aksiyon">Sezonluk veya dönemsel aksiyon (bayram, yılbaşı vb.)</option>
+								<option value="Trade Promotion">Trade promotion (bayi destekli aksiyon)</option>
+
 							</select>
 						</div>
+
+						<!-- İndirim Tipi -->
 						<div class="form-group col-md-6 mb-3">
-							<label for="GeciciAlan2">İndirim Tipi</label>
-							<select class="form-control" id="GeciciAlan2" name="GeciciAlan2">
+							<label asp-for="IndirimTipi">İndirim Tipi</label>
+							<select asp-for="IndirimTipi" class="form-control" id="IndirimTipi">
 								<option value="">Seçiniz</option>
-								<option value="G2D1">İndirim Tipi 1</option>
-								<option value="G2D1">İndirim Tipi 2</option>
-								<option value="G2D1">İndirim Tipi 3</option>
+								<option value="Yüzdesel İndirim">% Yüzdesel indirim (örnek: %10 iskonto)</option>
+								<option value="Sabit Tutar İndirimi">Sabit tutar indirimi (örnek: adet başı 5 TL)</option>
+								<option value="Sabit Fiyat Uygulaması">Sabit fiyat uygulaması (örnek: bm çayları = 50 TL sabit)</option>
+								<option value="Bonus Koli">Bonus koli (örnek: 10 koli alana 1 koli bedava)</option>
+								<option value="Kasiyer Satış Primi">Kasiyer satış primi (performansa bağlı indirim)</option>
+								<option value="Promosyon Ürünü">Promosyon ürünü bedelsiz verilmesi</option>
+								<option value="Mağaza Bazlı Fiyat">Mağaza/bölge özel fiyat uygulaması</option>
+								<option value="Sadakat İndirimi">Sadakat indirimi (müşteri segmentine özel)</option>
+								<option value="Kasa İndirimi">Kasa indirimi (kasada anlık düşen fiyat)</option>
+
 							</select>
 						</div>
 					</div>
 				</div>
 
+				<!-- Tarih Alanları -->
 				<div class="col-md-12">
 					<div class="row">
 						<div class="form-group col-md-6 mb-3">
-							<label for="ValidFrom">Başlangıç Tarihi</label>
+							<label asp-for="ValidFrom">Başlangıç Tarihi</label>
 							<input asp-for="ValidFrom" id="ValidFrom" type="date" class="form-control" />
 						</div>
 						<div class="form-group col-md-6 mb-3">
-							<label for="ValidTo">Bitiş Tarihi</label>
+							<label asp-for="ValidTo">Bitiş Tarihi</label>
 							<input asp-for="ValidTo" id="ValidTo" type="date" class="form-control" />
 						</div>
 					</div>
 				</div>
-
 			</div>
 
 

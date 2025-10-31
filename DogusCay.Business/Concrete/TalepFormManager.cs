@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Vml.Office;
 using DogusCay.Business.Abstract;
 using DogusCay.DataAccess.Abstract;
 using DogusCay.DTO.DTOs.ExcelDtos;
@@ -27,6 +28,8 @@ namespace DogusCay.Business.Concrete
             entity.PointId = dto.PointId ?? 0;
             entity.ValidFrom = dto.ValidFrom < new DateTime(1753, 1, 1) ? DateTime.Now : dto.ValidFrom;
             entity.ValidTo = dto.ValidTo < new DateTime(1753, 1, 1) ? DateTime.Now.AddDays(7) : dto.ValidTo;
+            entity.AksiyonTipi = dto.AksiyonTipi;//22.10.2025 eklendi.
+            entity.IndirimTipi = dto.IndirimTipi;//22.10.2025 eklendi.
             entity.TalepTip = TalepTip.Insert;
 
             // Hesaplamalar
@@ -126,6 +129,8 @@ namespace DogusCay.Business.Concrete
                 AdetFarkDonusuTL = x.AdetFarkDonusuTL,
                 ValidFrom = x.ValidFrom,
                 ValidTo = x.ValidTo,
+                AksiyonTipi = x.AksiyonTipi,//22.10.2025 eklendi.
+                IndirimTipi = x.IndirimTipi,//22.10.2025 eklendi.
                 TalepDurumu = x.TalepDurumu.ToString(),
                 OnaylayanAdminId = x.OnaylayanAdminId,
                 OnaylayanAdminName = x.OnaylayanAdmin?.UserName,
@@ -191,6 +196,8 @@ namespace DogusCay.Business.Concrete
                 AdetFarkDonusuTL = x.AdetFarkDonusuTL,
                 ValidFrom = x.ValidFrom,
                 ValidTo = x.ValidTo,
+                AksiyonTipi = x.AksiyonTipi,//22.10.2025 eklendi.
+                IndirimTipi = x.IndirimTipi,//22.10.2025 eklendi.
                 TalepDurumu = x.TalepDurumu.ToString(),
                 OnaylayanAdminId = x.OnaylayanAdminId,
                 OnaylayanAdminName = x.OnaylayanAdmin?.UserName,
