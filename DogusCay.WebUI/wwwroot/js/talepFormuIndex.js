@@ -128,22 +128,72 @@ async function uploadImage(formId, type) {
     formData.append("image", file);
 
     try {
+        // ✅ yeni eklendi – yükleme bildirimi
+        alert("📤 Görsel yükleniyor...");
+
         const response = await fetch(`${apiBaseUrl}talepforms/upload-image/${formId}`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
             body: formData
         });
 
         if (response.ok) {
-            alert("Resim başarıyla yüklendi.");
+            // ✅ yeni eklendi – artık API JSON döndürüyor
+            const result = await response.json();
+            alert("✅ " + (result.message || "Resim başarıyla yüklendi."));
+
+            // ✅ yeni eklendi – yüklenen görseli anında önizleme (isteğe bağlı)
+            const imgPreview = document.getElementById(`preview_${formId}`);
+            if (imgPreview && result.imageUrl)
+                imgPreview.src = result.imageUrl;
+
+            // 🔄 değiştirildi – başarılı yüklemeden sonra sayfayı yenile
             location.reload();
         } else {
             const error = await response.text();
-            alert("Yükleme başarısız: " + error);
+            alert("❌ Yükleme başarısız: " + error);
         }
     } catch (err) {
         alert("Sunucu hatası: " + err);
     }
 }
+
+
+//async function uploadImage(formId, type) {
+//    const inputId = type === 'Card' ? `imageInputCard_${formId}` : `imageInputTable_${formId}`;
+//    const input = document.getElementById(inputId);
+
+//    if (!token) {
+//        alert("Oturum süresi dolmuş olabilir.");
+//        return;
+//    }
+
+//    if (!input || !input.files || input.files.length === 0) {
+//        alert("Lütfen bir görsel seçin.");
+//        return;
+//    }
+
+//    const file = input.files[0];
+//    const formData = new FormData();
+//    formData.append("image", file);
+
+//    try {
+//        const response = await fetch(`${apiBaseUrl}talepforms/upload-image/${formId}`, {
+//            method: 'POST',
+//            headers: {
+//                'Authorization': `Bearer ${token}`
+//            },
+//            body: formData
+//        });
+
+//        if (response.ok) {
+//            alert("Resim başarıyla yüklendi.");
+//            location.reload();
+//        } else {
+//            const error = await response.text();
+//            alert("Yükleme başarısız: " + error);
+//        }
+//    } catch (err) {
+//        alert("Sunucu hatası: " + err);
+//    }
+//}

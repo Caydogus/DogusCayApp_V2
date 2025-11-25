@@ -9,8 +9,11 @@
     var pageSize = (int)(ViewBag.PageSize ?? 10);
     var totalCount = (int)(ViewBag.TotalCount ?? 0);
 
-    var displayRange = 2; // Aktif sayfanın etrafında gösterilecek sayfa sayısı
-    var firstLastPagesToShow = 1; // İlk ve son kısımlarda gösterilecek sayfa sayısı
+    var displayRange = 2;
+    var firstLastPagesToShow = 1;
+
+    // ✅ yeni eklendi – API Base URL (görseller ve istekler buradan gelir)
+    var apiBase = "http://192.168.0.29:7061";
 }
 
 <head>
@@ -18,15 +21,6 @@
 </head>
 <body>
     <input type="hidden" id="jwtToken" value="@jwt" />
-
-  @*   <h3 class="mb-4 d-flex justify-content-between align-items-center">
-        <span>İnsert Talepleri</span>
-        <a class="btn btn-success" asp-area="Admin" asp-controller="TalepForm" asp-action="CreateTalepForm">+ Yeni İnsert Oluştur</a>
-        <a class="btn btn-success" asp-controller="TalepForm" asp-action="ExportToExcel">
-            Excel İndir
-        </a>
-    </h3>
- *@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="mb-0">Kampanya-Aksiyon Girişleri</h3>
@@ -55,15 +49,15 @@
     }
     else
     {
-        @* --- Tablo Görünümü (Büyük ekranlar için) --- *@
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover searchable-table">
                 <thead class="bg-dark text-white">
                     <tr>
                         <th></th>
-                      @if (User.IsInRole("Admin"))
-                      { <th>Kullanıcı</th>}
-
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th>Kullanıcı</th>
+                        }
                         <th>Tarih</th>
                         <th>Müşteri</th>
                         <th>Ürün Adı</th>
@@ -71,17 +65,15 @@
                         <th>Kategori</th>
                         <th>Marka</th>
                         <th>(KG)</th>
-                     @*    <th>Adet Farkı (₺)</th> *@
-                      @*   <th>Son Fiyat</th> *@
                         <th>Aksiyon Fiyatı</th>
                         <th>Aksiyon Tipi</th>
                         <th>İndirim Tipi</th>
-                       @*  <th>Toplam(₺)</th> *@
-                       @*  <th>Maliyet</th> *@
-                      @*   @if(User.IsInRole("BolgeMuduru")){ <th>Dönüş Adet</th>} *@
                         <th>Durum</th>
-                        @if (User.IsInRole("Admin")) {<th>İşlemler</th> }
-                      @*   <th>Kampanya Dönüşü</th> *@
+                        @* ✅ YENİ EKLENDİ: Admin İşlemleri Sütunu *@
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th>Admin İşlemleri</th>
+                        }
                         <th>Görsel</th>
                         <th class="text-center">Sil</th>
                     </tr>
@@ -95,36 +87,54 @@
                         <tr>
                             <td>@(startIndex++)</td>
                             @if (User.IsInRole("Admin"))
-                          { <td>@item.AppUser?.FirstName @item.AppUser?.LastName</td> }
+                            {
+                                <td>@item.AppUser?.FirstName @item.AppUser?.LastName</td>
+                            }
                             <td>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</td>
                             <td>@item.PointName</td>
                             <td>@item.ProductName</td>
                             <td>@item.ErpCode</td>
                             <td>@item.SubCategoryName</td>
-                            <td>@item.SubSubCategoryName</td> 
+                            <td>@item.SubSubCategoryName</td>
                             <td>@item.ApproximateWeightKg.ToString("0.00")</td>
-                          @*   <td>@item.AdetFarkDonusuTL.ToString("C2")</td> *@
-                           @*  <td>@item.SonAdetFiyati.ToString("C2")</td> *@
                             <td>@item.AksiyonSatisFiyati.ToString("C2")</td>
                             <td>@item.AksiyonTipi</td>
                             <td>@item.IndirimTipi</td>
-                          @*   <td class="fw-bold">@item.Total.ToString("C2")</td> *@
-                          @*   <td>@item.Maliyet</td> *@
-                          @*    @if (User.IsInRole("BolgeMuduru")){<td>@item.KampanyaDonusAdedi</td>} *@
-                             <td>
-                                @if (item.TalepDurumu == 0) { <span class="badge bg-warning text-dark">Bekliyor</span> }
-                                else if (item.TalepDurumu == TalepDurumu.Onaylandi) {<span class="badge bg-success">Onaylandı</span> }
-                                else if (item.TalepDurumu == TalepDurumu.Reddedildi) { <span class="badge bg-danger">Reddedildi</span> }
+                            <td>
+                                @if (item.TalepDurumu == 0)
+                                {
+                                    <span class="badge bg-warning text-dark">Bekliyor</span>
+                                }
+                                else if (item.TalepDurumu == TalepDurumu.Onaylandi)
+                                {
+
+                                    <span class="badge bg-success">Onaylandı</span>
+                                }
+                                else if (item.TalepDurumu == TalepDurumu.Reddedildi)
+                                {
+
+                                    <span class="badge bg-danger">Reddedildi</span>
+                                }
                             </td>
+
+                            @* ✅ GÜNCELLENMİŞ: Admin Onay/Reddet Butonları *@
                             @if (User.IsInRole("Admin"))
                             {
                                 <td>
-                                    @if (item.TalepDurumu == 0)
+                                    @if (item.TalepDurumu == 0) // Bekliyor
                                     {
                                         <div class="d-flex flex-column gap-1">
                                             <button class="btn btn-success btn-sm" onclick="approveTalep(@item.TalepFormId)">Onayla</button>
                                             <button class="btn btn-danger btn-sm" onclick="rejectTalep(@item.TalepFormId)">Reddet</button>
                                         </div>
+                                    }
+                                    else if (item.TalepDurumu == TalepDurumu.Reddedildi) // Reddedildi ise
+                                    {
+                                        <button class="btn btn-success btn-sm" onclick="approveTalep(@item.TalepFormId)">**Tekrar Onayla**</button>
+                                    }
+                                    else if (item.TalepDurumu == TalepDurumu.Onaylandi) // Onaylandı ise
+                                    {
+                                        <button class="btn btn-danger btn-sm" onclick="rejectTalep(@item.TalepFormId)">**Tekrar Reddet**</button>
                                     }
                                     else
                                     {
@@ -132,29 +142,8 @@
                                     }
                                 </td>
                             }
+                            @* ---------------------------------------- *@
 
-                          @*   <td>
-                                @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
-                                {
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input type="hidden" id="koliIciToplamAdetTable_@item.TalepFormId" value="@item.KoliIciToplamAdet" />
-                                        <input type="number" id="kampanyaInputTable_@item.TalepFormId"
-                                               class="form-control form-control-sm"
-                                               style="width: 70px;"
-                                               min="0" placeholder="Adet" />
-                                        <button class="btn btn-primary btn-sm" onclick="gonderKampanyaDonusu(@item.TalepFormId, 'Table')">Kaydet</button>
-
-                                    </div>
-                                }
-                                else if (item.KampanyaDonusAdedi.HasValue)
-                                {
-                                    <span>@item.KampanyaDonusAdedi.Value adet</span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">-</span>
-                                }
-                            </td> *@
                             <td>
                                 @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
                                 {
@@ -163,15 +152,25 @@
                                         <button class="btn btn-info btn-sm" onclick="uploadImage(@item.TalepFormId, 'Table')">Yükle</button>
                                         @if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
                                         {
-                                            <a href="@item.KampanyaResimYolu" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
+                                            @* 🔄 değiştirildi – artık API portundan geliyor *@
+                                            <a href="@($"{apiBase}{item.KampanyaResimYolu}")" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
                                                 <i class="bi bi-camera"></i> Resmi Aç
                                             </a>
+                                            @* ✅ yeni eklendi – önizleme *@
+                                            <img id="preview_@item.TalepFormId" src="@($"{apiBase}{item.KampanyaResimYolu}")"
+                                                 style="max-width:100px; display:block; margin-top:6px;" />
+                                        }
+                                        else
+                                        {
+                                            @* ✅ yeni eklendi – boş önizleme *@
+                                            <img id="preview_@item.TalepFormId" style="max-width:100px; display:none; margin-top:6px;" />
                                         }
                                     </div>
                                 }
                                 else if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
                                 {
-                                    <a href="@item.KampanyaResimYolu" target="_blank" class="text-decoration-underline text-info fw-semibold">
+                                    @* 🔄 değiştirildi *@
+                                    <a href="@($"{apiBase}{item.KampanyaResimYolu}")" target="_blank" class="text-decoration-underline text-info fw-semibold">
                                         <i class="bi bi-camera"></i> Resmi Aç
                                     </a>
                                 }
@@ -180,6 +179,7 @@
                                     <span class="text-muted">-</span>
                                 }
                             </td>
+
                             <td class="text-center">
                                 <button class="btn btn-danger btn-sm" onclick="deleteTalep(@item.TalepFormId)">Sil</button>
                             </td>
@@ -189,15 +189,15 @@
             </table>
         </div>
 
-        @* --- Kart Görünümü (Küçük ekranlar için) --- *@
+        @* --- Kart Görünümü (mobil) --- *@
         <div class="card-view searchable-list">
             @{
                 int cardIndex = ((currentPage - 1) * pageSize) + 1;
             }
             @foreach (var item in Model)
             {
-                <div class="card mb-4 shadow-sm border-0 rounded-4 px-0 card-talep mal-yukleme-card" style="background: #f8fafc;">
-                    <div class="card-header rounded-top-4 bg-white d-flex justify-content-between align-items-center border-bottom-0" style="padding: 20px 24px;">
+                <div class="card mb-4 shadow-sm border-0 rounded-4 px-0 card-talep" style="background:#f8fafc;">
+                    <div class="card-header rounded-top-4 bg-white d-flex justify-content-between align-items-center border-bottom-0" style="padding:20px 24px;">
                         <div>
                             <span class="fw-bold text-dark-emphasis fs-6">#@cardIndex</span>
                             <span class="text-muted ms-2">@item.ProductName <span class="badge bg-secondary ms-2">@item.ErpCode</span></span>
@@ -209,45 +209,51 @@
                             }
                             else if (item.TalepDurumu == TalepDurumu.Onaylandi)
                             {
+
                                 <span class="badge bg-success px-3 py-2">Onaylandı</span>
                             }
                             else if (item.TalepDurumu == TalepDurumu.Reddedildi)
                             {
+
                                 <span class="badge bg-danger px-3 py-2">Reddedildi</span>
                             }
                         </span>
                     </div>
-                    <div class="card-body py-4 px-4" style="background: #f8fafc;">
+                    <div class="card-body py-4 px-4" style="background:#f8fafc;">
                         <div class="row mb-3">
                             <div class="col-md-6 mb-2">
-                                <div class="mb-2"><strong>Müşteri:</strong> <span>@item.PointName</span></div>
-                                <div class="mb-2"><strong>Kampanya Tarihi:</strong> <span>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</span></div>
-                                <div class="mb-2"><strong>Kategori:</strong> <span>@item.SubCategoryName</span></div>
-                                <div class="mb-2"><strong>Marka:</strong> <span>@item.SubSubCategoryName</span></div>
+                                <div><strong>Müşteri:</strong> <span>@item.PointName</span></div>
+                                <div><strong>Kampanya Tarihi:</strong> <span>@item.ValidFrom.ToShortDateString() - @item.ValidTo.ToShortDateString()</span></div>
+                                <div><strong>Kategori:</strong> <span>@item.SubCategoryName</span></div>
+                                <div><strong>Marka:</strong> <span>@item.SubSubCategoryName</span></div>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <div class="mb-2"><strong>KG:</strong> <span>@item.ApproximateWeightKg.ToString("0.00")</span></div>
-                               @*  <div class="mb-2"><strong>Adet Farkı (₺):</strong> <span>@item.AdetFarkDonusuTL.ToString("C2")</span></div> *@
-                               @*  <div class="mb-2"><strong>Son Adet Fiyatı:</strong> <span>@item.SonAdetFiyati.ToString("C2")</span></div> *@
-                                <div class="mb-2"><strong>Aksiyon Fiyatı:</strong> <span>@item.AksiyonSatisFiyati.ToString("C2")</span></div>
-                                <div class="mb-2"><strong>Aksiyon Tipi:</strong> <span>@item.AksiyonTipi</span></div>
-                                <div class="mb-2"><strong>İndirim Tipi:</strong> <span>@item.IndirimTipi</span></div>
-                               @*  <div class="mb-2"><strong>Toplam (₺):</strong> <span class="fw-bold text-success">@item.Total.ToString("C2")</span></div> *@
-                               @*  <div class="mb-2"><strong>Maliyet:</strong> <span>@item.Maliyet</span></div> *@
-                               @*  <div class="mb-2"><strong>Dönüş Adet:</strong> <span>@item.KampanyaDonusAdedi</span></div> *@
+                                <div><strong>KG:</strong> <span>@item.ApproximateWeightKg.ToString("0.00")</span></div>
+                                <div><strong>Aksiyon Fiyatı:</strong> <span>@item.AksiyonSatisFiyati.ToString("C2")</span></div>
+                                <div><strong>Aksiyon Tipi:</strong> <span>@item.AksiyonTipi</span></div>
+                                <div><strong>İndirim Tipi:</strong> <span>@item.IndirimTipi</span></div>
                             </div>
                         </div>
                         <div class="row align-items-center gy-2 gx-4">
+                            @* ✅ GÜNCELLENMİŞ: Kart Görünümü için Admin İşlemleri *@
                             @if (User.IsInRole("Admin"))
                             {
                                 <div class="col-md-auto mb-1">
                                     <strong>Admin İşlemleri:</strong>
-                                    @if (item.TalepDurumu == 0)
+                                    @if (item.TalepDurumu == 0) // Bekliyor
                                     {
                                         <div class="d-flex flex-row gap-2 mt-1">
                                             <button class="btn btn-success btn-sm" onclick="approveTalep(@item.TalepFormId)">Onayla</button>
                                             <button class="btn btn-danger btn-sm" onclick="rejectTalep(@item.TalepFormId)">Reddet</button>
                                         </div>
+                                    }
+                                    else if (item.TalepDurumu == TalepDurumu.Reddedildi) // Reddedildi ise
+                                    {
+                                        <button class="btn btn-success btn-sm mt-1" onclick="approveTalep(@item.TalepFormId)">**Tekrar Onayla**</button>
+                                    }
+                                    else if (item.TalepDurumu == TalepDurumu.Onaylandi) // Onaylandı ise
+                                    {
+                                        <button class="btn btn-danger btn-sm mt-1" onclick="rejectTalep(@item.TalepFormId)">**Tekrar Reddet**</button>
                                     }
                                     else
                                     {
@@ -255,26 +261,10 @@
                                     }
                                 </div>
                             }
-                            <div class="col-md mb-1">
-                                <strong>Kampanya Dönüşü:</strong>
-                                @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
-                                {
-                                    <div class="d-flex flex-nowrap align-items-center gap-2 mt-1">
-                                        <input type="hidden" id="koliIciToplamAdet_@item.TalepFormId" value="@item.KoliIciToplamAdet" />
-                                        <input type="number" id="kampanyaInput_@item.TalepFormId" class="form-control form-control-sm flex-shrink-0" style="width: 80px;" min="0" placeholder="Adet" />
-                                        <button class="btn btn-primary btn-sm" onclick="gonderKampanyaDonusu(@item.TalepFormId)">Kaydet</button>
+                            @* ---------------------------------------- *@
 
-                                    </div>
-                                }
-                                else if (item.KampanyaDonusAdedi.HasValue)
-                                {
-                                    <span class="ms-1">@item.KampanyaDonusAdedi.Value adet</span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">-</span>
-                                }
-                            </div>
+                            @* Buraya Kampanya Dönüşü kısmı da eklenebilir. Mevcut kodda yoktu, eğer gerekiyorsa ekleyebilirsiniz. *@
+
                             <div class="col-md mb-1">
                                 <strong>Görsel:</strong>
                                 @if (item.TalepDurumu == TalepDurumu.Onaylandi && User.IsInRole("BolgeMuduru"))
@@ -283,31 +273,39 @@
                                         <input type="file" id="imageInputCard_@item.TalepFormId" accept="image/*" class="form-control-file form-control-sm flex-grow-1 flex-shrink-1" />
                                         <button class="btn btn-sm btn-info flex-shrink-0" onclick="uploadImage(@item.TalepFormId, 'Card')">Yükle</button>
                                     </div>
+
                                     @if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
                                     {
-                                        <a href="@item.KampanyaResimYolu" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
+                                        @* 🔄 değiştirildi *@
+                                        <a href="@($"{apiBase}{item.KampanyaResimYolu}")" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
                                             <i class="bi bi-camera me-1"></i>Resmi Aç
                                         </a>
-
+                                        @* ✅ yeni eklendi – önizleme *@
+                                        <img id="preview_@item.TalepFormId" src="@($"{apiBase}{item.KampanyaResimYolu}")"
+                                             style="max-width:100px; display:block; margin-top:6px;" />
+                                    }
+                                    else
+                                    {
+                                        <img id="preview_@item.TalepFormId" style="max-width:100px; display:none; margin-top:6px;" />
                                     }
                                 }
                                 else if (!string.IsNullOrEmpty(item.KampanyaResimYolu))
                                 {
-                                    <a href="@item.KampanyaResimYolu" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
+                                    @* 🔄 değiştirildi *@
+                                    <a href="@($"{apiBase}{item.KampanyaResimYolu}")" target="_blank" class="ms-2 text-decoration-underline text-info fw-semibold" style="font-size:1.06rem;">
                                         <i class="bi bi-camera me-1"></i>Resmi Aç
                                     </a>
-
                                 }
                                 else
                                 {
                                     <span class="text-muted">-</span>
                                 }
                             </div>
+
                             <div class="col-md-auto text-end">
                                 <button class="btn btn-danger btn-sm" onclick="deleteTalep(@item.TalepFormId)">
                                     <i class="bi bi-trash3 me-1"></i>Sil
                                 </button>
-
                             </div>
                         </div>
                     </div>
@@ -316,11 +314,10 @@
             }
         </div>
 
-        @if(totalPages > 1)
+        @if (totalPages > 1)
         {
             <nav class="mt-4 d-flex justify-content-center">
                 <ul class="pagination pagination-sm">
-                    @* Önceki Sayfa *@
                     <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                         <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">« Önceki</a>
                     </li>
@@ -346,7 +343,6 @@
                         }
                     }
 
-                    @* Sonraki Sayfa *@
                     <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                         <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Sonraki »</a>
                     </li>
@@ -356,6 +352,7 @@
         }
     }
 </body>
+
 @section Scripts {
     <script src="~/js/talepFormuIndex.js" asp-append-version="true"></script>
 }

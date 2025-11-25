@@ -73,6 +73,9 @@ namespace DogusCay.API.Extensions
 
             services.AddScoped<IPointExcelImporter, PointExcelImporter>();
             services.AddHostedService<PointImportBackgroundService>();
+
+            services.AddScoped<IPivotRepository, PivotRepository>();
+            services.AddScoped<IPivotService, PivotManager>();
         }
     }
 }

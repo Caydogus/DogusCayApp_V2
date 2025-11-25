@@ -1,0 +1,70 @@
+﻿@model DogusCay.WebUI.Areas.Admin.Models.PivotViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- AG GRID COMMUNITY CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@29.3.5/styles/ag-grid.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@29.3.5/styles/ag-theme-balham.css" />
+
+<style>
+    /* Pivot Grid yükseklik ve scrollbar kontrolü */
+    #pivotGrid {
+        height: 800px;
+        width: 100%;
+        overflow-x: auto !important;
+    }
+
+    /* Columns Panel görünmesi için zorunlu genişlik */
+    .ag-theme-balham .ag-side-bar {
+        width: 260px !important;
+        min-width: 260px !important;
+        max-width: 260px !important;
+        border-left: 1px solid #ddd;
+    }
+</style>
+
+<div class="container-fluid mt-4">
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <h3 class="fw-bold">@Model.Title</h3>
+        </div>
+    </div>
+
+    <!-- TABLO SEÇİMİ -->
+    <div class="card p-3 shadow-sm mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Pivot Tablosu</label>
+                <select id="tableSelector" class="form-control">
+                    <option value="">Seçiniz...</option>
+                    @foreach (var tbl in Model.Tables)
+                    {
+                        <option value="@tbl">@tbl</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button id="btnLoadPivot" class="btn btn-primary w-100">
+                    Verileri Getir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIVOT GRID -->
+    <div id="pivotGrid" class="ag-theme-balham"></div>
+
+    <button id="btnExportExcel" class="btn btn-success mt-3">Excel'e Aktar</button>
+
+</div>
+
+<!-- AG GRID JS -->
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@29.3.5/dist/ag-grid-community.min.js"></script>
+
+<!-- Pivot JS -->
+<script src="~/js/pivot.js"></script>
+
+

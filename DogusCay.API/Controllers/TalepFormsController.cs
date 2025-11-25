@@ -40,6 +40,7 @@ namespace DogusCay.API.Controllers
         [Authorize(Roles = "BolgeMuduru")]
         public IActionResult GetOwnFormsPaged(int page = 1, int pageSize = 10)
         {
+
             int userId = GetUserId();
             if (userId == 0)
                 return Unauthorized("Kullanıcı ID'si alınamadı.");
@@ -319,6 +320,52 @@ namespace DogusCay.API.Controllers
         }
 
 
+        //// Bölge Müdürü kampanyanın resmini girer.
+        //[HttpPost("upload-image/{id}")]
+        //[Authorize(Roles = "BolgeMuduru")]
+        //public async Task<IActionResult> UploadImage(int id, IFormFile image)
+        //{
+        //    if (image == null || image.Length == 0)
+        //        return BadRequest("Dosya seçilmedi.");
+
+        //    var form = _talepFormService.TGetById(id);
+        //    if (form == null)
+        //        return NotFound("Talep bulunamadı.");
+
+        //    //Eski resmi sil
+        //    if (!string.IsNullOrEmpty(form.KampanyaResimYolu))
+        //    {
+        //        var existingPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "DogusCay.WebUI", "wwwroot", form.KampanyaResimYolu.TrimStart('/'));
+        //        if (System.IO.File.Exists(existingPath))
+        //        {
+        //            System.IO.File.Delete(existingPath);
+        //        }
+        //    }
+
+        //    //WebUI projesinin wwwroot'u
+        //    var webUiRoot = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "DogusCay.WebUI", "wwwroot");
+        //    var folderPath = Path.Combine(webUiRoot, "uploads", "kampanyalar");
+
+        //    if (!Directory.Exists(folderPath))
+        //        Directory.CreateDirectory(folderPath);
+
+        //    var fileName = $"form_{id}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
+        //    var savePath = Path.Combine(folderPath, fileName);
+
+        //    using (var stream = new FileStream(savePath, FileMode.Create))
+        //    {
+        //        await image.CopyToAsync(stream);
+        //    }
+
+        //    //Web tarafında kullanılacak yol
+        //    var webPath = $"/uploads/kampanyalar/{fileName}";
+        //    form.KampanyaResimYolu = webPath;
+
+        //    _talepFormService.TUpdate(form);
+
+        //    return Ok("Resim başarıyla yüklendi.");
+        //}
+
         // Bölge Müdürü kampanyanın resmini girer.
         [HttpPost("upload-image/{id}")]
         [Authorize(Roles = "BolgeMuduru")]
@@ -331,38 +378,49 @@ namespace DogusCay.API.Controllers
             if (form == null)
                 return NotFound("Talep bulunamadı.");
 
-            //Eski resmi sil
-            if (!string.IsNullOrEmpty(form.KampanyaResimYolu))
+            try
             {
-                var existingPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "DogusCay.WebUI", "wwwroot", form.KampanyaResimYolu.TrimStart('/'));
-                if (System.IO.File.Exists(existingPath))
+                // ✅ yeni eklendi – API'nin kendi wwwroot yolunu kullan
+                var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var folderPath = Path.Combine(webRootPath, "uploads", "kampanyalar");
+
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                // 🔄 değiştirildi – Dosya adı oluşturma aynı kaldı
+                var fileName = $"form_{id}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
+                var savePath = Path.Combine(folderPath, fileName);
+
+                // ✅ yeni eklendi – Eski resmi silme artık API wwwroot'unda kontrol ediliyor
+                if (!string.IsNullOrEmpty(form.KampanyaResimYolu))
                 {
-                    System.IO.File.Delete(existingPath);
+                    var existingPath = Path.Combine(webRootPath, form.KampanyaResimYolu.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                    if (System.IO.File.Exists(existingPath))
+                        System.IO.File.Delete(existingPath);
                 }
+
+                using (var stream = new FileStream(savePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                // 🔄 değiştirildi – Yol artık API içinden servis edilecek
+                var webPath = $"/uploads/kampanyalar/{fileName}";
+                form.KampanyaResimYolu = webPath;
+                _talepFormService.TUpdate(form);
+
+                // ✅ yeni eklendi – JSON formatında yanıt ve direkt erişim linki
+                return Ok(new
+                {
+                    message = "Resim başarıyla yüklendi.",
+                    imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/kampanyalar/{fileName}"
+                });
             }
-
-            //WebUI projesinin wwwroot'u
-            var webUiRoot = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "DogusCay.WebUI", "wwwroot");
-            var folderPath = Path.Combine(webUiRoot, "uploads", "kampanyalar");
-
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
-
-            var fileName = $"form_{id}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
-            var savePath = Path.Combine(folderPath, fileName);
-
-            using (var stream = new FileStream(savePath, FileMode.Create))
+            catch (Exception ex)
             {
-                await image.CopyToAsync(stream);
+                // ✅ yeni eklendi – hata durumlarını düzgün yakala
+                return StatusCode(500, $"Yükleme sırasında hata oluştu: {ex.Message}");
             }
-
-            //Web tarafında kullanılacak yol
-            var webPath = $"/uploads/kampanyalar/{fileName}";
-            form.KampanyaResimYolu = webPath;
-
-            _talepFormService.TUpdate(form);
-
-            return Ok("Resim başarıyla yüklendi.");
         }
 
         [HttpGet("export-excel")]

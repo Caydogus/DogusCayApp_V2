@@ -114,6 +114,10 @@ app.UseCookiePolicy();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+//// ✔ AREA ROUTE (Admin / Bölge Müdürü / Pivot vs.)
+//app.MapControllerRoute(
+//    name: "areas",
+//    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

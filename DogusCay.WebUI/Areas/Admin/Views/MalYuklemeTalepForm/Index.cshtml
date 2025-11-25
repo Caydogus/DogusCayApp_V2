@@ -15,9 +15,6 @@
 </head>
 <input type="hidden" id="jwtToken" value="@jwt" />
 
-@* <h3 class="mb-4 d-flex justify-content-between align-items-center">
-    <a class="btn btn-success" asp-area="Admin" asp-controller="MalYuklemeTalepForm" asp-action="CreateMalYuklemeTalepForm">+ Ürün Talebi Oluştur</a>
-</h3> *@
 <h3 class="mb-4 d-flex justify-content-between align-items-center">
     <span>Ürün Yükleme Talepleri</span>
     <div class="btn-group">
@@ -46,14 +43,15 @@
 }
 else
 {
-    <!-- MASAÜSTÜ TABLOSU -->
     <div class="table-responsive d-none d-md-block">
         <table class="table table-bordered table-hover text-nowrap align-middle searchable-table">
             <thead class="table-dark">
                 <tr>
                     <th></th>
                     @if (User.IsInRole("Admin"))
-                   {<th>Kullanıcı</th> }
+                    {
+                        <th>Kullanıcı</th>
+                    }
                     <th>Kanal</th>
                     <th>Nokta</th>
                     <th>Tarih</th>
@@ -77,38 +75,58 @@ else
                         {
                             <td>@item.AppUser?.FirstName @item.AppUser?.LastName</td>
                         }
-                        <td>@item.Kanal?.KanalName</td>
-                        <td>@item.Point?.PointName</td>
-                        <td>@item.CreateDate.ToShortDateString()</td>
-                        <td>@item.BrutTotal?.ToString("N2")</td>
-                        <td>@item.Total?.ToString("N2")</td>
-                        <td>@item.ToplamAgirlikKg?.ToString("N2")</td>
-                        <td>@(item.Maliyet?.ToString("N2") + " %")</td>
-                        <td>
-                            <span class="badge
-                                @(item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
-                                  item.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
-                                  "bg-warning text-dark")">
-                                @item.TalepDurumu
-                            </span>
-                        </td>
-                        <td class="d-flex gap-1 justify-content-center flex-wrap">
-                            <a asp-action="Detail" asp-route-id="@item.MalYuklemeTalepFormId" class="btn btn-sm btn-outline-primary">Detay</a>
-                            @if (User.IsInRole("Admin") || (User.IsInRole("BolgeMuduru") && item.TalepDurumu == TalepDurumu.Bekliyor))
+                    <td>@item.Kanal?.KanalName</td>
+                    <td>@item.Point?.PointName</td>
+                    <td>@item.CreateDate.ToShortDateString()</td>
+                    <td>@item.BrutTotal?.ToString("N2")</td>
+                    <td>@item.Total?.ToString("N2")</td>
+                    <td>@item.ToplamAgirlikKg?.ToString("N2")</td>
+                    <td>@(item.Maliyet?.ToString("N2") + " %")</td>
+                    <td>
+                        <span class="badge
+                                    @(item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                                               item.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                                                                "bg-warning text-dark")">
+                        @item.TalepDurumu
+                    </span>
+                </td>
+                <td class="d-flex gap-1 justify-content-center flex-wrap">
+                    <a asp-action="Detail" asp-route-id="@item.MalYuklemeTalepFormId" class="btn btn-sm btn-outline-primary">Detay</a>
+
+                            @* Silme İşlemi (Admin veya Bölge Müdürü Bekliyor ise) *@
+                    @if (User.IsInRole("Admin") || (User.IsInRole("BolgeMuduru") && item.TalepDurumu == TalepDurumu.Bekliyor))
                             {
                                 <form method="post" asp-action="Delete" asp-route-id="@item.MalYuklemeTalepFormId" onsubmit="return confirm('Silmek istediğinize emin misiniz?')" style="display:inline;">
                                     <button type="submit" class="btn btn-sm btn-danger">Sil</button>
                                 </form>
                             }
-                            @if (User.IsInRole("Admin") && item.TalepDurumu == TalepDurumu.Bekliyor)
+
+                            @* ✅ GÜNCELLENMİŞ: Admin Onay/Reddetme Butonları *@
+                            @if (User.IsInRole("Admin"))
                             {
-                                <form method="post" asp-action="Approve" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-success">Onayla</button>
-                                </form>
-                                <form method="post" asp-action="Reject" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-warning">Reddet</button>
-                                </form>
+                                @if (item.TalepDurumu == TalepDurumu.Bekliyor)
+                                {
+                                    <form method="post" asp-action="Approve" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-success">Onayla</button>
+                                    </form>
+                                    <form method="post" asp-action="Reject" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-warning">Reddet</button>
+                                    </form>
+                                }
+                                else if (item.TalepDurumu == TalepDurumu.Reddedildi) // Reddedildi ise -> Tekrar Onayla
+                                {
+                                    <form method="post" asp-action="Approve" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-success">**Tekrar Onayla**</button>
+                                    </form>
+                                }
+                                else if (item.TalepDurumu == TalepDurumu.Onaylandi) // Onaylandı ise -> Tekrar Reddet
+                                {
+                                    <form method="post" asp-action="Reject" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-warning">**Tekrar Reddet**</button>
+                                    </form>
+                                }
                             }
+                            @* ---------------------------------------------------- *@
                         </td>
                     </tr>
                 }
@@ -116,8 +134,10 @@ else
         </table>
     </div>
 
-    <!-- MOBİL KARTLAR -->
     <div class="d-md-none searchable-list">
+        @{
+            int cardIndex = ((currentPage - 1) * pageSize) + 1;
+        }
         @foreach (var item in Model)
         {
             <div class="mal-yukleme-card mb-3 p-2 rounded-3 shadow-sm">
@@ -126,67 +146,94 @@ else
                         @item.AppUser?.FirstName @item.AppUser?.LastName
                     </span>
                     <span class="badge
-                    @(item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
-                    item.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
-                    "bg-warning text-dark")">
-                        @item.TalepDurumu
-                    </span>
-                </div>
-                <div class="mal-yukleme-kart-icerik" style="font-size:0.98rem;">
-                    <div>
-                        <span class="small-label">Kanal:</span>
-                        <span class="fw-semibold">@item.Kanal?.KanalName</span>
-                    </div>
-                    <div>
-                        <span class="small-label">Nokta:</span>
-                        <span class="fw-semibold">@item.Point?.PointName</span>
-                    </div>
-                    <div>
-                        <span class="small-label">Tarih:</span>
-                        <span>@item.CreateDate.ToShortDateString()</span>
-                    </div>
-                    <div>
-                        <span class="small-label">Brüt:</span>
-                        <span class="fw-semibold">@item.BrutTotal?.ToString("C2")</span>
-                        <span class="small-label ms-2">Net:</span>
-                        <span class="fw-semibold">@item.Total?.ToString("C2")</span>
-                    </div>
-                    <div>
-                        <span class="small-label">Tonaj:</span>
-                        <span class="fw-semibold">@item.ToplamAgirlikKg?.ToString("N2") kg</span>
-                    </div>
-                    <div>
-                        <span class="small-label">Maliyet:</span>
-                        <span class="fw-semibold">@(item.Maliyet?.ToString("N2")) %</span>
-                    </div>
-                </div>
+                            @(item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                                    item.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                                              "bg-warning text-dark")">
+                @item.TalepDurumu
+            </span>
+        </div>
+        <div class="mal-yukleme-kart-icerik" style="font-size:0.98rem;">
+            <div>
+                <span class="small-label">Kanal:</span>
+                <span class="fw-semibold">@item.Kanal?.KanalName</span>
+            </div>
+            <div>
+                <span class="small-label">Nokta:</span>
+                <span class="fw-semibold">@item.Point?.PointName</span>
+            </div>
+            <div>
+                <span class="small-label">Tarih:</span>
+                <span>@item.CreateDate.ToShortDateString()</span>
+            </div>
+            <div>
+                <span class="small-label">Brüt:</span>
+                <span class="fw-semibold">@item.BrutTotal?.ToString("C2")</span>
+                <span class="small-label ms-2">Net:</span>
+                <span class="fw-semibold">@item.Total?.ToString("C2")</span>
+            </div>
+            <div>
+                <span class="small-label">Tonaj:</span>
+                <span class="fw-semibold">@item.ToplamAgirlikKg?.ToString("N2") kg</span>
+            </div>
+            <div>
+                <span class="small-label">Maliyet:</span>
+                <span class="fw-semibold">@(item.Maliyet?.ToString("N2")) %</span>
+            </div>
+        </div>
+
+                @* ✅ GÜNCELLENMİŞ: Kart İşlemleri *@
                 <div class="talep-actions d-flex flex-wrap gap-2 mt-2">
                     <a asp-action="Detail" asp-route-id="@item.MalYuklemeTalepFormId"
-                       class="btn btn-outline-primary btn-sm flex-fill">
+                                   class="btn btn-outline-primary btn-sm flex-fill">
                         <i class="bi bi-info-circle me-1"></i>Detay
                     </a>
-                    @if (User.IsInRole("Admin") || (User.IsInRole("BolgeMuduru") && item.TalepDurumu == TalepDurumu.Bekliyor))
+                    @* Silme İşlemi (Admin veya Bölge Müdürü Bekliyor ise) *@
+            @if (User.IsInRole("Admin") || (User.IsInRole("BolgeMuduru") && item.TalepDurumu == TalepDurumu.Bekliyor))
                     {
                         <form method="post" asp-action="Delete" asp-route-id="@item.MalYuklemeTalepFormId"
-                              onsubmit="return confirm('Silmek istediğinize emin misiniz?')" style="display:inline;">
+                                             onsubmit="return confirm('Silmek istediğinize emin misiniz?')" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-sm flex-fill">
                                 <i class="bi bi-trash me-1"></i>Sil
                             </button>
                         </form>
                     }
-                    @if (User.IsInRole("Admin") && item.TalepDurumu == TalepDurumu.Bekliyor)
+
+                    @* **YENİ: Admin Onay/Reddetme Butonları (Tekrar İşlemleri Dahil)** *@
+                    @if (User.IsInRole("Admin"))
                     {
-                        <form method="post" asp-action="Approve" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
-                            <button type="submit" class="btn btn-success btn-sm flex-fill">
-                                <i class="bi bi-check-circle me-1"></i>Onayla</button>
-                        </form>
-                        <form method="post" asp-action="Reject" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
-                            <button type="submit" class="btn btn-warning btn-sm flex-fill">
-                                <i class="bi bi-x-circle me-1"></i>Reddet</button>
-                        </form>
+                        @if (item.TalepDurumu == TalepDurumu.Bekliyor)
+                        {
+                            <form method="post" asp-action="Approve" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
+                                <button type="submit" class="btn btn-success btn-sm flex-fill">
+                                    <i class="bi bi-check-circle me-1"></i>Onayla
+                                </button>
+                            </form>
+                            <form method="post" asp-action="Reject" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
+                                <button type="submit" class="btn btn-warning btn-sm flex-fill">
+                                    <i class="bi bi-x-circle me-1"></i>Reddet
+                                </button>
+                            </form>
+                        }
+                        else if (item.TalepDurumu == TalepDurumu.Reddedildi) // Reddedildi ise -> Tekrar Onayla
+                        {
+                            <form method="post" asp-action="Approve" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
+                                <button type="submit" class="btn btn-success btn-sm flex-fill">
+                                    <i class="bi bi-check-circle me-1"></i>**Tekrar Onayla**
+                                </button>
+                            </form>
+                        }
+                        else if (item.TalepDurumu == TalepDurumu.Onaylandi) // Onaylandı ise -> Tekrar Reddet
+                        {
+                            <form method="post" asp-action="Reject" asp-route-id="@item.MalYuklemeTalepFormId" style="display:inline;">
+                                <button type="submit" class="btn btn-warning btn-sm flex-fill">
+                                    <i class="bi bi-x-circle me-1"></i>**Tekrar Reddet**
+                                </button>
+                            </form>
+                        }
                     }
                 </div>
             </div>
+            { cardIndex++; }
         }
     </div>
 
@@ -195,10 +242,31 @@ else
     {
         <nav class="mt-4 d-flex justify-content-center">
             <ul class="pagination pagination-sm">
-                @* ... Sayfalandırma kodun buraya ... *@
+                @{
+                    var pageNumbers = new List<int>();
+                    for (int i = 1; i <= firstLastPagesToShow && i <= totalPages; i++) { if (!pageNumbers.Contains(i)) { pageNumbers.Add(i); } }
+                    for (int i = Math.Max(1, currentPage - displayRange); i <= Math.Min(totalPages, currentPage + displayRange); i++) { if (!pageNumbers.Contains(i)) { pageNumbers.Add(i); } }
+                    for (int i = totalPages - firstLastPagesToShow + 1; i <= totalPages; i++) { if (i > 0 && !pageNumbers.Contains(i)) { pageNumbers.Add(i); } }
+                    pageNumbers = pageNumbers.OrderBy(p => p).ToList();
+
+                    int? lastPageNumber = null;
+                    foreach (var pageNum in pageNumbers)
+                    {
+                        if (lastPageNumber.HasValue && pageNum > lastPageNumber + 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                        <li class="page-item @(pageNum == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@pageNum">@pageNum</a>
+                        </li>
+                        lastPageNumber = pageNum;
+                    }
+                }
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Sonraki »</a>
+                </li>
             </ul>
         </nav>
         <p class="text-center mt-3">Toplam Kayıt: <b>@totalCount</b> | Sayfa @currentPage / @totalPages</p>
     }
 }
-

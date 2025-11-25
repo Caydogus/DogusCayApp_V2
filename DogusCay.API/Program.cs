@@ -125,6 +125,7 @@ app.UseSwaggerUI(c =>
 //app.UseHttpsRedirection();
 
 app.UseRouting();
+app.UseStaticFiles();
 app.UseCors("AllowCustomOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
