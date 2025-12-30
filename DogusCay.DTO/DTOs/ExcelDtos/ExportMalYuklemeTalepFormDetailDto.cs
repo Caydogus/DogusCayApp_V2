@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using DogusCay.DTO.DTOs.Attributes;
 
 namespace DogusCay.DTO.DTOs.ExcelDtos
 {
@@ -12,17 +9,28 @@ namespace DogusCay.DTO.DTOs.ExcelDtos
         public int MalYuklemeTalepFormId { get; set; } // eşleştirme için
 
         // Kategori zinciri
+        [ExcelIgnore]
         public int CategoryId { get; set; }
+
+        [ExcelIgnore]
         public string CategoryName { get; set; }
+
+        [ExcelIgnore]
         public int? SubCategoryId { get; set; }
         public string? SubCategoryName { get; set; }
+
+        [ExcelIgnore]
         public int? SubSubCategoryId { get; set; }
         public string? SubSubCategoryName { get; set; }
 
         // Ürün bilgileri
+
+        [ExcelIgnore]
         public int ProductId { get; set; }
         public string? ProductName { get; set; }
         public string? ErpCode { get; set; }
+
+        [ExcelIgnore]
         public int UnitTypeId { get; set; }
         public decimal ApproximateWeightKg { get; set; }
 

@@ -1,18 +1,33 @@
 ﻿@model DogusCay.WebUI.Areas.Admin.Models.PivotViewModel
 @{
+    // Mevcut Layout ayarınız
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<!-- AG GRID COMMUNITY CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@29.3.5/styles/ag-grid.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@29.3.5/styles/ag-theme-balham.css" />
+<link rel="stylesheet" href="~/lib/ag-grid/ag-grid.css" />
+<link rel="stylesheet" href="~/lib/ag-grid/ag-theme-balham.css" />
 
 <style>
-    /* Pivot Grid yükseklik ve scrollbar kontrolü */
+    /* * 🔥 BOŞLUK SIFIRLAMA 🔥: Üst boşlukları ve dolguları sıfırlayarak
+         * içeriğin en üste, navigasyon barın altına yapışmasını sağlar.
+         */
+    .container-fluid {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+
+        /* İlk row'daki (başlık row) boşluğu sıfırlar */
+        .container-fluid > .row:first-child {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+    /* Pivot Grid Yüksekliği ve Scrollbar Kontrolü */
     #pivotGrid {
         height: 800px;
         width: 100%;
         overflow-x: auto !important;
+        margin-top: 0 !important;
     }
 
     /* Columns Panel görünmesi için zorunlu genişlik */
@@ -22,21 +37,29 @@
         max-width: 260px !important;
         border-left: 1px solid #ddd;
     }
+
+    /* ✅ SÜTUN BAŞLIKLARI STİLİ: Kalın ve Modern görünüm (renderPivotGrid fonksiyonunda referans alınıyor) */
+    .modern-header-cell {
+        font-weight: bold !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        color: #212529 !important;
+    }
 </style>
 
-<div class="container-fluid mt-4">
+<div class="container-fluid">
 
-    <div class="row mb-3">
+    @* mt-1 sınıfı kaldırıldı, boşluk sıfırlandı *@
+    <div class="row mb-1">
         <div class="col-12">
             <h3 class="fw-bold">@Model.Title</h3>
         </div>
     </div>
 
-    <!-- TABLO SEÇİMİ -->
-    <div class="card p-3 shadow-sm mb-4">
+    @* mb-4 sınıfı mb-1 yapıldı *@
+    <div class="card p-3 shadow-sm mb-1">
         <div class="row">
             <div class="col-md-4">
-                <label class="form-label fw-bold">Pivot Tablosu</label>
+                <label class="form-label fw-bold">Tablolar</label>
                 <select id="tableSelector" class="form-control">
                     <option value="">Seçiniz...</option>
                     @foreach (var tbl in Model.Tables)
@@ -51,20 +74,23 @@
                     Verileri Getir
                 </button>
             </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button id="btnExportExcel" class="btn btn-success w-100">
+                    Excel'e Aktar
+                </button>
+            </div>
+
+            @* JWT Token'ı saklamak için gizli alan, JavaScript tarafından kullanılacak *@
+            <input type="hidden" id="jwtToken" value="@ViewBag.JwtToken" />
+
         </div>
     </div>
 
-    <!-- PIVOT GRID -->
     <div id="pivotGrid" class="ag-theme-balham"></div>
-
-    <button id="btnExportExcel" class="btn btn-success mt-3">Excel'e Aktar</button>
 
 </div>
 
-<!-- AG GRID JS -->
-<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@29.3.5/dist/ag-grid-community.min.js"></script>
+<script src="~/lib/ag-grid/ag-grid-community.min.js"></script>
 
-<!-- Pivot JS -->
 <script src="~/js/pivot.js"></script>
-
-

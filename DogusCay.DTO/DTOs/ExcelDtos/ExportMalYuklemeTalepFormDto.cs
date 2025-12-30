@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using DogusCay.DTO.DTOs.Attributes;
 namespace DogusCay.DTO.DTOs.ExcelDtos
 {
     public class ExportMalYuklemeTalepFormDto
@@ -19,9 +19,12 @@ namespace DogusCay.DTO.DTOs.ExcelDtos
         public string PointName { get; set; }
 
         public DateTime CreateDate { get; set; }
+
+        [ExcelIgnore]
         public string TalepTip { get; set; }
         public string TalepDurumu { get; set; }
 
+        [ExcelIgnore]
         public int? OnaylayanAdminId { get; set; }
         public string? OnaylayanAdminName { get; set; }
 

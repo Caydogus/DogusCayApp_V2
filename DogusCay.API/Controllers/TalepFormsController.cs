@@ -7,6 +7,9 @@ using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using DogusCay.DTO.DTOs.Attributes;
+using System.Reflection;
+
 
 namespace DogusCay.API.Controllers
 {
@@ -447,7 +450,13 @@ namespace DogusCay.API.Controllers
                 var ws = workbook.Worksheets.Add("TalepForms");
 
                 // kolon başlıkları
-                var props = typeof(ExportTalepFormDto).GetProperties();
+                // var props = typeof(ExportTalepFormDto).GetProperties();// tum kolonları ındirirdi. aşagıdaki kod ile sadece istenilen kolonlar indiriliyor. 
+                //dto da istenmeyen kolonun ustune ıgnore eklemen yeterli
+                var props = typeof(ExportTalepFormDto)
+                             .GetProperties()
+                             .Where(p => !Attribute.IsDefined(p, typeof(ExcelIgnoreAttribute)))
+                             .ToArray();
+
                 for (int i = 0; i < props.Length; i++)
                 {
                     ws.Cell(1, i + 1).Value = props[i].Name;
@@ -468,7 +477,7 @@ namespace DogusCay.API.Controllers
                     workbook.SaveAs(stream);
                     return File(stream.ToArray(),
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "TalepForms.xlsx");
+                        "Kampanya-Aksiyon.xlsx");
                 }
             }
         }

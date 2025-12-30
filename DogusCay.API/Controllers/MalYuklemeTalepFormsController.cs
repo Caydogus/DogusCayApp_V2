@@ -1,13 +1,16 @@
-﻿using System.Security.Claims;
-using AutoMapper;
+﻿using AutoMapper;
 using ClosedXML.Excel;
 using DogusCay.API.Helpers;
 using DogusCay.Business.Abstract;
+using DogusCay.DTO.DTOs.Attributes;
 using DogusCay.DTO.DTOs.ExcelDtos;
 using DogusCay.DTO.DTOs.MalYuklemeDtos;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Reflection;
+
 
 namespace DogusCay.API.Controllers
 {
@@ -333,7 +336,13 @@ namespace DogusCay.API.Controllers
                 if (forms != null && forms.Any())
                 {
                     var wsForms = workbook.Worksheets.Add("Formlar");
-                    var propsForms = typeof(ExportMalYuklemeTalepFormDto).GetProperties();
+                    //var propsForms = typeof(ExportMalYuklemeTalepFormDto).GetProperties();// tum kolonları ındirirdi. aşagıdaki kod ile sadece istenilen kolonlar indiriliyor. 
+                    //dto da istenmeyen kolonun ustune ıgnore eklemen yeterli
+                    var propsForms = typeof(ExportMalYuklemeTalepFormDto)
+                                    .GetProperties()
+                                    .Where(p => !Attribute.IsDefined(p, typeof(ExcelIgnoreAttribute)))
+                                    .ToArray();
+
 
                     for (int i = 0; i < propsForms.Length; i++)
                         wsForms.Cell(1, i + 1).Value = propsForms[i].Name;
@@ -352,7 +361,13 @@ namespace DogusCay.API.Controllers
                 if (details != null && details.Any())
                 {
                     var wsDetails = workbook.Worksheets.Add("Detaylar");
-                    var propsDetails = typeof(ExportMalYuklemeTalepFormDetailDto).GetProperties();
+                    //var propsDetails = typeof(ExportMalYuklemeTalepFormDetailDto).GetProperties();// tum kolonları ındirirdi. aşagıdaki kod ile sadece istenilen kolonlar indiriliyor. 
+                    //dto da istenmeyen kolonun ustune ıgnore eklemen yeterli
+                    var propsDetails = typeof(ExportMalYuklemeTalepFormDetailDto)
+                                        .GetProperties()
+                                        .Where(p => !Attribute.IsDefined(p, typeof(ExcelIgnoreAttribute)))
+                                        .ToArray();
+
 
                     for (int i = 0; i < propsDetails.Length; i++)
                         wsDetails.Cell(1, i + 1).Value = propsDetails[i].Name;
@@ -372,7 +387,7 @@ namespace DogusCay.API.Controllers
                     workbook.SaveAs(stream);
                     return File(stream.ToArray(),
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "MalYuklemeTalepForms.xlsx");
+                        "UrunYukleme.xlsx");
                 }
             }
         }
