@@ -1,0 +1,238 @@
+﻿@model List<ResultIhaleAnlasmaDto>
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">
+        @(isAdmin ? "Sözleşme Yüklenen Anlaşmalar" : "İhale Anlaşmalarım")
+    </h3>
+    @if (isAdmin)
+    {
+        <a asp-action="TumNoktalar" class="btn btn-outline-primary">
+            <i class="bi bi-list-ul"></i> Tüm Noktalar
+        </a>
+    }
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center">
+        Gösterilecek ihale anlaşması bulunamadı.
+    </div>
+}
+else
+{
+    <!-- MASAÜSTÜ TABLO -->
+    <div class="table-responsive d-none d-md-block">
+        <table class="table table-bordered table-hover text-nowrap align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    @if (isAdmin)
+                    {
+                        <th>Bölge Müdürü</th>
+                    }
+                    <th>Dist. Kod</th>
+                    <th>Dist. Adı</th>
+                    <th>Nokta Kod</th>
+                    <th>Nokta Adı</th>
+                    <th>İskonto (%)</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 1;
+                }
+                @foreach (var item in Model)
+                {
+                    <tr id="row-@item.SozlesmeId">
+                        <td>@(index++)</td>
+                        @if (isAdmin)
+                        {
+                            <td>@item.BolgeMuduru</td>
+                        }
+                    <td>@item.DistKod</td>
+                    <td>@item.DistAdi</td>
+                    <td>@item.NoktaKod</td>
+                    <td>@item.NoktaAdi</td>
+                    <td>
+                        @(item.SozlesmeYuklendi && item.IskontoOrani.HasValue
+                                            ? item.IskontoOrani.Value.ToString("N2")
+                                            : "-")
+                </td>
+                <td>
+                    @if (item.SozlesmeYuklendi && item.TalepDurumu.HasValue)
+                            {
+                                <span class="badge @(item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                                                                                           item.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                                                                                           "bg-warning text-dark")">
+                        @item.TalepDurumu
+                    </span>
+                    <small class="d-block text-muted">@item.DosyaSayisi dosya</small>
+                                        }
+                            else
+                            {
+                                <span class="badge bg-secondary">Yüklenmedi</span>
+                            }
+                        </td>
+                        <td class="d-flex gap-1 justify-content-center flex-wrap">
+                            @if (item.SozlesmeYuklendi && item.SozlesmeId.HasValue)
+                            {
+                                <a asp-action="Detail"
+                                   asp-route-id="@item.SozlesmeId.Value"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> Detay
+                                </a>
+
+                                @if (isAdmin && item.TalepDurumu == TalepDurumu.Bekliyor)
+                                {
+                                    <button class="btn btn-sm btn-success"
+                                            onclick="approveReject(@item.SozlesmeId.Value, 'Approve', this)">
+                                        Onayla
+                                    </button>
+                                    <button class="btn btn-sm btn-warning"
+                                            onclick="approveReject(@item.SozlesmeId.Value, 'Reject', this)">
+                                        Reddet
+                                    </button>
+                                }
+                            }
+                            else if (!isAdmin)
+                            {
+                                <a href="/Admin/IhaleAnlasmaSozlesme/CreateSozlesme?noktaKod=@item.NoktaKod"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-upload"></i> Sözleşme Yükle
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MOBİL KART GÖRÜNÜM -->
+    <div class="d-md-none">
+        @foreach (var item in Model)
+        {
+            <div class="card mb-3 shadow-sm p-3" id="row-@item.SozlesmeId">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>@item.NoktaAdi</strong>
+                        @if (isAdmin)
+                        {
+                            <small class="d-block text-muted">@item.BolgeMuduru</small>
+                        }
+                    </div>
+                    <span class="badge @(item.SozlesmeYuklendi && item.TalepDurumu.HasValue
+                                                                    ? (item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                                                                       item.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                                                                       "bg-warning text-dark")
+                                                                    : "bg-secondary")">
+                        @(item.SozlesmeYuklendi && item.TalepDurumu.HasValue
+                                        ? item.TalepDurumu.ToString()
+                                        : "Yüklenmedi")
+            </span>
+        </div>
+
+                <div class="mt-2 small">
+                    <div>Dist: @item.DistAdi (@item.DistKod)</div>
+                    <div>Nokta Kod: @item.NoktaKod</div>
+            @if (item.SozlesmeYuklendi && item.IskontoOrani.HasValue)
+                    {
+                        <div>İskonto: %@item.IskontoOrani.Value.ToString("N2")</div>
+                        <div>Dosya: @item.DosyaSayisi adet</div>
+                    }
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    @if (item.SozlesmeYuklendi && item.SozlesmeId.HasValue)
+                    {
+                        <a asp-action="Detail"
+                           asp-route-id="@item.SozlesmeId.Value"
+                           class="btn btn-outline-primary btn-sm flex-fill">
+                            Detay
+                        </a>
+                    }
+                    else if (!isAdmin)
+                    {
+                        <a href="/Admin/IhaleAnlasmaSozlesme/CreateSozlesme?noktaKod=@item.NoktaKod"
+                           class="btn btn-primary btn-sm w-100">
+                            Sözleşme Yükle
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<script>
+    // Geri dönünce scroll pozisyonunu geri yükle
+    window.addEventListener('load', function () {
+        const scrollY = sessionStorage.getItem('indexScrollY');
+        if (scrollY) {
+            window.scrollTo(0, parseInt(scrollY));
+            sessionStorage.removeItem('indexScrollY');
+        }
+    });
+
+    // Sayfadan ayrılırken scroll pozisyonunu kaydet
+    document.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            sessionStorage.setItem('indexScrollY', window.scrollY);
+        });
+    });
+
+    function approveReject(id, action, btn) {
+        if (!confirm(action === 'Approve' ? 'Onaylamak istediğinize emin misiniz?' : 'Reddetmek istediğinize emin misiniz?')) return;
+
+        const row = btn.closest('tr');
+        btn.disabled = true;
+
+        fetch(`/Admin/IhaleAnlasmaSozlesme/${action}/${id}`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+            }
+        })
+        .then(res => {
+            if (res.ok) {
+                const isAdmin = @isAdmin.ToString().ToLower();
+                const badge = row.querySelector('td:nth-child(' + (isAdmin ? 8 : 7) + ') .badge');
+                if (badge) {
+                    if (action === 'Approve') {
+                        badge.className = 'badge bg-success';
+                        badge.textContent = 'Onaylandi';
+                    } else {
+                        badge.className = 'badge bg-danger';
+                        badge.textContent = 'Reddedildi';
+                    }
+                }
+                row.querySelectorAll('.btn-success, .btn-warning').forEach(b => b.remove());
+            } else {
+                alert('İşlem başarısız!');
+                btn.disabled = false;
+            }
+        })
+        .catch((err) => {
+            console.error('Hata:', err);
+            alert('Hata: ' + err.message);
+            btn.disabled = false;
+        });
+    }
+</script>

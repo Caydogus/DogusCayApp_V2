@@ -191,6 +191,125 @@ namespace DogusCay.DataAccess.Migrations
                     b.ToTable("Distributors");
                 });
 
+            modelBuilder.Entity("DogusCay.Entity.Entities.IhaleAnlasma.IhaleAnlasma", b =>
+                {
+                    b.Property<string>("NoktaKod")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("NOKTA_KOD");
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BolgeMuduru")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("BOLGE_MUDURU");
+
+                    b.Property<string>("DistAdi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("DIST_ADI");
+
+                    b.Property<string>("DistKod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("DIST_KOD");
+
+                    b.Property<string>("NoktaAdi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("NOKTA_ADI");
+
+                    b.HasKey("NoktaKod");
+
+                    b.ToTable("IHALE_ANLASMA_TABLOSU", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("DogusCay.Entity.Entities.IhaleAnlasma.IhaleAnlasmaDosya", b =>
+                {
+                    b.Property<int>("IhaleAnlasmaDosyaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IhaleAnlasmaDosyaId"));
+
+                    b.Property<string>("DosyaAdi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("DosyaBoyutu")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DosyaTipi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DosyaYolu")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IhaleAnlasmaSozlesmeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SayfaSirasi")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("YuklenmeTarihi")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("IhaleAnlasmaDosyaId");
+
+                    b.HasIndex("IhaleAnlasmaSozlesmeId");
+
+                    b.ToTable("IhaleAnlasmaDosyalar");
+                });
+
+            modelBuilder.Entity("DogusCay.Entity.Entities.IhaleAnlasma.IhaleAnlasmaSozlesme", b =>
+                {
+                    b.Property<int>("IhaleAnlasmaSozlesmeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IhaleAnlasmaSozlesmeId"));
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("IskontoOrani")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("NoktaKod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OnaylayanAdminId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TalepDurumu")
+                        .HasColumnType("int");
+
+                    b.HasKey("IhaleAnlasmaSozlesmeId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("NoktaKod")
+                        .IsUnique();
+
+                    b.HasIndex("OnaylayanAdminId");
+
+                    b.ToTable("IhaleAnlasmaSozlesmeler");
+                });
+
             modelBuilder.Entity("DogusCay.Entity.Entities.Kanal", b =>
                 {
                     b.Property<int>("KanalId")
@@ -901,6 +1020,35 @@ namespace DogusCay.DataAccess.Migrations
                     b.Navigation("Kanal");
                 });
 
+            modelBuilder.Entity("DogusCay.Entity.Entities.IhaleAnlasma.IhaleAnlasmaDosya", b =>
+                {
+                    b.HasOne("DogusCay.Entity.Entities.IhaleAnlasma.IhaleAnlasmaSozlesme", "IhaleAnlasmaSozlesme")
+                        .WithMany("Dosyalar")
+                        .HasForeignKey("IhaleAnlasmaSozlesmeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IhaleAnlasmaSozlesme");
+                });
+
+            modelBuilder.Entity("DogusCay.Entity.Entities.IhaleAnlasma.IhaleAnlasmaSozlesme", b =>
+                {
+                    b.HasOne("DogusCay.Entity.Entities.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DogusCay.Entity.Entities.AppUser", "OnaylayanAdmin")
+                        .WithMany()
+                        .HasForeignKey("OnaylayanAdminId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("OnaylayanAdmin");
+                });
+
             modelBuilder.Entity("DogusCay.Entity.Entities.MalYuklemeTalep.MalYuklemeTalepForm", b =>
                 {
                     b.HasOne("DogusCay.Entity.Entities.AppUser", "AppUser")
@@ -1218,6 +1366,11 @@ namespace DogusCay.DataAccess.Migrations
             modelBuilder.Entity("DogusCay.Entity.Entities.Distributor", b =>
                 {
                     b.Navigation("Points");
+                });
+
+            modelBuilder.Entity("DogusCay.Entity.Entities.IhaleAnlasma.IhaleAnlasmaSozlesme", b =>
+                {
+                    b.Navigation("Dosyalar");
                 });
 
             modelBuilder.Entity("DogusCay.Entity.Entities.Kanal", b =>

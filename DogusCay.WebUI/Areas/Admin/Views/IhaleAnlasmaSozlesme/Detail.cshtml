@@ -1,0 +1,199 @@
+﻿@model ResultIhaleAnlasmaSozlesmeDto
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    // ApiSettings:BaseUrl örnek:
+    // http://192.168.0.29:7061/api/
+    var apiBaseUrl = Configuration["ApiSettings:BaseUrl"];
+
+    // null kontrol
+    if (!string.IsNullOrEmpty(apiBaseUrl))
+    {
+        apiBaseUrl = apiBaseUrl.Replace("/api", "").TrimEnd('/');
+    }
+}
+
+<h3 class="mb-4 d-none d-md-block">
+    Sözleşme Detayı - #@Model.IhaleAnlasmaSozlesmeId
+</h3>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<!-- GENEL BİLGİLER -->
+<div class="card mb-4">
+    <div class="card-header fw-bold" style="background:#25395a; color:#fff;">
+        Genel Bilgiler
+    </div>
+    <div class="card-body row">
+
+        <div class="col-md-4">
+            <strong>Bölge Müdürü:</strong> @Model.BolgeMuduru
+        </div>
+
+        <div class="col-md-4">
+            <strong>Distribütör:</strong> @Model.DistAdi (@Model.DistKod)
+        </div>
+
+        <div class="col-md-4">
+            <strong>Nokta:</strong> @Model.NoktaAdi (@Model.NoktaKod)
+        </div>
+
+        <div class="col-md-4 mt-2">
+            <strong>İskonto Oranı:</strong>
+            @(Model.IskontoOrani.HasValue
+                        ? "%" + Model.IskontoOrani.Value.ToString("N2")
+                        : "-")
+        </div>
+
+        <div class="col-md-4 mt-2">
+            <strong>Tarih:</strong>
+            @(Model.CreateDate > DateTime.MinValue
+                        ? Model.CreateDate.ToShortDateString()
+                        : "-")
+        </div>
+
+        <div class="col-md-4 mt-2">
+            <strong>Durum:</strong>
+            <span class="badge @(Model.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                                                    Model.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                                                    "bg-warning text-dark")">
+                @Model.TalepDurumu
+            </span>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.OnaylayanAdminName))
+        {
+            <div class="col-md-4 mt-2">
+                <strong>Onaylayan:</strong> @Model.OnaylayanAdminName
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Note))
+        {
+            <div class="col-12 mt-3">
+                <div class="alert alert-info" style="white-space:pre-line;">
+                    <strong>Not:</strong> @Model.Note
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- DOSYALAR -->
+<div class="card mb-4">
+    <div class="card-header fw-bold" style="background:#25395a; color:#fff;">
+        Sözleşme Dosyaları (@(Model.Dosyalar?.Count ?? 0) adet)
+    </div>
+
+    <div class="card-body">
+
+        @if (Model.Dosyalar != null && Model.Dosyalar.Any())
+        {
+            <div class="d-flex flex-wrap gap-3">
+
+                @foreach (var dosya in Model.Dosyalar)
+                {
+                    var fullUrl = $"{apiBaseUrl}{dosya.DosyaYolu}";
+
+                    <div class="text-center"
+                         style="border:1px solid #e0e0e0; border-radius:10px; padding:10px; width:160px;">
+
+                        @if (!string.IsNullOrEmpty(dosya.DosyaTipi) && dosya.DosyaTipi.StartsWith("image"))
+                        {
+                            <a href="@fullUrl" target="_blank">
+                                <img src="@fullUrl"
+                                     alt="@dosya.DosyaAdi"
+                                     style="width:140px;height:110px;object-fit:cover;border-radius:6px;" />
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@fullUrl" target="_blank">
+                                <i class="bi bi-file-earmark-pdf" style="font-size:50px;color:#dc3545;"></i>
+                                <div class="mt-1" style="font-size:12px;">PDF Görüntüle</div>
+                            </a>
+                        }
+
+                    <div style="font-size:11px;color:#666;word-break:break-all;">
+                        @(dosya.DosyaAdi != null && dosya.DosyaAdi.Length > 20
+                                            ? dosya.DosyaAdi.Substring(0, 17) + "..."
+                                            : dosya.DosyaAdi)
+                </div>
+
+                        <div style="font-size:10px;color:#999;">
+                            @((dosya.DosyaBoyutu / 1024.0 / 1024.0).ToString("N2")) MB
+                        </div>
+
+                    </div>
+                        }
+
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                Dosya bulunamadı.
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- ADMIN İŞLEMLERİ -->
+@if (User.IsInRole("Admin"))
+{
+    <div class="d-flex gap-2 mb-3">
+
+        @if (Model.TalepDurumu == TalepDurumu.Bekliyor)
+        {
+            <form method="post" asp-action="Approve" asp-route-id="@Model.IhaleAnlasmaSozlesmeId"
+                  onsubmit="return confirm('Sözleşme onaylansın mı?');">
+                <button class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Onayla
+                </button>
+            </form>
+
+            <form method="post" asp-action="Reject" asp-route-id="@Model.IhaleAnlasmaSozlesmeId"
+                  onsubmit="return confirm('Sözleşme reddedilsin mi?');">
+                <button class="btn btn-warning">
+                    <i class="bi bi-x-circle"></i> Reddet
+                </button>
+            </form>
+        }
+        else if (Model.TalepDurumu == TalepDurumu.Onaylandi)
+        {
+            <form method="post" asp-action="Reject" asp-route-id="@Model.IhaleAnlasmaSozlesmeId">
+                <button class="btn btn-warning">Tekrar Reddet</button>
+            </form>
+        }
+        else if (Model.TalepDurumu == TalepDurumu.Reddedildi)
+        {
+            <form method="post" asp-action="Approve" asp-route-id="@Model.IhaleAnlasmaSozlesmeId">
+                <button class="btn btn-success">Tekrar Onayla</button>
+            </form>
+        }
+
+    </div>
+}
+
+@if (!User.IsInRole("Admin") && Model.TalepDurumu != TalepDurumu.Onaylandi)
+{
+    <a asp-action="EditSozlesme"
+       asp-route-id="@Model.IhaleAnlasmaSozlesmeId"
+       class="btn btn-primary me-2">
+        <i class="bi bi-pencil-square"></i> Düzenle
+    </a>
+}
+
+<a asp-action="Index" asp-fragment="row-@Model.IhaleAnlasmaSozlesmeId" class="btn btn-secondary">← Geri Dön</a>

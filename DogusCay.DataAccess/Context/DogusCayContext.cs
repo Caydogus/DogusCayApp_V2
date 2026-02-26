@@ -1,4 +1,5 @@
 ﻿using DogusCay.Entity.Entities;
+using DogusCay.Entity.Entities.IhaleAnlasma;
 using DogusCay.Entity.Entities.MalYuklemeTalep;
 using DogusCay.Entity.Entities.Talep;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -24,7 +25,11 @@ namespace DogusCay.DataAccess.Context
         public DbSet<Distributor> Distributors { get; set; }
         public DbSet<MalYuklemeTalepForm> MalYuklemeTalepForms { get; set; }
         public DbSet<MalYuklemeTalepFormDetail> MalYuklemeTalepFormDetails { get; set; }
-
+        // İhale Anlaşma ile ilgili DbSet'ler 10.02.2026 tarihinde eklendi
+        // DbSet'ler — sadece yeni tablolar için DbSet, IhaleAnlasma için de lazım ama migration'dan hariç
+        public DbSet<IhaleAnlasma> IhaleAnlasmalar { get; set; }
+        public DbSet<IhaleAnlasmaSozlesme> IhaleAnlasmaSozlesmeler { get; set; }
+        public DbSet<IhaleAnlasmaDosya> IhaleAnlasmaDosyalar { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -304,6 +309,53 @@ namespace DogusCay.DataAccess.Context
                 .WithMany()
                 .HasForeignKey(d => d.SubSubCategoryId)
                 .OnDelete(DeleteBehavior.NoAction); // SubSubCategory silinirse detay silinmesin
+
+            // =============================================
+            // İHALE ANLAŞMA — Linked server tablosu
+            // Migration'dan hariç tut, sadece EF sorgulaması için
+            // =============================================
+            modelBuilder.Entity<IhaleAnlasma>(entity =>
+            {
+                entity.ToTable("IHALE_ANLASMA_TABLOSU", t => t.ExcludeFromMigrations());
+                entity.HasKey(e => e.NoktaKod);
+                entity.Property(e => e.BolgeMuduru).HasColumnName("BOLGE_MUDURU");
+                entity.Property(e => e.DistKod).HasColumnName("DIST_KOD");
+                entity.Property(e => e.DistAdi).HasColumnName("DIST_ADI");
+                entity.Property(e => e.NoktaKod).HasColumnName("NOKTA_KOD");
+                entity.Property(e => e.NoktaAdi).HasColumnName("NOKTA_ADI");
+            });
+
+            // =============================================
+            // İHALE ANLAŞMA SÖZLEŞME — Yeni tablo
+            // =============================================
+            modelBuilder.Entity<IhaleAnlasmaSozlesme>(entity =>
+            {
+                entity.HasIndex(e => e.NoktaKod).IsUnique();
+
+                entity.Property(e => e.IskontoOrani).HasPrecision(18, 2);
+
+                entity.HasOne(e => e.AppUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.AppUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.OnaylayanAdmin)
+                    .WithMany()
+                    .HasForeignKey(e => e.OnaylayanAdminId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // =============================================
+            // İHALE ANLAŞMA DOSYA — Yeni tablo
+            // =============================================
+            modelBuilder.Entity<IhaleAnlasmaDosya>(entity =>
+            {
+                entity.HasOne(d => d.IhaleAnlasmaSozlesme)
+                    .WithMany(s => s.Dosyalar)
+                    .HasForeignKey(d => d.IhaleAnlasmaSozlesmeId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
         }
     }
 }

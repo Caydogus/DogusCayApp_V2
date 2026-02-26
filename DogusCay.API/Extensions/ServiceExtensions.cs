@@ -76,6 +76,9 @@ namespace DogusCay.API.Extensions
 
             services.AddScoped<IPivotRepository, PivotRepository>();
             services.AddScoped<IPivotService, PivotManager>();
+
+            services.AddScoped<IIhaleAnlasmaSozlesmeRepository, IhaleAnlasmaSozlesmeRepository>();
+            services.AddScoped<IIhaleAnlasmaSozlesmeService, IhaleAnlasmaSozlesmeManager>();
         }
     }
 }

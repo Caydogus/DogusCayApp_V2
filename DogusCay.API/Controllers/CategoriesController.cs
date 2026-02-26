@@ -136,7 +136,7 @@ namespace DogusCay.API.Controllers
         [HttpGet("{subCategoryId}/products")]
         public IActionResult GetProductsBySubCategory(int subCategoryId)
         {
-            var products = _productService.TGetFilteredList(p => p.CategoryId == subCategoryId);
+            var products = _productService.TGetFilteredList(p => p.CategoryId == subCategoryId && p.IsShown);
             var dto = _mapper.Map<List<ResultProductDto>>(products);
             return Ok(dto);
         }

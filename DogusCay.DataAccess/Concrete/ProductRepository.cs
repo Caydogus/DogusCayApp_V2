@@ -56,6 +56,7 @@ namespace DogusCay.DataAccess.Concrete
                     .Include(p => p.Category)
                     .ThenInclude(c => c.ParentCategory)
                     .Include(p => p.UnitType)
+                    .Where(p => p.IsShown)
                     .Select(p => new ResultProductDto
                             {
                                 ProductId = p.ProductId,
@@ -85,7 +86,8 @@ namespace DogusCay.DataAccess.Concrete
         {
             return _context.Products
                                    .Include(p => p.Category)
-                                   .Where(p => p.CategoryId == subCategoryId)
+                                   //.Where(p => p.CategoryId == subCategoryId)
+                                   .Where(p => p.CategoryId == subCategoryId && p.IsShown) // kullanıcı sadece gösterilen ürünleri görmek istiyorsa
                                    .ToList();
         }
 

@@ -1,0 +1,155 @@
+﻿@model List<ResultIhaleAnlasmaDto>
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Tüm Noktalar</h3>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Sözleşme Yüklenenler
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center">
+        Gösterilecek nokta bulunamadı.
+    </div>
+}
+else
+{
+    <!-- MASAÜSTÜ TABLO -->
+    <!-- MASAÜSTÜ TABLO -->
+    <div class="table-responsive d-none d-md-block">
+        <table class="table table-bordered table-hover align-middle" style="font-size: 0.85rem;">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Bölge Müdürü</th>
+                    <th>Dist. Kod</th>
+                    <th>Dist. Adı</th>
+                    <th>Nokta Kod</th>
+                    <th>Nokta Adı</th>
+                    <th class="text-center">Sözleşme</th>
+                    <th class="text-center">İskonto</th>
+                    <th class="text-center">Durum</th>
+                    <th class="text-center">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 1;
+                }
+                @foreach (var item in Model)
+                {
+                    <tr class="@(item.SozlesmeYuklendi ? "" : "table-light text-muted")">
+                        <td>@(index++)</td>
+                        <td class="text-truncate" style="max-width:120px;" title="@item.BolgeMuduru">@item.BolgeMuduru</td>
+                        <td>@item.DistKod</td>
+                        <td class="text-truncate" style="max-width:130px;" title="@item.DistAdi">@item.DistAdi</td>
+                        <td>@item.NoktaKod</td>
+                        <td class="text-truncate" style="max-width:150px;" title="@item.NoktaAdi">@item.NoktaAdi</td>
+                        <td class="text-center">
+                            @if (item.SozlesmeYuklendi)
+                            {
+                                <span class="badge bg-success">Evet</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Hayır</span>
+                            }
+                    </td>
+                    <td class="text-center">
+                        @(item.SozlesmeYuklendi && item.IskontoOrani.HasValue
+                                            ? "%" + item.IskontoOrani.Value.ToString("N2")
+                                            : "-")
+                </td>
+                <td class="text-center">
+                    @if (item.SozlesmeYuklendi && item.TalepDurumu.HasValue)
+                            {
+                                <span class="badge @(item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                                                                                        item.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                                                                                        "bg-warning text-dark")">
+                        @item.TalepDurumu
+                    </span>
+                                        }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (item.SozlesmeYuklendi && item.SozlesmeId.HasValue)
+                            {
+                                <a asp-action="Detail"
+                                   asp-route-id="@item.SozlesmeId.Value"
+                                   class="btn btn-sm btn-outline-primary py-0 px-2">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- MOBİL KART GÖRÜNÜM -->
+    <div class="d-md-none">
+        @foreach (var item in Model)
+        {
+            <div class="card mb-3 shadow-sm p-3 @(item.SozlesmeYuklendi ? "" : "border-light text-muted")">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>@item.NoktaAdi</strong>
+                        <small class="d-block text-muted">@item.BolgeMuduru</small>
+                    </div>
+                    @if (item.SozlesmeYuklendi)
+                    {
+                        <span class="badge @(item.TalepDurumu == TalepDurumu.Onaylandi ? "bg-success" :
+                                                                           item.TalepDurumu == TalepDurumu.Reddedildi ? "bg-danger" :
+                                                                           "bg-warning text-dark")">
+                @item.TalepDurumu
+            </span>
+                        }
+                    else
+                    {
+                        <span class="badge bg-secondary">Yüklenmedi</span>
+                    }
+                </div>
+                <div class="mt-2 small">
+                    <div>Dist: @item.DistAdi (@item.DistKod)</div>
+                    <div>Nokta Kod: @item.NoktaKod</div>
+                    @if (item.SozlesmeYuklendi && item.IskontoOrani.HasValue)
+                    {
+                        <div>İskonto: %@item.IskontoOrani.Value.ToString("N2")</div>
+                        <div>Dosya: @item.DosyaSayisi adet</div>
+                    }
+                </div>
+                @if (item.SozlesmeYuklendi && item.SozlesmeId.HasValue)
+                {
+                    <div class="mt-3">
+                        <a asp-action="Detail"
+                           asp-route-id="@item.SozlesmeId.Value"
+                           class="btn btn-outline-primary btn-sm w-100">
+                            Detay
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

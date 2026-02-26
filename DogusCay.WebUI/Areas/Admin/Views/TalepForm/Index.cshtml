@@ -1,4 +1,5 @@
 ﻿@model List<ResultTalepFormDto>
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -12,8 +13,10 @@
     var displayRange = 2;
     var firstLastPagesToShow = 1;
 
-    // ✅ yeni eklendi – API Base URL (görseller ve istekler buradan gelir)
-    var apiBase = "http://192.168.0.29:7061";
+    // ✅ DÜZELTME – Configuration'dan dinamik oku
+    var apiBase = Configuration["ApiSettings:BaseUrl"];
+    if (!string.IsNullOrEmpty(apiBase))
+        apiBase = apiBase.Replace("/api", "").TrimEnd('/');
 }
 
 <head>

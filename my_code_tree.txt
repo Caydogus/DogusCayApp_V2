@@ -1,0 +1,495 @@
+﻿C:\Users\recepuce\Desktop\CayCips18.11.2025 - Kopya
+├─ .github
+│  └─ workflows
+├─ ConsoleApp1
+│  ├─ appsettings.json
+│  └─ Program.cs
+├─ doguscay-frontend
+│  ├─ public
+│  │  └─ manifest.json
+│  ├─ src
+│  │  ├─ components
+│  │  │  └─ TalepForm.js
+│  │  ├─ App.js
+│  │  ├─ App.test.js
+│  │  ├─ index.js
+│  │  ├─ reportWebVitals.js
+│  │  └─ setupTests.js
+│  ├─ package-lock.json
+│  └─ package.json
+├─ DogusCay.API
+│  ├─ .config
+│  │  └─ dotnet-tools.json
+│  ├─ Background
+│  │  ├─ DistributorImportBackgroundService.cs
+│  │  └─ PointImportBackgroundService.cs
+│  ├─ Controllers
+│  │  ├─ AnalyticsController.cs
+│  │  ├─ CategoriesController.cs
+│  │  ├─ DistributorsController.cs
+│  │  ├─ KanalsController.cs
+│  │  ├─ MalYuklemeTalepFormsController.cs
+│  │  ├─ PaymentTypesController.cs
+│  │  ├─ PivotsController.cs
+│  │  ├─ PointGroupTypesController.cs
+│  │  ├─ PointsController.cs
+│  │  ├─ ProductsController.cs
+│  │  ├─ RoleAssignsController.cs
+│  │  ├─ RolesController.cs
+│  │  ├─ TalepFormsController.cs
+│  │  └─ UsersController.cs
+│  ├─ Extensions
+│  │  └─ ServiceExtensions.cs
+│  ├─ Mapping
+│  │  ├─ GeneralMapping.cs
+│  │  ├─ RoleMapping.cs
+│  │  └─ UserMappings.cs
+│  ├─ Services
+│  │  ├─ JwtService.cs
+│  │  └─ MailHelper.cs
+│  ├─ appsettings.Development.json
+│  ├─ appsettings.json
+│  ├─ appsettings.Production.json
+│  └─ Program.cs
+├─ DogusCay.Business
+│  ├─ Abstract
+│  │  ├─ ICategoryService.cs
+│  │  ├─ IDistributorService.cs
+│  │  ├─ IGenericService.cs
+│  │  ├─ IJwtService.cs
+│  │  ├─ IKanalService.cs
+│  │  ├─ IMalYuklemeTalepFormService.cs
+│  │  ├─ IPaymentTypeService.cs
+│  │  ├─ IPivotService.cs
+│  │  ├─ IPointGroupTypeService.cs
+│  │  ├─ IPointService.cs
+│  │  ├─ IProductService.cs
+│  │  ├─ ITalepFormService.cs
+│  │  └─ IUserService.cs
+│  ├─ Concrete
+│  │  ├─ CategoryManager.cs
+│  │  ├─ DistributorManager.cs
+│  │  ├─ GenericManager.cs
+│  │  ├─ JwtService.cs
+│  │  ├─ KanalManager.cs
+│  │  ├─ MalYuklemeTalepFormManager.cs
+│  │  ├─ PaymentTypeManager.cs
+│  │  ├─ PivotManager.cs
+│  │  ├─ PointGroupTypeManager.cs
+│  │  ├─ PointManager.cs
+│  │  ├─ ProductManager.cs
+│  │  ├─ TalepFormManager.cs
+│  │  └─ UserService.cs
+│  ├─ Configurations
+│  │  └─ JwtTokenOptions.cs
+│  ├─ Importer
+│  │  ├─ DistributorExcelImporter.cs
+│  │  ├─ IDistributorExcelImporter.cs
+│  │  ├─ IPointExcelImporter.cs
+│  │  └─ PointExcelImporter.cs
+│  └─ Validators
+│     └─ CustomErrorDescriber.cs
+├─ DogusCay.DataAccess
+│  ├─ Abstract
+│  │  ├─ ICategoryRepository.cs
+│  │  ├─ IDistributorRepository.cs
+│  │  ├─ IKanalRepository.cs
+│  │  ├─ IMalYuklemeTalepFormRepository.cs
+│  │  ├─ IPaymentTypeRepository.cs
+│  │  ├─ IPivotRepository.cs
+│  │  ├─ IPointGroupTypeRepository.cs
+│  │  ├─ IPointRepository.cs
+│  │  ├─ IProductRepository.cs
+│  │  ├─ IRepository.cs
+│  │  ├─ IRoleRepository.cs
+│  │  ├─ ISaleRepository.cs
+│  │  ├─ ISaleTypeRepository.cs
+│  │  ├─ ITalepFormRepository.cs
+│  │  └─ IUnitTypeRepository.cs
+│  ├─ Concrete
+│  │  ├─ CategoryRepository.cs
+│  │  ├─ DistributorRepository.cs
+│  │  ├─ KanalRepository.cs
+│  │  ├─ MalYuklemeTalepFormRepository.cs
+│  │  ├─ PaymentTypeRepository.cs
+│  │  ├─ PivotRepository.cs
+│  │  ├─ PointGroupTypeRepository.cs
+│  │  ├─ PointRepository.cs
+│  │  ├─ ProductRepository.cs
+│  │  ├─ RoleRepository.cs
+│  │  ├─ SaleRepository.cs
+│  │  ├─ SaleTypeRepository.cs
+│  │  ├─ TalepFormRepository.cs
+│  │  └─ UnitTypeRepository.cs
+│  ├─ Context
+│  │  └─ DogusCayContext.cs
+│  ├─ Migrations
+│  │  ├─ 20250515124516_mig1.cs
+│  │  ├─ 20250515124516_mig1.Designer.cs
+│  │  ├─ 20250516132215_mig2.cs
+│  │  ├─ 20250516132215_mig2.Designer.cs
+│  │  ├─ 20250520125647_mig3.cs
+│  │  ├─ 20250520125647_mig3.Designer.cs
+│  │  ├─ 20250520125910_mig4.cs
+│  │  ├─ 20250520125910_mig4.Designer.cs
+│  │  ├─ 20250520130200_mig5.cs
+│  │  ├─ 20250520130200_mig5.Designer.cs
+│  │  ├─ 20250521075734_addpointgrouptpye.cs
+│  │  ├─ 20250521075734_addpointgrouptpye.Designer.cs
+│  │  ├─ 20250521111720_VerifyCleanDistributor.cs
+│  │  ├─ 20250521111720_VerifyCleanDistributor.Designer.cs
+│  │  ├─ 20250521113448_AddDistributorErcKod.cs
+│  │  ├─ 20250521113448_AddDistributorErcKod.Designer.cs
+│  │  ├─ 20250522083439_FixKanalNavigation.cs
+│  │  ├─ 20250522083439_FixKanalNavigation.Designer.cs
+│  │  ├─ 20250522110517_mig6.cs
+│  │  ├─ 20250522110517_mig6.Designer.cs
+│  │  ├─ 20250522131026_mig7talepformu.cs
+│  │  ├─ 20250522131026_mig7talepformu.Designer.cs
+│  │  ├─ 20250522140216_mig8talepformu.cs
+│  │  ├─ 20250522140216_mig8talepformu.Designer.cs
+│  │  ├─ 20250528073041_UpdateTalepFormItemsTable.cs
+│  │  ├─ 20250528073041_UpdateTalepFormItemsTable.Designer.cs
+│  │  ├─ 20250528100941_erpcede.cs
+│  │  ├─ 20250528100941_erpcede.Designer.cs
+│  │  ├─ 20250602102030_talepforms.cs
+│  │  ├─ 20250602102030_talepforms.Designer.cs
+│  │  ├─ 20250602114234_talepformitemskullanma.cs
+│  │  ├─ 20250602114234_talepformitemskullanma.Designer.cs
+│  │  ├─ 20250602124640_tlp.cs
+│  │  ├─ 20250602124640_tlp.Designer.cs
+│  │  ├─ 20250603062029_migtaleps.cs
+│  │  ├─ 20250603062029_migtaleps.Designer.cs
+│  │  ├─ 20250603082046_migtalepkategoryekleme.cs
+│  │  ├─ 20250603082046_migtalepkategoryekleme.Designer.cs
+│  │  ├─ 20250603103636_migtalepaltkatefory.cs
+│  │  ├─ 20250603103636_migtalepaltkatefory.Designer.cs
+│  │  ├─ 20250612102201_migbruttotal.cs
+│  │  ├─ 20250612102201_migbruttotal.Designer.cs
+│  │  ├─ 20250612102834_FixCascadePaths.cs
+│  │  ├─ 20250612102834_FixCascadePaths.Designer.cs
+│  │  ├─ 20250612103459_bruttotal.cs
+│  │  ├─ 20250612103459_bruttotal.Designer.cs
+│  │  ├─ 20250612103705_bruttotalll.cs
+│  │  ├─ 20250612103705_bruttotalll.Designer.cs
+│  │  ├─ 20250612105233_maliyet.cs
+│  │  ├─ 20250612105233_maliyet.Designer.cs
+│  │  ├─ 20250612112052_migbruttolaolusturma.cs
+│  │  ├─ 20250612112052_migbruttolaolusturma.Designer.cs
+│  │  ├─ 20250612112556_migbruttolaolusturmak.cs
+│  │  ├─ 20250612112556_migbruttolaolusturmak.Designer.cs
+│  │  ├─ 20250612113833_migbruttolaolusturmakkk.cs
+│  │  ├─ 20250612113833_migbruttolaolusturmakkk.Designer.cs
+│  │  ├─ 20250612115620_AddBrutTotalClean.cs
+│  │  ├─ 20250612115620_AddBrutTotalClean.Designer.cs
+│  │  ├─ 20250613071324_AddKampanyaDonusAdedi.cs
+│  │  ├─ 20250613071324_AddKampanyaDonusAdedi.Designer.cs
+│  │  ├─ 20250613104259_AddKampanyaResimYoluToTalepForm.cs
+│  │  ├─ 20250613104259_AddKampanyaResimYoluToTalepForm.Designer.cs
+│  │  ├─ 20250617070950_mig_nullable_productid.cs
+│  │  ├─ 20250617070950_mig_nullable_productid.Designer.cs
+│  │  ├─ 20250618123651_mig_malyukleme.cs
+│  │  ├─ 20250618123651_mig_malyukleme.Designer.cs
+│  │  ├─ 20250619140301_malyuklemeguncel.cs
+│  │  ├─ 20250619140301_malyuklemeguncel.Designer.cs
+│  │  ├─ 20250620110501_mig_malyuklemeform_totals.cs
+│  │  ├─ 20250620110501_mig_malyuklemeform_totals.Designer.cs
+│  │  ├─ 20250624101914_createdata.cs
+│  │  ├─ 20250624101914_createdata.Designer.cs
+│  │  ├─ 20250626122654_detailiskontoAlanlariEkleme.cs
+│  │  ├─ 20250626122654_detailiskontoAlanlariEkleme.Designer.cs
+│  │  ├─ 20250630103746_migsubcategory.cs
+│  │  ├─ 20250630103746_migsubcategory.Designer.cs
+│  │  ├─ 20250723083756_oneriAksiyonFiyati.cs
+│  │  ├─ 20250723083756_oneriAksiyonFiyati.Designer.cs
+│  │  ├─ 20250723101358_oneriAksiyonFiyatiDecimal.cs
+│  │  ├─ 20250723101358_oneriAksiyonFiyatiDecimal.Designer.cs
+│  │  ├─ 20250912073636_malYuklemeNotEkleme.cs
+│  │  ├─ 20250912073636_malYuklemeNotEkleme.Designer.cs
+│  │  ├─ 20251023103050_AksiyonVeindirimTipiEkleme.cs
+│  │  ├─ 20251023103050_AksiyonVeindirimTipiEkleme.Designer.cs
+│  │  └─ DogusCayContextModelSnapshot.cs
+│  └─ Repositories
+│     └─ GenericRepository.cs
+├─ DogusCay.DTO
+│  └─ DTOs
+│     ├─ Attributes
+│     │  └─ ExcelIgnoreAttribute.cs
+│     ├─ CategoryDtos
+│     │  ├─ CreateCategoryDto.cs
+│     │  ├─ GetByIdCategoryDto.cs
+│     │  ├─ ResultCategoryDto.cs
+│     │  └─ UpdateCategoryDto.cs
+│     ├─ DistributorDtos
+│     │  ├─ CreateDistributorDto.cs
+│     │  ├─ DistributorDropdownDto.cs
+│     │  ├─ ResultDistributorDto.cs
+│     │  └─ UpdateDistributorDto.cs
+│     ├─ ExcelDtos
+│     │  ├─ ExportMalYuklemeTalepFormDetailDto.cs
+│     │  ├─ ExportMalYuklemeTalepFormDto.cs
+│     │  └─ ExportTalepFormDto.cs
+│     ├─ KanalDtos
+│     │  ├─ CreateKanalDto.cs
+│     │  ├─ GetByIdKanalDto.cs
+│     │  ├─ KanalDropdownDto.cs
+│     │  ├─ ResultKanalDto.cs
+│     │  └─ UpdateKanalDto.cs
+│     ├─ LoginDtos
+│     │  └─ LoginResponseDto.cs
+│     ├─ MalYuklemeDtos
+│     │  ├─ CreateMalYuklemeTalepFormDetailDto.cs
+│     │  ├─ CreateMalYuklemeTalepFormDto.cs
+│     │  ├─ ResultMalYuklemeTalepFormDetailDto.cs
+│     │  └─ ResultMalYuklemeTalepFormDto.cs
+│     ├─ PaymentTypeDtos
+│     │  ├─ CreatePaymentTypeDto.cs
+│     │  ├─ ResultPaymentTypeDto.cs
+│     │  └─ UpdatePaymentTypeDto.cs
+│     ├─ PivotDtos
+│     │  ├─ PivotDataRow.cs
+│     │  ├─ PivotRequest.cs
+│     │  └─ PivotResponse.cs
+│     ├─ PointDtos
+│     │  ├─ CreatePointDto.cs
+│     │  ├─ GetByIdPointDto.cs
+│     │  ├─ PointDropdownDto.cs
+│     │  ├─ ResultPointDto.cs
+│     │  └─ UpdatePointDto.cs
+│     ├─ PointGroupTypeDtos
+│     │  ├─ CreatePointGroupTypeDto.cs
+│     │  ├─ PointGroupTypeDropdownDto.cs
+│     │  ├─ ResultPointGroupTypeDto.cs
+│     │  └─ UpdatePointGroupTypeDto.cs
+│     ├─ ProductDtos
+│     │  ├─ CreateProductDto.cs
+│     │  ├─ GetByIdProductDto.cs
+│     │  ├─ ProductDropdownDto.cs
+│     │  ├─ ResultProductDto.cs
+│     │  └─ UpdateProductDto.cs
+│     ├─ RegionDtos
+│     │  ├─ CreateRegionDto.cs
+│     │  ├─ ResultRegionDto.cs
+│     │  └─ UpdateRegionDto.cs
+│     ├─ RoleDtos
+│     │  ├─ CreateRoleDto.cs
+│     │  └─ UpdateRoleDto.cs
+│     ├─ SaleDtos
+│     │  ├─ GetByIdSaleDto.cs
+│     │  ├─ ResultSaleDto.cs
+│     │  └─ UpdateSaleDto.cs
+│     ├─ SaleTypeDtos
+│     │  └─ SaleTypeDto.cs
+│     ├─ TalepFormDtos
+│     │  ├─ CreateTalepFormDto.cs
+│     │  ├─ ResultTalepFormDto.cs
+│     │  └─ UpdateTalepFormDto.cs
+│     ├─ UnitDtos
+│     │  └─ UnitDto.cs
+│     └─ UserDtos
+│        ├─ AdminChangePasswordDto.cs
+│        ├─ AssignRoleDto.cs
+│        ├─ LoginDto.cs
+│        ├─ RegisterDto.cs
+│        ├─ ResultUserDto.cs
+│        ├─ SimpleUserDto.cs
+│        ├─ UserListDto.cs
+│        └─ UserRoleDto.cs
+├─ DogusCay.Entity
+│  ├─ CipsEntities
+│  └─ Entities
+│     ├─ MalYuklemeTalep
+│     │  ├─ MalYuklemeTalepForm.cs
+│     │  └─ MalYuklemeTalepFormDetail.cs
+│     ├─ Talep
+│     │  ├─ TalepDurumu.cs
+│     │  ├─ TalepForm.cs
+│     │  └─ TalepTip.cs
+│     ├─ AppRole.cs
+│     ├─ AppUser.cs
+│     ├─ Category.cs
+│     ├─ Distributor.cs
+│     ├─ Kanal.cs
+│     ├─ PaymentType.cs
+│     ├─ Point.cs
+│     ├─ PointGroupType.cs
+│     ├─ Product.cs
+│     ├─ Sale.cs
+│     ├─ SaleType.cs
+│     └─ UnitType.cs
+└─ DogusCay.WebUI
+   ├─ Areas
+   │  └─ Admin
+   │     ├─ Controllers
+   │     │  ├─ ChartController.cs
+   │     │  ├─ DirectorController.cs
+   │     │  ├─ DistributorController.cs
+   │     │  ├─ HomeController.cs
+   │     │  ├─ KanalController.cs
+   │     │  ├─ MalYuklemeTalepFormController.cs
+   │     │  ├─ PivotController.cs
+   │     │  ├─ PointController.cs
+   │     │  ├─ PointGroupTypeController.cs
+   │     │  ├─ ProductController.cs
+   │     │  └─ TalepFormController.cs
+   │     ├─ Data
+   │     ├─ Models
+   │     │  └─ PivotViewModel.cs
+   │     └─ Views
+   │        ├─ Chart
+   │        │  └─ Index.cshtml
+   │        ├─ Director
+   │        │  └─ Index.cshtml
+   │        ├─ Distributor
+   │        │  ├─ CreateDistributor.cshtml
+   │        │  └─ Index.cshtml
+   │        ├─ Home
+   │        │  ├─ Index.cshtml
+   │        │  └─ _CategoryRowPartial.cshtml
+   │        ├─ Kanal
+   │        │  ├─ CreateKanal.cshtml
+   │        │  ├─ Index.cshtml
+   │        │  └─ UpdateKanal.cshtml
+   │        ├─ MalYuklemeTalepForm
+   │        │  ├─ CreateMalYuklemeTalepForm.cshtml
+   │        │  ├─ Detail.cshtml
+   │        │  └─ Index.cshtml
+   │        ├─ Pivot
+   │        │  └─ Index.cshtml
+   │        ├─ Point
+   │        │  └─ Index.cshtml
+   │        ├─ PointGroup
+   │        │  ├─ CreatePointGroup.cshtml
+   │        │  └─ Index.cshtml
+   │        ├─ Product
+   │        │  ├─ CreateProduct.cshtml
+   │        │  ├─ Index.cshtml
+   │        │  └─ UpdateProduct.cshtml
+   │        ├─ TalepForm
+   │        │  ├─ CreateTalepForm.cshtml
+   │        │  └─ Index.cshtml
+   │        └─ _ViewImports.cshtml
+   ├─ Controllers
+   │  ├─ HomeController.cs
+   │  ├─ LoginController.cs
+   │  └─ RegisterController.cs
+   ├─ DTOs
+   │  ├─ CategoryDtos
+   │  │  ├─ CreateCategoryDto.cs
+   │  │  ├─ GetByIdCategoryDto.cs
+   │  │  ├─ ResultCategoryDto.cs
+   │  │  └─ UpdateCategoryDto.cs
+   │  ├─ ChartDtos
+   │  │  ├─ BolgeTalepAnalizDto.cs
+   │  │  ├─ UrunAdetAnalizDto.cs
+   │  │  └─ UrunTalepAnalizDto.cs
+   │  ├─ DistributorDtos
+   │  │  ├─ CreateDistributorDto.cs
+   │  │  ├─ DistributorDropdownDto.cs
+   │  │  ├─ ResultDistributorDto.cs
+   │  │  └─ UpdateDistributorDto.cs
+   │  ├─ KanalDtos
+   │  │  ├─ CreateKanalDto.cs
+   │  │  ├─ GetByIdKanalDto.cs
+   │  │  ├─ KanalDropdownDto.cs
+   │  │  ├─ ResultKanalDto.cs
+   │  │  └─ UpdateKanalDto.cs
+   │  ├─ LoginDtos
+   │  │  └─ LoginResponseDto.cs
+   │  ├─ MalYuklemeTalepFormDtos
+   │  │  ├─ CreateMalYuklemeTalepFormDetailDto.cs
+   │  │  ├─ CreateMalYuklemeTalepFormDto.cs
+   │  │  ├─ PagedMalYuklemeTalepFormResponse.cs
+   │  │  ├─ ResultMalYuklemeTalepFormDetailDto.cs
+   │  │  └─ ResultMalYuklemeTalepFormDto.cs
+   │  ├─ PaymentTypeDtos
+   │  │  ├─ CreatePaymentTypeDto.cs
+   │  │  ├─ ResultPaymentTypeDto.cs
+   │  │  └─ UpdatePaymentTypeDto.cs
+   │  ├─ PivotDtos
+   │  │  ├─ PivotDataRow.cs
+   │  │  ├─ PivotRequest.cs
+   │  │  └─ PivotResponse.cs
+   │  ├─ PointDtos
+   │  │  ├─ CreatePointDto.cs
+   │  │  ├─ PagedResult.cs
+   │  │  ├─ PointDropdownDto.cs
+   │  │  ├─ ResultPointDto.cs
+   │  │  └─ UpdatePointDto.cs
+   │  ├─ PointGroupTypeDtos
+   │  │  ├─ CreatePointGroupTypeDto.cs
+   │  │  ├─ GetByIdPointGroupDto.cs
+   │  │  ├─ PointGroupTypeDropdownDto.cs
+   │  │  ├─ ResultPointGroupTypeDto.cs
+   │  │  └─ UpdatePointGroupTypeDto.cs
+   │  ├─ ProductDtos
+   │  │  ├─ CreateProductDto.cs
+   │  │  ├─ GetByIdProductDto.cs
+   │  │  ├─ PagedProductResultDto.cs
+   │  │  ├─ ProductDropdownDto.cs
+   │  │  ├─ ResultProductDto.cs
+   │  │  └─ UpdateProductDto.cs
+   │  ├─ RoleDtos
+   │  │  ├─ CreateRoleDto.cs
+   │  │  ├─ ResultRoleDto.cs
+   │  │  └─ UpdateRoleDto.cs
+   │  ├─ SaleDtos
+   │  │  ├─ GetByIdSaleDto.cs
+   │  │  ├─ ResultSaleDto.cs
+   │  │  └─ UpdateSaleDto.cs
+   │  ├─ SaleTypeDtos
+   │  │  └─ SaleTypeDto.cs
+   │  ├─ TalepDtos
+   │  │  ├─ CreateTalepFormDto.cs
+   │  │  ├─ PagedTalepFormResponse.cs
+   │  │  ├─ ResultTalepFormDto.cs
+   │  │  ├─ TalepDurumu.cs
+   │  │  ├─ TalepTip.cs
+   │  │  └─ UpdateTalepFormDto.cs
+   │  ├─ UnitDtos
+   │  │  └─ UnitDto.cs
+   │  └─ UserDtos
+   │     ├─ AdminChangePasswordDto.cs
+   │     ├─ AssignRoleDto.cs
+   │     ├─ RegisterResponseDto.cs
+   │     ├─ ResultUserDto.cs
+   │     ├─ UserLoginDto.cs
+   │     ├─ UserRegisterDto.cs
+   │     └─ UserRoleDto.cs
+   ├─ Handlers
+   │  └─ AuthHeaderHandler.cs
+   ├─ Helpers
+   │  └─ HttpClientInstance.cs
+   ├─ Models
+   │  ├─ ErrorViewModel.cs
+   │  ├─ ProductCreateViewModel.cs
+   │  ├─ TalepFormItemViewModel.cs
+   │  ├─ TalepFormListViewModel.cs
+   │  ├─ TalepFormViewModel.cs
+   │  └─ UserViewModel.cs
+   ├─ Services
+   │  ├─ TokenServices
+   │  │  ├─ ITokenService.cs
+   │  │  └─ TokenService.cs
+   │  └─ UserServices
+   │     ├─ IUserService.cs
+   │     └─ UserService.cs
+   ├─ Views
+   │  ├─ Home
+   │  │  ├─ Index.cshtml
+   │  │  └─ Privacy.cshtml
+   │  ├─ Login
+   │  │  └─ SignIn.cshtml
+   │  ├─ Register
+   │  │  └─ Signup.cshtml
+   │  ├─ Shared
+   │  │  ├─ Error.cshtml
+   │  │  ├─ _AdminLayout.cshtml
+   │  │  ├─ _Layout.cshtml
+   │  │  └─ _ValidationScriptsPartial.cshtml
+   │  ├─ _ViewImports.cshtml
+   │  └─ _ViewStart.cshtml
+   ├─ appsettings.Development.json
+   ├─ appsettings.json
+   ├─ appsettings.Production.json
+   └─ Program.cs

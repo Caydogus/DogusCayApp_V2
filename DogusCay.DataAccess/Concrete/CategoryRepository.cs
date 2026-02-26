@@ -25,17 +25,41 @@ namespace DogusCay.DataAccess.Concrete
         }
 
         //alt kategorilere tıklayınca tum ürünleri getirir:08.05.2025 eklendi
+        //public List<Category> GetAllWithProducts()
+        //{
+        //        return _context.Categories
+        //                                .Include(c => c.Products)
+        //                                .Include(c => c.SubCategories)
+        //                                .ThenInclude(sc => sc.Products)
+        //                                .Include(c => c.SubCategories)
+        //                                .ThenInclude(sc => sc.SubCategories)
+        //                                .ThenInclude(ssc => ssc.Products).ToList();
+        //}
         public List<Category> GetAllWithProducts()
         {
-                return _context.Categories
-                                        .Include(c => c.Products)
-                                        .Include(c => c.SubCategories)
-                                        .ThenInclude(sc => sc.Products)
-                                        .Include(c => c.SubCategories)
-                                        .ThenInclude(sc => sc.SubCategories)
-                                        .ThenInclude(ssc => ssc.Products).ToList();
-        }
+            var categories = _context.Categories
+                .Include(c => c.Products)
+                .Include(c => c.SubCategories)
+                    .ThenInclude(sc => sc.Products)
+                .Include(c => c.SubCategories)
+                    .ThenInclude(sc => sc.SubCategories)
+                        .ThenInclude(ssc => ssc.Products)
+                .ToList();
 
+            // Manuel filtre
+            foreach (var cat in categories)
+            {
+                cat.Products = cat.Products.Where(p => p.IsShown).ToList();
+                foreach (var sub in cat.SubCategories)
+                {
+                    sub.Products = sub.Products.Where(p => p.IsShown).ToList();
+                    foreach (var subsub in sub.SubCategories)
+                        subsub.Products = subsub.Products.Where(p => p.IsShown).ToList();
+                }
+            }
+
+            return categories;
+        }
         public void ShowOnHome(int id)
         {
             var value = _context.Categories.Find(id);

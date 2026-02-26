@@ -60,6 +60,19 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Kestrel limiti
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 200 * 1024 * 1024; // 200MB
+});
+
+// Form limiti
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 200 * 1024 * 1024; // 200MB
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartHeadersLengthLimit = int.MaxValue;
+});
 
 var compatibilityLevel = builder.Configuration.GetSection("Database:CompatibilityLevel").Get<int>();
 
@@ -88,11 +101,17 @@ builder.Services.AddSwaggerGen(c =>
     // JWT Security Schema
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        In = ParameterLocation.Header,
-        Description = "Enter JWT token as 'Bearer <token>'.",
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Type = SecuritySchemeType.Http,   // ?? BURASI DEÐÝÞTÝ
+        Scheme = "bearer",                // ?? lowercase
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token."
+        //In = ParameterLocation.Header,
+        //Description = "Enter JWT token as 'Bearer <token>'.",
+        //Name = "Authorization",
+        //Type = SecuritySchemeType.ApiKey,
+        //Scheme = "Bearer"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement

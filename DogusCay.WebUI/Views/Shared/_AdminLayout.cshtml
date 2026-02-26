@@ -1,6 +1,8 @@
 ﻿@{
 	Layout = null;
 }
+@inject IConfiguration Configuration
+	
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -177,6 +179,13 @@
 							<a class="sidebar-link waves-effect waves-dark sidebar-link" href="/Admin/Pivot/Index/" aria-expanded="false">
 								<i class="bi bi-bar-chart-line"></i> <!-- ANALİZ -->
 								<span class="hide-menu">CİPS BÜTÇE</span>
+							</a>
+						</li>
+
+						<li class="sidebar-item">
+							<a class="sidebar-link waves-effect waves-dark sidebar-link" href="/Admin/IhaleAnlasmaSozlesme/Index/" aria-expanded="false">
+								<i class="bi bi-file-earmark-text"></i>
+								<span class="hide-menu">İHALE ANLAŞMA</span>
 							</a>
 						</li>
 </ul>
